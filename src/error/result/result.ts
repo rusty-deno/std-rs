@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { Option,None,Some } from '../option/option.ts';
 import { Exception } from '../exception.ts';
-import { $panic } from "../../mod.ts";
+import { $panic } from "../../../mod.ts";
 import { Res } from './mod.ts';
 import { Fn } from "../../types.ts";
 

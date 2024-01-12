@@ -1,4 +1,4 @@
-import { Option } from "../../mod.ts";
+import { Option } from "../../../mod.ts";
 import { LinkedList } from './linked_list/linked_list.ts';
 import { IteratorTrait } from "../mod.ts";
 

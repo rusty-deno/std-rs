@@ -1,5 +1,5 @@
 import { $resultSync } from "../error/result/mod.ts";
-import { HashMap,Option,Result } from "../mod.ts";
+import { HashMap,Option,Result } from "../../mod.ts";
 import { PathBuf } from "../path.ts";
 import { Vec } from "../collections/linear/vector.ts";
 

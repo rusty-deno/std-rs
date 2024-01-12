@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { $panic } from '../../mod.ts';
+import { $panic } from '../../../mod.ts';
 import { Fn } from "../../types.ts";
 import { Exception } from '../exception.ts';
 

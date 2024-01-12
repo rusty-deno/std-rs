@@ -1,5 +1,5 @@
 import { sleep,symbols as lib } from "../../../bindings/bindings.ts";
-import { Some,None } from "../mod.ts";
+import { Some,None } from "../../mod.ts";
 
 
 

@@ -1,4 +1,4 @@
-import { Clone,Option } from '../../mod.ts';
+import { Clone,Option } from '../../../mod.ts';
 import { Entry } from './mod.ts';
 import { HashSet, Vec } from '../mod.ts';
 import { HashMap } from './hash_map.ts';

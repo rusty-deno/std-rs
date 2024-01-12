@@ -1,5 +1,5 @@
 import { Entry } from './mod.ts';
-import { Option } from '../../mod.ts';
+import { Option } from '../../../mod.ts';
 import { Vec } from '../linear/vector.ts';
 import { HashSet } from '../hash_set/hash_set.ts';
 import { Clone } from '../../clone.ts';
