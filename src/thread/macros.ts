@@ -1,5 +1,5 @@
 // deno-lint-ignore-file
-import { Thread } from "../../mod.ts";
+import { Thread } from "./thread.ts";
 import { AsyncPropertyDescriptor } from "../proc-macros/types.ts";
 
 

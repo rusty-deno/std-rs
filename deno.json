@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "check": "deno run --unstable --check mod.ts",
+    "debug": "deno run --unstable -A debug.ts"
+  }
+}

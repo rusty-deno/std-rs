@@ -1,4 +1,4 @@
-import { sleep,symbols as lib } from "../../../bindings/bindings.ts";
+// import { sleep,symbols as lib } from "../../../bindings/bindings.ts";
 import { Some,None } from "../../mod.ts";
 
 
@@ -48,8 +48,9 @@ export class Thread<T> {
    * $assertEq(await Thread.spawn(()=> 69),69);
    * ```
    */
+  // deno-lint-ignore require-await
   public async spawn(): Promise<T> {
-    await lib.spawn(Deno.UnsafePointer.value(this.fn.pointer));
+    // await lib.spawn(Deno.UnsafePointer.value(this.fn.pointer));
     this.fn.close();
     return this.xd.value as T;
   }
@@ -76,8 +77,8 @@ export class Thread<T> {
     return await new Thread(callback,name).spawn();
   }
 
-  public static sleep(duration: number) {
-    sleep(duration);
+  public static sleep(_duration: number) {
+    // sleep(duration);
   }
 }
 
