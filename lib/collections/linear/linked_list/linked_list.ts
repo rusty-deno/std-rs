@@ -1,6 +1,6 @@
 import { Node } from "./mod.ts";
 import { IteratorTrait } from "../../iter.ts";
-import { Option,None,Some } from "../../../../mod.ts";
+import { Option,None,Some } from "../../../../std/mod.ts";
 
 abstract class ToLinkedList<T> {
   public abstract toLinkedList(): LinkedList<T>;

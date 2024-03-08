@@ -1,3 +1,3 @@
-import * as _lib from "./mod.ts";
+import * as _lib from "./std/mod.ts";
 
 

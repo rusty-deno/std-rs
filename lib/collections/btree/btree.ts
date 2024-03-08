@@ -1,5 +1,5 @@
 import { Vec } from "../mod.ts";
-import { Option } from "../../../mod.ts";
+import { Option } from "../../../std/mod.ts";
 import { IteratorTrait,Iter } from "../mod.ts";
 import { Node,TreversalAlgorithm } from "./mod.ts";
 import { LinkedList } from "../linear/linked_list/mod.ts";

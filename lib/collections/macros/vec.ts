@@ -1,4 +1,4 @@
-import { Vec } from "../../../mod.ts";
+import { Vec } from "../../../std/mod.ts";
 
 /**
  * Constructs a {@linkcode Vec}

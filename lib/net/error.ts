@@ -1,4 +1,4 @@
-import { Err } from "../../mod.ts";
+import { Err } from "../../std/mod.ts";
 
 
 export class HttpError<E extends (Err|Response)=Response> extends Error {

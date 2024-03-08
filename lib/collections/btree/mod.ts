@@ -1,4 +1,4 @@
-import { Option } from "../../../mod.ts";
+import { Option } from "../../../std/mod.ts";
 
 
 

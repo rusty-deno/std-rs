@@ -1,4 +1,4 @@
-import { Option,Clone } from "../../../mod.ts";
+import { Option,Clone } from "../../../std/mod.ts";
 import { Iter } from "../mod.ts";
 import { LinkedList } from './linked_list/linked_list.ts';
 

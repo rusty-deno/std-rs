@@ -1,4 +1,4 @@
-import { $panic } from '../../mod.ts';
+import { $panic } from '../../std/mod.ts';
 import { Clone } from '../clone.ts';
 import { Fn } from "../types.ts";
 
