@@ -16,8 +16,4 @@ macro_rules! as_ptr {
   };
 }
 
-macro_rules! deref {
-  ($x:expr)=> {
-    unsafe { Box::from_raw($x) }
-  };
-}
+
