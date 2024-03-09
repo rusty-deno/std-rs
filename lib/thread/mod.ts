@@ -1,9 +1,46 @@
-export * from "./thread.ts";
 import { Thread } from "./thread.ts";
+import { $resultSync } from "../error/result/macros.ts";
+import * as lib from '../../bindings/std_rs.js';
+import { $unimplemented } from "../declarative-macros/mod.ts";
 
 
 
-// deno-lint-ignore require-await
-export async function $spawn<T>(callback: ()=> T,name?: string) {
-  return Thread.spawn(callback,name);
+////////////////////////////////////////////////////////////////////////////////
+// Free functions
+////////////////////////////////////////////////////////////////////////////////
+
+
+export async function spawn<T>(callback: ()=> T) {
+  return await Thread.spawn(callback);
 }
+
+export function availableParallelism() {
+  return $resultSync(lib.available_parallelism);
+}
+
+export function currentThread(): never {
+  return $unimplemented();
+}
+
+export function panicking() {
+  return lib.thread_panicking();
+}
+
+export function park() {
+  lib.park_thread();
+}
+
+export function parkWithTimeout(dur: number|bigint) {
+  lib.park_thread_with_timeout(BigInt(dur));
+}
+
+export function sleep(dur: number|bigint) {
+  lib.sleep(BigInt(dur));
+}
+
+export function yieldNow() {
+  lib.yield_now();
+}
+
+
+export * from "./thread.ts";
