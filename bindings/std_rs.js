@@ -1,3 +1,22 @@
+
+
+const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
+
+if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
+
+let cachedUint8Memory0 = null;
+
+function getUint8Memory0() {
+    if (cachedUint8Memory0 === null || cachedUint8Memory0.byteLength === 0) {
+        cachedUint8Memory0 = new Uint8Array(wasm.memory.buffer);
+    }
+    return cachedUint8Memory0;
+}
+
+function getStringFromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
+}
 /**
 * @param {number} ptr
 * @returns {number}
@@ -5,6 +24,56 @@
 export function spawn_thread(ptr) {
     const ret = wasm.spawn_thread(ptr);
     return ret >>> 0;
+}
+
+/**
+* @returns {number}
+*/
+export function available_parallelism() {
+    const ret = wasm.available_parallelism();
+    return ret >>> 0;
+}
+
+/**
+* @returns {number}
+*/
+export function current_thread() {
+    const ret = wasm.current_thread();
+    return ret >>> 0;
+}
+
+/**
+* @returns {boolean}
+*/
+export function thread_panicking() {
+    const ret = wasm.thread_panicking();
+    return ret !== 0;
+}
+
+/**
+*/
+export function park_thread() {
+    wasm.park_thread();
+}
+
+/**
+* @param {bigint} dur
+*/
+export function park_thread_with_timeout(dur) {
+    wasm.park_thread_with_timeout(dur);
+}
+
+/**
+* @param {bigint} dur
+*/
+export function sleep(dur) {
+    wasm.sleep(dur);
+}
+
+/**
+*/
+export function yield_now() {
+    wasm.yield_now();
 }
 
 /**
@@ -16,9 +85,11 @@ export function join_handler(_this) {
 
 /**
 * @param {number} _this
+* @returns {number}
 */
 export function handler_thread(_this) {
-    wasm.handler_thread(_this);
+    const ret = wasm.handler_thread(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -37,24 +108,6 @@ function getInt32Memory0() {
         cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
     }
     return cachedInt32Memory0;
-}
-
-const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
-
-if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
-
-let cachedUint8Memory0 = null;
-
-function getUint8Memory0() {
-    if (cachedUint8Memory0 === null || cachedUint8Memory0.byteLength === 0) {
-        cachedUint8Memory0 = new Uint8Array(wasm.memory.buffer);
-    }
-    return cachedUint8Memory0;
-}
-
-function getStringFromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
 /**
 * @param {number} _this
@@ -95,6 +148,9 @@ export function thread_unpark(_this) {
 
 const imports = {
     __wbindgen_placeholder__: {
+        __wbindgen_throw: function(arg0, arg1) {
+            throw new Error(getStringFromWasm0(arg0, arg1));
+        },
     },
 
 };

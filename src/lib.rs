@@ -71,8 +71,8 @@ pub fn join_handler(this: Handler) {
 }
 
 #[method]
-pub fn handler_thread(_this: &Handler) {
-  unimplemented!()
+pub fn handler_thread(this: &Handler)-> *const Thread {
+  this.thread() as *const _
 }
 
 #[method]
