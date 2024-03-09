@@ -18,7 +18,7 @@ import { Some,None } from "../../std/mod.ts";
 export class Thread<T> {
   /** Return value of the {@linkcode Thread} */
   private xd=None<T>(null);
-  /** The Function Pointer run the {@linkcode Thread} */
+  /** The Function Pointer run by the {@linkcode Thread} */
   private fn: Deno.UnsafeCallback<{
     parameters: [],
     result: "void"
