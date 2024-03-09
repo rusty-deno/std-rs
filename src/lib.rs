@@ -11,7 +11,8 @@ use std::{
     self,
     JoinHandle,
     Thread
-  }
+  },
+  time::Duration
 };
 
 
@@ -24,6 +25,44 @@ pub fn spawn_thread(ptr: *const u8)-> HandlerPtr {
   as_ptr! {
     thread::spawn(fn_ptr!(ptr))
   }
+}
+
+#[wasm_bindgen]
+pub unsafe fn available_parallelism()-> usize {
+  mem::transmute(
+    thread::available_parallelism()
+    .unwrap_throw()
+  )
+}
+
+#[wasm_bindgen]
+pub fn current_thread()-> *mut Thread {
+  as_ptr!(thread::current())
+}
+
+#[wasm_bindgen]
+pub fn thread_panicking()-> bool {
+  thread::panicking()
+}
+
+#[wasm_bindgen]
+pub fn park_thread() {
+  thread::park()
+}
+
+#[wasm_bindgen]
+pub fn park_thread_with_timeout(dur: u64) {
+  thread::park_timeout(Duration::from_millis(dur))
+}
+
+#[wasm_bindgen]
+pub fn sleep(dur: u64) {
+  thread::sleep(Duration::from_millis(dur))
+}
+
+#[wasm_bindgen]
+pub fn yield_now() {
+  thread::yield_now()
 }
 
 #[method]
@@ -56,5 +95,6 @@ pub unsafe fn thread_id(this: &mut Thread)-> u64 {
 pub fn thread_unpark(this: &mut Thread) {
   this.unpark()
 }
+
 
 
