@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 
 
 const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
@@ -19,11 +20,11 @@ function getStringFromWasm0(ptr, len) {
 }
 /**
 * @param {number} ptr
-* @returns {number}
+* @returns {JoinHandle}
 */
 export function spawn_thread(ptr) {
     const ret = wasm.spawn_thread(ptr);
-    return ret >>> 0;
+    return JoinHandle.__wrap(ret);
 }
 
 /**
@@ -76,31 +77,6 @@ export function yield_now() {
     wasm.yield_now();
 }
 
-/**
-* @param {number} _this
-*/
-export function join_handler(_this) {
-    wasm.join_handler(_this);
-}
-
-/**
-* @param {number} _this
-* @returns {number}
-*/
-export function handler_thread(_this) {
-    const ret = wasm.handler_thread(_this);
-    return ret >>> 0;
-}
-
-/**
-* @param {number} _this
-* @returns {boolean}
-*/
-export function task_is_finished(_this) {
-    const ret = wasm.task_is_finished(_this);
-    return ret !== 0;
-}
-
 let cachedInt32Memory0 = null;
 
 function getInt32Memory0() {
@@ -144,6 +120,61 @@ export function thread_id(_this) {
 */
 export function thread_unpark(_this) {
     wasm.thread_unpark(_this);
+}
+
+/**
+* @param {number} _this
+*/
+export function drop_thread(_this) {
+    wasm.drop_thread(_this);
+}
+
+const JoinHandleFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_joinhandle_free(ptr >>> 0));
+/**
+*/
+export class JoinHandle {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(JoinHandle.prototype);
+        obj.__wbg_ptr = ptr;
+        JoinHandleFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        JoinHandleFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_joinhandle_free(ptr);
+    }
+    /**
+    * @returns {boolean}
+    */
+    is_finished() {
+        const ret = wasm.joinhandle_is_finished(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+    * @returns {number}
+    */
+    thread() {
+        const ret = wasm.joinhandle_thread(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    */
+    join() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_joinhandle_free(ptr);
+    }
 }
 
 const imports = {

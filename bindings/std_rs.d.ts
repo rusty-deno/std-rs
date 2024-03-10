@@ -2,9 +2,9 @@
 /* eslint-disable */
 /**
 * @param {number} ptr
-* @returns {number}
+* @returns {JoinHandle}
 */
-export function spawn_thread(ptr: number): number;
+export function spawn_thread(ptr: number): JoinHandle;
 /**
 * @returns {number}
 */
@@ -33,20 +33,6 @@ export function sleep(dur: bigint): void;
 export function yield_now(): void;
 /**
 * @param {number} _this
-*/
-export function join_handler(_this: number): void;
-/**
-* @param {number} _this
-* @returns {number}
-*/
-export function handler_thread(_this: number): number;
-/**
-* @param {number} _this
-* @returns {boolean}
-*/
-export function task_is_finished(_this: number): boolean;
-/**
-* @param {number} _this
 * @returns {string | undefined}
 */
 export function thread_name(_this: number): string | undefined;
@@ -59,3 +45,23 @@ export function thread_id(_this: number): bigint;
 * @param {number} _this
 */
 export function thread_unpark(_this: number): void;
+/**
+* @param {number} _this
+*/
+export function drop_thread(_this: number): void;
+/**
+*/
+export class JoinHandle {
+  free(): void;
+/**
+* @returns {boolean}
+*/
+  is_finished(): boolean;
+/**
+* @returns {number}
+*/
+  thread(): number;
+/**
+*/
+  join(): void;
+}
