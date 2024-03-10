@@ -1,11 +1,10 @@
 
 #[macro_use]
 mod util_macro;
-mod util;
 
-use util::*;
 use macros::method;
 use wasm_bindgen::prelude::*;
+
 
 use std::{
   mem,
@@ -13,17 +12,19 @@ use std::{
   time::Duration,
   thread::{
     self,
+    JoinHandle,
     Thread
   }
 };
 
 
 
+type Handler=JoinHandle<()>;
 
 
 #[wasm_bindgen]
-pub fn spawn_thread(ptr: *const u8)-> JoinHandle {
-  thread::spawn(fn_ptr!(ptr)).into()
+pub fn spawn_thread(ptr: *const u8)-> *const Handler {
+  as_ptr!(thread::spawn(fn_ptr!(ptr)).into())
 }
 
 #[wasm_bindgen]
@@ -67,6 +68,42 @@ pub fn yield_now() {
 
 
 
+#[method]
+pub fn is_finished(this: &Handler)-> bool {
+  this.is_finished()
+}
+
+#[method]
+pub unsafe fn thread(this: &Handler)-> *const Thread {
+  Arc::into_raw(
+    mem::transmute::<_,Arc<_>>(
+      this.thread()
+      .clone()
+    )
+  ) as *const _
+}
+
+#[method]
+/// add ``#joined: boolean`` property to TS class
+pub fn join(this: Handler) {
+  this.join().unwrap_throw();
+}
+
+
+#[method]
+pub unsafe fn thread_id(this: &Thread)-> u64 {
+  mem::transmute(this.id())
+}
+
+#[method]
+pub fn thread_unpark(this: &Thread) {
+  this.unpark()
+}
+
+#[wasm_bindgen]
+pub unsafe fn drop_thread(this: *const [u8;16]) {
+  Arc::from_raw(this);
+}
 
 
 
