@@ -162,6 +162,16 @@ export class Thread extends Drop {
 
 
 // TODO: seal the class
+/**
+ * An owned permission to join on a thread (block on its termination).
+ * 
+ * A JoinHandle detaches the associated thread when it is dropped, which means that there is no longer any handle to the thread and no way to join on it.
+ * 
+ * Due to platform restrictions, it is not possible to Clone this handle: the ability to join a thread is a uniquely-owned permission.
+ * * Trying to copy a handle may lead to memory corruption.
+ * 
+ * This object is created by the {@linkcode Thread.spawn} function.
+ */
 export class JoinHandle<T> extends Drop {
   #return=None<T>();
   #ptr: number;
@@ -185,14 +195,58 @@ export class JoinHandle<T> extends Drop {
     this.#fn.close();
   }
 
+  /**
+   * Checks if the associated thread has finished running its main function.
+   * 
+   * {@linkcode isFinished} supports implementing a non-blocking join operation, by checking {@linkcode isFinished}, and calling join if it returns true. This function does not block. To block while waiting on the thread to finish, use join.
+   * 
+   * This might return true for a brief moment after the thread's main function has returned, but before the thread itself has stopped running. However, once this returns true, join can be expected to return quickly, without blocking for any significant amount of time.
+   */
   public isFinished() {
     return lib.is_finished(this.#ptr);
   }
 
+  /**
+   * Extracts a handle to the underlying thread.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Thread } from "@std/thread";
+   * 
+   * const handle=Thread.spawn(()=> {
+   *   // some work here
+   * }).unwrap();
+   * 
+   * const thread = handle.thread();
+   * 
+   * console.log(`thread id: ${thread.id()}`);
+   * ```
+   */
   public thread() {
     return ThreadHandleBuilder.new(lib.thread(this.#ptr));
   }
 
+  /**
+   * Waits for the associated thread to finish.
+   * 
+   * This function will return immediately if the associated thread has already finished.
+   * 
+   * If the associated thread panics, `Err` is returned.
+   * 
+   * ### Panics
+   * This function may panic on some platforms if a thread attempts to join itself or otherwise may create a deadlock with joining threads.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Thread } from "@std/thread";
+   * 
+   * const handle=Thread.spawn(()=> {
+   *   // some work here
+   * }).unwrap();
+   * 
+   * handle.join().expect("Couldn't join on the associated thread");
+   * ```
+   */
   public join() {
     return result.$resultSync(()=> {
       lib.join(this.#ptr);
