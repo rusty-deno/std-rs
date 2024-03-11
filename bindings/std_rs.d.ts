@@ -55,6 +55,11 @@ export function thread_id(_this: number): bigint;
 */
 export function thread_unpark(_this: number): void;
 /**
+* @param {number} _this
+* @returns {string | undefined}
+*/
+export function thread_name(_this: number): string | undefined;
+/**
 * @param {number} this_ptr
 */
 export function drop_thread(this_ptr: number): void;

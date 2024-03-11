@@ -95,6 +95,12 @@ pub fn thread_unpark(this: &Thread) {
   this.unpark()
 }
 
+#[method]
+pub fn thread_name(this: &Thread)-> Option<String> {
+  this.name()
+  .map(|name| name.to_owned())
+}
+
 
 
 #[wasm_bindgen]

@@ -117,6 +117,35 @@ export function thread_unpark(_this) {
     wasm.thread_unpark(_this);
 }
 
+let cachedInt32Memory0 = null;
+
+function getInt32Memory0() {
+    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
+        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
+    }
+    return cachedInt32Memory0;
+}
+/**
+* @param {number} _this
+* @returns {string | undefined}
+*/
+export function thread_name(_this) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        wasm.thread_name(retptr, _this);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        let v1;
+        if (r0 !== 0) {
+            v1 = getStringFromWasm0(r0, r1).slice();
+            wasm.__wbindgen_free(r0, r1 * 1, 1);
+        }
+        return v1;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
 /**
 * @param {number} this_ptr
 */
