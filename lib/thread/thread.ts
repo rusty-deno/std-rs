@@ -1,84 +1,34 @@
-// import { sleep,symbols as lib } from "../../../bindings/bindings.ts";
-import { Some,None } from "../../std/mod.ts";
+import { Drop } from '../drop.ts';
+import { Some,None,Option } from "../../std/mod.ts";
+import * as lib from '../../bindings/std_rs.js';
+import { Fn } from '../types.ts';
+import { $todo } from "../declarative-macros/mod.ts";
 
 
+export class Thread extends Drop {
+  public readonly id: bigint;
+  public readonly name: Option<string>;
 
+  protected constructor(private ___ptr: number) {
+    super();
+    this.id=lib.thread_id(___ptr);
+    this.name=new Option(lib.thread_name(___ptr));
+  }
 
-/**
- * Initiates a parallel thread.
- * 
- * # Example
- * ```ts
- * const thread=new Thread(()=> 69);
- * $assertEq(await thread.spawn(),69);
- * 
- * ```
- * @unstable
- */
-export class Thread<T> {
-  /** Return value of the {@linkcode Thread} */
-  private xd=None<T>(null);
-  /** The Function Pointer run by the {@linkcode Thread} */
-  private fn: Deno.UnsafeCallback<{
-    parameters: [],
-    result: "void"
-  }>;
-  /** Name of the {@linkcode Thread} */
-  public readonly name?: string;
+  protected drop(): void {
+    lib.drop_thread(this.___ptr);
+  }
 
-  constructor(callback: ()=> T,name?: string) {
-    this.fn=new Deno.UnsafeCallback({
+  public static spawn<T>(f: Fn<[],T>) {
+    let retVal=None<T>();
+    const fn=Deno.UnsafeCallback.threadSafe({
       parameters: [],
       result: "void"
     },()=> {
-      this.xd=Some(callback());
+      retVal=Some(f());
     });
-    this.name=name;
-  }
-  
-  /**
-   * It looks just like a {@linkcode Promise}.
-   * 
-   * But the difference is that it spawns a parellel {@linkcode Thread} on a diffarent cpu core.
-   * 
-   * `Awaiting` it joins the parellel {@linkcode Thread}
-   * 
-   * # Example
-   * ```
-   * $assertEq(await Thread.spawn(()=> 69),69);
-   * ```
-   */
-  // deno-lint-ignore require-await
-  public async spawn(): Promise<T> {
-    // await lib.spawn(Deno.UnsafePointer.value(this.fn.pointer));
-    this.fn.close();
-    return this.xd.value as T;
-  }
-
-  /** Terminates the current {@linkcode Thread} */
-  public terminate() {
-    this.fn.close();
-    return this.xd;
-  }
-
-  /**
-   * It looks just like a {@linkcode Promise}.
-   * 
-   * But the difference is that it spawns a parellel {@linkcode Thread} on a diffarent cpu core.
-   * 
-   * `Awaiting` {@linkcode Thread.spawn} joins the parellel {@linkcode Thread}
-   * 
-   * # Example
-   * ```
-   * $assertEq(await Thread.spawn(()=> 69),69);
-   * ```
-   */
-  public static async spawn<T>(callback: ()=> T,name?: string) {
-    return await new Thread(callback,name).spawn();
-  }
-
-  public static sleep(_duration: number) {
-    // sleep(duration);
+    
+    return $todo();
   }
 }
 
