@@ -85,6 +85,7 @@ export class JoinHandle<T> extends Drop {
 
   protected drop(): void {
     lib.drop_join_handle(this.#ptr);
+    this.#fn.close();
   }
 
   public isFinished() {
