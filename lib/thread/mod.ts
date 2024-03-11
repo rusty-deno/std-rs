@@ -1,7 +1,6 @@
 import { Thread } from "./thread.ts";
 import { $resultSync } from "../error/result/macros.ts";
 import * as lib from '../../bindings/std_rs.js';
-import { $unimplemented } from "../declarative-macros/mod.ts";
 
 
 
@@ -18,8 +17,8 @@ export function availableParallelism() {
   return $resultSync(lib.available_parallelism);
 }
 
-export function currentThread(): never {
-  return $unimplemented();
+export function current() {
+  return Thread.current();
 }
 
 export function panicking() {
