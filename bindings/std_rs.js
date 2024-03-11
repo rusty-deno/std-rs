@@ -118,10 +118,17 @@ export function thread_unpark(_this) {
 }
 
 /**
-* @param {number} _this
+* @param {number} this_ptr
 */
-export function drop_thread(_this) {
-    wasm.drop_thread(_this);
+export function drop_thread(this_ptr) {
+    wasm.drop_thread(this_ptr);
+}
+
+/**
+* @param {number} this_ptr
+*/
+export function drop_join_handle(this_ptr) {
+    wasm.drop_join_handle(this_ptr);
 }
 
 const imports = {

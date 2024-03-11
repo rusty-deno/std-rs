@@ -95,10 +95,16 @@ pub fn thread_unpark(this: &Thread) {
   this.unpark()
 }
 
+
+
 #[wasm_bindgen]
-pub unsafe fn drop_thread(this: *const [u8;16]) {
-  Arc::from_raw(this);
+pub unsafe fn drop_thread(this_ptr: *const [u8;16]) {
+  Arc::from_raw(this_ptr);
 }
 
+#[wasm_bindgen]
+pub unsafe fn drop_join_handle(this_ptr: *mut Handler) {
+  drop(Box::from_raw(this_ptr));
+}
 
 

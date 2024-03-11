@@ -14,4 +14,5 @@ export function thread(a: number): number;
 export function join(a: number): void;
 export function thread_id(a: number): number;
 export function drop_thread(a: number): void;
+export function drop_join_handle(a: number): void;
 export function thread_unpark(a: number): void;
