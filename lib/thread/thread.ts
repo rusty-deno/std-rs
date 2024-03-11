@@ -35,8 +35,8 @@ export class Thread extends Drop {
     lib.thread_unpark(this.___ptr);
   }
 
-  public static spawn<T>(f: Fn<[],T>) {
-    return JoinHandleBuilder.new(f);
+  public static spawn<T>(f: Fn<[],T>,name?: string) {
+    return JoinHandleBuilder.new(f,name);
   }
 
   public static current() {
@@ -71,7 +71,7 @@ export class JoinHandle<T> extends Drop {
   #ptr: number;
   #fn;// im too lazy to provide that huge type def here...xd
 
-  protected constructor(f: Fn<[],T>) {
+  protected constructor(f: Fn<[],T>,private name?: string) {
     super();
     this.#fn=Deno.UnsafeCallback.threadSafe({
       parameters: [],
@@ -79,7 +79,8 @@ export class JoinHandle<T> extends Drop {
     },()=> this.#return=Some(f()));
 
     this.#ptr=lib.spawn_thread(
-      Number(Deno.UnsafePointer.value(this.#fn.pointer))
+      Number(Deno.UnsafePointer.value(this.#fn.pointer)),
+      name
     );
   }
 
@@ -105,8 +106,8 @@ export class JoinHandle<T> extends Drop {
 }
 
 class JoinHandleBuilder<_> extends JoinHandle<_> {
-  public static new<T>(f: Fn<[],T>) {
-    return new JoinHandle<T>(f);
+  public static new<T>(f: Fn<[],T>,name?: string) {
+    return new JoinHandle<T>(f,name);
   }
 }
 

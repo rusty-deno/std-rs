@@ -12,8 +12,9 @@ use std::{
   time::Duration,
   thread::{
     self,
-    JoinHandle,
-    Thread
+    Thread,
+    Builder,
+    JoinHandle
   }
 };
 
@@ -22,9 +23,21 @@ use std::{
 type Handler=JoinHandle<()>;
 
 
+
+////////////////////
+// FREE FUNCTIONS //
+////////////////////
+
 #[wasm_bindgen]
-pub fn spawn_thread(ptr: *const u8)-> *const Handler {
-  as_ptr!(thread::spawn(fn_ptr!(ptr)).into())
+pub fn spawn_thread(ptr: *const u8,name: Option<String>)-> *const Handler {
+  let builder=match name {
+    Some(name)=> Builder::new().name(name),
+    _=> Builder::new()
+  };
+
+  as_ptr!(
+    builder.spawn(fn_ptr!(ptr)).unwrap_throw().into()
+  )
 }
 
 #[wasm_bindgen]
@@ -66,7 +79,7 @@ pub fn yield_now() {
 }
 
 
-
+// JoinHandle methods
 
 #[method]
 pub fn is_finished(this: &Handler)-> bool {
@@ -79,11 +92,12 @@ pub unsafe fn thread(this: &Handler)-> *const Thread {
 }
 
 #[method]
-/// add ``#joined: boolean`` property to TS class
 pub fn join(this: Handler) {
   this.join().unwrap_throw();
 }
 
+
+// Thread methods
 
 #[method]
 pub unsafe fn thread_id(this: &Thread)-> u64 {
@@ -102,6 +116,7 @@ pub fn thread_name(this: &Thread)-> Option<String> {
 }
 
 
+// destructors
 
 #[wasm_bindgen]
 pub unsafe fn drop_thread(this_ptr: *const [u8;16]) {

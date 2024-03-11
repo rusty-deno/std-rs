@@ -9,8 +9,8 @@ import * as lib from '../../bindings/std_rs.js';
 ////////////////////////////////////////////////////////////////////////////////
 
 
-export function spawn<T>(f: ()=> T) {
-  return Thread.spawn(f);
+export function spawn<T>(f: ()=> T,name?: string) {
+  return Thread.spawn(f,name);
 }
 
 export function availableParallelism() {

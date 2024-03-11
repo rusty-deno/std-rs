@@ -2,9 +2,10 @@
 /* eslint-disable */
 /**
 * @param {number} ptr
+* @param {string | undefined} [name]
 * @returns {number}
 */
-export function spawn_thread(ptr: number): number;
+export function spawn_thread(ptr: number, name?: string): number;
 /**
 * @returns {number}
 */
