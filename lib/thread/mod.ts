@@ -10,8 +10,8 @@ import { $unimplemented } from "../declarative-macros/mod.ts";
 ////////////////////////////////////////////////////////////////////////////////
 
 
-export async function spawn<T>(callback: ()=> T) {
-  return await Thread.spawn(callback);
+export function spawn<T>(f: ()=> T) {
+  return Thread.spawn(f);
 }
 
 export function availableParallelism() {
