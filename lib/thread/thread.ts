@@ -36,18 +36,7 @@ export class Thread extends Drop {
   }
 
   public static spawn<T>(f: Fn<[],T>) {
-    let retVal=None<T>();
-    const fn=Deno.UnsafeCallback.threadSafe({
-      parameters: [],
-      result: "void"
-    },()=> retVal=Some(f()));
-
-    return JoinHandleBuilder.new(
-      lib.spawn_thread(
-        Number(Deno.UnsafePointer.value(fn.pointer))
-      ),
-      retVal
-    );
+    return JoinHandleBuilder.new(f);
   }
 
   public static current() {
@@ -75,35 +64,48 @@ export class Thread extends Drop {
   }
 }
 
+
 // TODO: seal the class
 export class JoinHandle<T> extends Drop {
-  protected constructor(private ___ptr: number,private ___return: Option<T>) {
+  #return=None<T>();
+  #ptr: number;
+  #fn;// im too lazy to provide that huge type def here...xd
+
+  protected constructor(f: Fn<[],T>) {
     super();
+    this.#fn=Deno.UnsafeCallback.threadSafe({
+      parameters: [],
+      result: "void"
+    },()=> this.#return=Some(f()));
+
+    this.#ptr=lib.spawn_thread(
+      Number(Deno.UnsafePointer.value(this.#fn.pointer))
+    );
   }
 
   protected drop(): void {
-    lib.drop_join_handle(this.___ptr);
+    lib.drop_join_handle(this.#ptr);
   }
 
   public isFinished() {
-    return lib.is_finished(this.___ptr);
+    return lib.is_finished(this.#ptr);
   }
 
   public thread() {
-    return ThreadHandleBuilder.new(lib.thread(this.___ptr));
+    return ThreadHandleBuilder.new(lib.thread(this.#ptr));
   }
 
   public join() {
     return result.$resultSync(()=> {
-      lib.join(this.___ptr);
-      return this.___return.value as T;
+      lib.join(this.#ptr);
+      return this.#return.value as T;
     });
   }
 }
 
 class JoinHandleBuilder<_> extends JoinHandle<_> {
-  public static new<T>(ptr: number,_return: Option<T>) {
-    return new JoinHandle<T>(ptr,_return);
+  public static new<T>(f: Fn<[],T>) {
+    return new JoinHandle<T>(f);
   }
 }
 
