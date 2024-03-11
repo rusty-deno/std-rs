@@ -17,6 +17,5 @@ opt-level = "z"
 
 
 [dependencies]
-js-sys = "0.3.69"
 wasm-bindgen = "0.2.84"
 macros = { path = "./macros" }
