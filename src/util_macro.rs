@@ -17,3 +17,15 @@ macro_rules! as_ptr {
 }
 
 
+#[macro_export]
+macro_rules! thread_ptr {
+  ($thread:expr)=> {
+    Arc::into_raw(
+      mem::transmute::<_,Arc<_>>(
+        $thread.clone()
+      )
+    )
+  };
+}
+
+

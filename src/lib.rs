@@ -36,8 +36,8 @@ pub unsafe fn available_parallelism()-> usize {
 }
 
 #[wasm_bindgen]
-pub fn current_thread()-> *mut Thread {
-  todo!()
+pub unsafe fn current_thread()-> *const Thread {
+  thread_ptr!(thread::current())
 }
 
 #[wasm_bindgen]
@@ -75,12 +75,7 @@ pub fn is_finished(this: &Handler)-> bool {
 
 #[method]
 pub unsafe fn thread(this: &Handler)-> *const Thread {
-  Arc::into_raw(
-    mem::transmute::<_,Arc<_>>(
-      this.thread()
-      .clone()
-    )
-  ) as *const _
+  thread_ptr!(this.thread())
 }
 
 #[method]
