@@ -31,6 +31,10 @@ export class Thread extends Drop {
     lib.drop_thread(this.___ptr);
   }
 
+  public unpark() {
+    lib.thread_unpark(this.___ptr);
+  }
+
   public static spawn<T>(f: Fn<[],T>) {
     let retVal=None<T>();
     const fn=Deno.UnsafeCallback.threadSafe({
@@ -44,6 +48,30 @@ export class Thread extends Drop {
       ),
       retVal
     );
+  }
+
+  public static current() {
+    return new Thread(lib.current_thread());
+  }
+
+  public static panicking() {
+    return lib.thread_panicking();
+  }
+
+  public static park() {
+    lib.park_thread();
+  }
+
+  public static parkWithTimeout(dur: number|bigint) {
+    lib.park_thread_with_timeout(BigInt(dur));
+  }
+
+  public static sleep(dur: number|bigint) {
+    lib.sleep(BigInt(dur));
+  }
+
+  public static yieldNow() {
+    lib.yield_now();
   }
 }
 
