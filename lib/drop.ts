@@ -2,6 +2,6 @@
 
 
 export abstract class Drop {
-  public abstract drop(): void;
+  protected abstract drop(): void;
   // todo
 }
