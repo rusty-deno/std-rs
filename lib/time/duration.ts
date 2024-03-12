@@ -82,7 +82,6 @@ export class Duration {
    * ```
    */
   public static readonly NANOSECOND=new Duration(0,1);
-
   
   ////////////////
   // Properties //
@@ -179,7 +178,48 @@ export class Duration {
     return new Duration(_nanos/_NANOS_PER_SEC,Number(_nanos%_NANOS_PER_SEC));
   }
 
+  /////////////
+  // Methods //
+  /////////////
 
+  /**
+   * Returns true if this {@linkcode Duration} spans no time.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * 
+   * $assert(Duration.ZERO.isZero());
+   * $assert(new Duration(0n, 0).isZero());
+   * $assert(Duration.fromNanos(0).isZero());
+   * $assert(Duration.fromSecs(0).isZero());
+   * 
+   * $assert(!Duration.new(1n, 1).isZero());
+   * $assert(!Duration.fromNanos(1).isZero());
+   * $assert(!Duration.fromSecs(1).isZero());
+   * ```
+   */
+  public isZero() {
+    return this.secs===0n && this.nanos===0;
+  }
+
+  /**
+   * Returns the number of whole seconds contained by this {@linkcode Duration}.
+   * 
+   * The returned value does not include the fractional (nanosecond) part of the duration, which can be obtained using {@linkcode subsecNanos}.
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const duration = new Duration(5n, 730023852);
+   * assertEq(duration.asSecs(), 5n);
+   * ```
+   * To determine the total number of seconds represented by the {@linkcode Duration} including the fractional part, use {@linkcode asSecsNumber}.
+   */
+  public asSecs() {
+    return this.secs;
+  }
 
 
 }
@@ -189,6 +229,7 @@ function calc(duration: DurationValue,format: bigint,nanoCount: number) {
   const dur=BigInt(duration);
   return new Duration(dur/format,Number(dur%format)*nanoCount);
 }
+
 
 
 
