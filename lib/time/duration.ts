@@ -262,6 +262,92 @@ export class Duration {
   public asSecs() {
     return Number(this.#secs);
   }
+
+  /**
+   * Returns the fractional part of this {@linkcode Duration}, in whole milliseconds.
+   * This method does not return the length of the duration when represented by milliseconds. The returned number always represents a fractional portion of a second (i.e., it is less than one thousand).
+   * 
+   * ## Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const duration = Duration.from_millis(5432);
+   * $assertEq(duration.asSecs(), 5);
+   * $assertEq(duration.subsecMillis(), 432);
+   * ```
+   */
+  public subsecMillis() {
+    return this.#nanos/NANOS_PER_MILLI;
+  }
+
+  /**
+   * Returns the fractional part of this {@linkcode Duration}, in whole microseconds.
+   * 
+   * This method does not return the length of the duration when represented by microseconds. The returned number always represents a fractional portion of a second (i.e., it is less than one million).
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const duration = Duration.fromMicros(1_234_567);
+   * $assertEq(duration.asSecs(), 1);
+   * $assertEq(duration.subsecMicros(), 234_567);
+   * ```
+   */
+  public subsecMicros() {
+    return this.#nanos/NANOS_PER_MICRO;
+  }
+
+  /**
+   * Returns the total number of whole milliseconds contained by this {@linkcode Duration}.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const duration = new Duration(5, 730023852);
+   * $assertEq(duration.asMillis(), 5730);
+   * ```
+   * ### Unstable
+   * Output of this function may not be very accurate as there is no type in javascript that can represent `u128` (128 bit long unsigned integer)
+   */
+  public asMillis() {
+    return this.#secs*MILLIS_PER_SEC + BigInt(this.#nanos/NANOS_PER_MILLI);
+  }
+
+  /**
+   * Returns the total number of whole microseconds contained by this {@linkcode Duration}.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const duration = new Duration(5, 730023852);
+   * $assertEq(duration.asMicros(), 5730);
+   * ```
+   * ### Unstable
+   * Output of this function may not be very accurate as there is no type in javascript that can represent `u128` (128 bit long unsigned integer)
+   */
+  public asMicros() {
+    return this.#secs*MICROS_PER_SEC + BigInt(this.#nanos/NANOS_PER_MICRO);
+  }
+
+  /**
+   * Returns the total number of whole nanoseconds contained by this {@linkcode Duration}.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const duration = new Duration(5, 730023852);
+   * $assertEq(duration.asNanos(), 5730);
+   * ```
+   * ### Unstable
+   * Output of this function may not be very accurate as there is no type in javascript that can represent `u128` (128 bit long unsigned integer)
+   */
+  public asNanos() {
+    return this.#secs*BigInt(NANOS_PER_SEC) + BigInt(this.#nanos);
+  }
 }
 
 
