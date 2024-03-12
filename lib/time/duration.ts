@@ -87,7 +87,8 @@ export class Duration {
   // Properties //
   ////////////////
 
-  private secs: bigint;
+  #secs: bigint;
+  #nanos: number;
 
   /**
    * Creates a new Duration from the specified number of whole seconds and additional nanoseconds.
@@ -104,8 +105,9 @@ export class Duration {
    * const fiveSeconds = new Duration(5,0);
    * ```
    */
-  constructor(secs: DurationValue,private nanos=0) {
-    this.secs=BigInt(secs);
+  constructor(secs: DurationValue,nanos=0) {
+    this.#secs=BigInt(secs);
+    this.#nanos=nanos;
   }
 
   /**
@@ -134,7 +136,7 @@ export class Duration {
    * 
    * const duration = Duration.fromMillis(2569);
    * 
-   * $assertEq(2, duration.asSecs());
+   * $assertEq(2n, duration.asSecs());
    * $assertEq(569_000_000, duration.subsecNanos());
    * ```
    */
@@ -166,9 +168,9 @@ export class Duration {
    * ```ts
    * import { Duration } from "@std/time";
    * 
-   * const duration = Duration.from_nanos(1_000_000_123);
+   * const duration = Duration.fromNanos(1_000_000_123);
    * 
-   * $assertEq(1, duration.asSecs());
+   * $assertEq(1n, duration.asSecs());
    * $assertEq(123, duration.subsecNanos());
    * ```
    */
@@ -191,7 +193,7 @@ export class Duration {
    * 
    * 
    * $assert(Duration.ZERO.isZero());
-   * $assert(new Duration(0n, 0).isZero());
+   * $assert(new Duration(0, 0).isZero());
    * $assert(Duration.fromNanos(0).isZero());
    * $assert(Duration.fromSecs(0).isZero());
    * 
@@ -201,9 +203,9 @@ export class Duration {
    * ```
    */
   public isZero() {
-    return this.secs===0n && this.nanos===0;
+    return this.#secs===0n && this.#nanos===0;
   }
-
+  
   /**
    * Returns the number of whole seconds contained by this {@linkcode Duration}.
    * 
@@ -212,16 +214,54 @@ export class Duration {
    * ```ts
    * import { Duration } from "@std/time";
    * 
-   * const duration = new Duration(5n, 730023852);
-   * assertEq(duration.asSecs(), 5n);
+   * const duration = new Duration(5, 730023852);
+   * assertEq(duration.secs, 5n);
    * ```
    * To determine the total number of seconds represented by the {@linkcode Duration} including the fractional part, use {@linkcode asSecsNumber}.
    */
-  public asSecs() {
-    return this.secs;
+  public get secs() {
+    return this.#secs;
   }
 
+  /**
+   * Returns the fractional part of this {@linkcode Duration}, in nanoseconds.
+   * 
+   * This method does not return the length of the duration when represented by nanoseconds. The returned number always represents a fractional portion of a second (i.e., it is less than one billion).
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const duration = Duration.fromMillis(5010);
+   * $assertEq(duration.asSecs(), 5);
+   * $assertEq(duration.nanos, 10_000_000);
+   * ```
+   */
+  public get nanos() {
+    return this.#nanos;
+  }
 
+  /**
+   * Returns the number of whole seconds as number contained by this {@linkcode Duration}.
+   * 
+   * The returned value does not include the fractional (nanosecond) part of the duration, which can be obtained using {@linkcode subsecNanos}.
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const duration = new Duration(5, 730023852);
+   * assertEq(duration.asSecs(), 5);
+   * ```
+   * To determine the total number of seconds represented by the {@linkcode Duration} including the fractional part, use {@linkcode asSecsNumber}.
+   * 
+   * ### Unstable
+   * Output of this function may not be always correct if the contained value is too big to be represented as a number.
+   * 
+   * use {@linkcode secs} for better control over the program.
+   */
+  public asSecs() {
+    return Number(this.#secs);
+  }
 }
 
 
