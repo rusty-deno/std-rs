@@ -5,6 +5,89 @@ export type DurationValue=number|bigint;
 
 
 export class Duration {
+  /**
+   * A duration of zero time.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const duration = Duration.ZERO;
+   * $assert(duration.isZero());
+   * $assertEq!(duration.asNanos(),0);
+   * ```
+   */
+  public static readonly ZERO=new Duration(0,0);
+
+  /**
+   * The maximum duration.
+   * 
+   * May vary by platform as necessary.
+   * Must be able to contain the difference between two instances of {@linkcode Instant} or two instances of {@linkcode SystemTime}.
+   * This constraint gives it a value of about 584,942,417,355 years in practice, which is currently used on all platforms.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * $assertEq(Duration.MAX,new Duration(0xFFFFFFFFFFFFFFFFn,1_000_000_000 - 1));
+   * ```
+   */
+  public static readonly MAX=new Duration(0xFFFFFFFFFFFFFFFFn,9999999999);
+
+  /**
+   * The duration of one second.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * $assertEq(Duration.SECOND,Duration.fromSecs(1));
+   * ```
+   */
+  public static readonly SECOND=new Duration(1);
+
+  /**
+   * The duration of one millisecond.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * $assertEq(Duration.MILLISECOND,Duration.millis(1));
+   * ```
+   */
+  public static readonly MILLISECOND=new Duration(0,1_000_000);
+
+  /**
+   * The duration of one microsecond.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * $assertEq(Duration.MICROSECOND,Duration.fromMicros(1));
+   * ```
+   */
+  public static readonly MICROSECOND=new Duration(0,1000);
+
+  /**
+   * The duration of one nanosecond.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * $assertEq(Duration.NANOSECOND,Duration.fromNanos(1));
+   * ```
+   */
+  public static readonly NANOSECOND=new Duration(0,1);
+
+  
+  ////////////////
+  // Properties //
+  ////////////////
+
   private secs: bigint;
 
   /**
