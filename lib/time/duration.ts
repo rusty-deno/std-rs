@@ -1,7 +1,9 @@
+import { $unimplemented } from "../declarative-macros/mod.ts";
 import { MILLIS_PER_SEC,NANOS_PER_MILLI,MICROS_PER_SEC,NANOS_PER_MICRO,NANOS_PER_SEC } from "./mod.ts";
 
 
 export type DurationValue=number|bigint;
+
 
 
 export class Duration {
@@ -94,9 +96,6 @@ export class Duration {
    * Creates a new Duration from the specified number of whole seconds and additional nanoseconds.
    * 
    * If the number of nanoseconds is greater than 1 billion (the number of nanoseconds in a second), then it will carry over into the seconds provided.
-   * 
-   * ### Panics
-   * This constructor will panic if the carry from the nanoseconds overflows the seconds counter.
    * 
    * ### Example
    * ```ts
@@ -347,6 +346,88 @@ export class Duration {
    */
   public asNanos() {
     return this.#secs*BigInt(NANOS_PER_SEC) + BigInt(this.#nanos);
+  }
+
+  public absDiff() {
+    return $unimplemented();
+  }
+
+  /**
+   * {@linkcode Duration} addition. Computes `this` + {@linkcode rhs}.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * $assertEq(new Duration(100).add(new Duration(69)),new Duration(169));
+   * ```
+   */
+  public add(rhs: Duration) {
+    let secs=this.#secs+rhs.#secs;
+    let nanos=this.#nanos+rhs.#nanos;
+
+    if(nanos>=NANOS_PER_SEC) {
+      nanos-=NANOS_PER_SEC;
+      secs+=1n;
+    }
+
+    return new Duration(secs,nanos);
+  }
+
+
+  /**
+   * {@linkcode Duration} addition. Computes `this.secs` + {@linkcode secs} and `this.nanos` + {@linkcode nanos}.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * $assertEq(new Duration(100).addValue(69,69),new Duration(169,69));
+   * ```
+   */
+  public addValue(secs: DurationValue,nanos: number=0) {
+    return new Duration(BigInt(secs)+this.#secs,this.#nanos+nanos);
+  }
+
+  /**
+   * {@linkcode Duration} addition. Computes `this` += {@linkcode rhs}.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const dur = new Duration(100);
+   * 
+   * dur.addAssign(new Duration(69));
+   * $assertEq(new Duration(100),new Duration(169));
+   * ```
+   */
+  public addAssign(rhs: Duration) {
+    this.#secs+=rhs.#secs;
+    this.#nanos+=rhs.#nanos;
+
+    if(this.#nanos<NANOS_PER_SEC) return;
+
+    this.#nanos-=NANOS_PER_SEC;
+    this.#secs+=1n;
+  }
+
+  /**
+   * {@linkcode Duration} addition. Computes `this.secs` += {@linkcode secs} and `this.nanos` += {@linkcode nanos}.
+   * 
+   * ### Examples
+   * ```ts
+   * import { Duration } from "@std/time";
+   * 
+   * const dur = new Duration(100);
+   * 
+   * dur.addAssignValue(69,69);
+   * $assertEq(dur,new Duration(169,69));
+   * ```
+   */
+  public addAssignValue(secs: DurationValue,nanos: number=0) {
+    this.#secs+=BigInt(secs);
+    this.#nanos+=nanos;
   }
 }
 
