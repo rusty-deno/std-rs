@@ -6,6 +6,7 @@
   # modules
     time,
     str,
+    sync,
 # Docs:
   # thread
     park,unpark
