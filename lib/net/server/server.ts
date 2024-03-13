@@ -26,11 +26,8 @@ export class Server extends Application {
   }
 
   /** Initiates a {@linkcode Server} on a new {@linkcode Thread}.*/
-  public static async serve(handler: Deno.ServeHandler,options: Deno.ServeOptions|Deno.ServeTlsOptions={}) {
-    return await Thread.spawn(async ()=> {
-      const _serve=Deno.serve(options,handler);
-      await _serve.finished;
-    });
+  public static serve(handler: Deno.ServeHandler,options: Deno.ServeOptions|Deno.ServeTlsOptions={}) {
+    return Thread.spawn(()=> Deno.serve(options,handler));
   }
 
   /**
@@ -93,7 +90,7 @@ export class Server extends Application {
 
 
   /** Closes the {@linkcode Server}. */
-  public async close() {}
+  public async close() {/* by default this is an empty function. this only works after `this.listen()` is called */}
   
   /** Starts the {@linkcode Server}. */
   public async listen() {
