@@ -1,7 +1,8 @@
 
 export type Addrs=URL|string;
-export type Method="GET"|"HEAD"|"POST"|"PUT"|"DELETE"|"CONNECT"|"OPTIONS"|"TRACE"|"PATCH";
 export type Route=`/${string}`;
+export type Hostname=`${number}.${number}.${number}.${number}`;
+export type Method="GET"|"HEAD"|"POST"|"PUT"|"DELETE"|"CONNECT"|"OPTIONS"|"TRACE"|"PATCH";
 
 
 type Res=Response|Promise<Response>;
