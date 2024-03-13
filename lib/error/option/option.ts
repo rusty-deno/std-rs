@@ -267,7 +267,7 @@ export class Option<T> extends Exception<T,None> {
    * Empties the current {@linkcode Option}
    * # Example
    * ```ts
-   * const xd=None(null);
+   * const xd=Some(69);
    * $assertEq(xd.empty(),None());
    * ```
    */

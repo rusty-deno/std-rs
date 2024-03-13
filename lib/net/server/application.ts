@@ -2,7 +2,6 @@
 import { Server } from "./server.ts";
 import { Handler,Route,Method,Req } from "../types/server.ts";
 import { LinkedList,HashMap } from "../../collections/mod.ts";
-import { HandlerDecorator,HandlerDescriptor } from "../types/macros.ts";
 
 
 type Token=`${Method}${Route}`;
@@ -119,25 +118,12 @@ export class Application {
 
     return new Response("Not Found",{ status: 404 });
   }
-  //route macros
-
-  public static GET(route: Route): HandlerDecorator {
-    return function(_this: Application,_name: PropertyKey,descriptor: HandlerDescriptor) {
-      _this.get(route,descriptor.value!);
-    };
-  }
-
-
 }
 
 function isDynamic(route: Route) {
   return Boolean(route.search(DYNAMIC_TOKEN)+1);
 }
 
-/**
- * # Panics
- * Panics if {@linkcode path} is not a dynamic route.
- */
 function intoRegex(token: Token) {
   return new RegExp(token.replace(/:\w+/g,"\\w+"));
 }

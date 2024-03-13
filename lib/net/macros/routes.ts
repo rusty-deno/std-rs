@@ -3,7 +3,9 @@ import { HandlerDescriptor,Route,HandlerDecorator } from '../types/mod.ts';
 
 
 export function GET(route: Route): HandlerDecorator {
-  return Application.GET(route);
+  return function(_this: Application,_name: PropertyKey,descriptor: HandlerDescriptor) {
+    _this.get(route,descriptor.value!);
+  };
 }
 
 export function HEAD(route: Route): HandlerDecorator {
