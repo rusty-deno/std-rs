@@ -7,14 +7,48 @@ export * from "./file.ts";
 
 
 
-
+/**
+ * Returns the canonical, absolute form of a path with all intermediate components normalized and symbolic links resolved.
+ * 
+ * ### Errors
+ * This function will return an error in the following situations, but is not limited to just these cases:
+ * 
+ * * path does not exist.
+ * * A non-final component in path is not a directory.
+ * * `allow-read` permission for {@linkcode path} is not provided.
+ * 
+ * ### Examples
+ * ```ts
+ * import fs from "@std/fs";
+ * 
+ * console.log(`absolute path: ${await fs.canonicalize(`./69420/").unwrap()}`);
+ * ```
+ */
 export function canonicalize(path: PathBuf) {
   return $result(()=> Deno.realPath(path));
 }
 
+/**
+ * Returns the canonical synchronously, absolute form of a path with all intermediate components normalized and symbolic links resolved.
+ * 
+ * ### Errors
+ * This function will return an error in the following situations, but is not limited to just these cases:
+ * 
+ * * path does not exist.
+ * * A non-final component in path is not a directory.
+ * * `allow-read` permission for {@linkcode path} is not provided.
+ * 
+ * ### Examples
+ * ```ts
+ * import fs from "@std/fs";
+ * 
+ * console.log(`absolute path: ${fs.canonicalizeSync(`./69420/").unwrap()}`);
+ * ```
+ */
 export function canonicalizeSync(path: PathBuf) {
   return $resultSync(()=> Deno.realPathSync(path));
 }
+
 
 export function copy(from: PathBuf,to: PathBuf) {
   return $result(()=> Deno.copyFile(from,to));
@@ -24,10 +58,52 @@ export function copySync(from: PathBuf,to: PathBuf) {
   return $resultSync(()=> Deno.copyFileSync(from,to));
 }
 
+/**
+ * Creates a new, empty directory at the provided path.
+ * 
+ * ### NOTE:
+ * * If a parent of the given path doesn't exist, this function will return an error.
+ * * To create a directory and all its missing parents at the same time pass the second {@linkcode options} argument.
+ * 
+ * ### Errors
+ * This function will return an error in the following situations, but is not limited to just these cases:
+ * 
+ * * User lacks permissions to create directory at path.
+ * * A parent of the given path doesn't exist. (To create a directory and all its missing parents at the same time pass the second {@linkcode options} argument { recursive: true }.)
+ * * path already exists.
+ * 
+ * ### Examples
+ * ```ts
+ * import fs from "@std/fs";
+ * 
+ * await fs.createDir("/some/dir",{ recursive: true }).unwrap();
+ * ```
+ */
 export function createDir(path: PathBuf,options?: Deno.MkdirOptions) {
   return $result(()=> Deno.mkdir(path,options));
 }
 
+/**
+ * Creates a new, empty directory at the provided path synchronously.
+ * 
+ * ### NOTE:
+ * * If a parent of the given path doesn't exist, this function will return an error.
+ * * To create a directory and all its missing parents at the same time pass the second {@linkcode options} argument.
+ * 
+ * ### Errors
+ * This function will return an error in the following situations, but is not limited to just these cases:
+ * 
+ * * User lacks permissions to create directory at path.
+ * * A parent of the given path doesn't exist. (To create a directory and all its missing parents at the same time pass the second {@linkcode options} argument { recursive: true }.)
+ * * path already exists.
+ * 
+ * ### Examples
+ * ```ts
+ * import fs from "@std/fs";
+ * 
+ * fs.createDirSync("/some/dir",{ recursive: true }).unwrap();
+ * ```
+ */
 export function createDirSync(path: PathBuf,options?: Deno.MkdirOptions) {
   return $resultSync(()=> Deno.mkdirSync(path,options));
 }
@@ -80,18 +156,73 @@ export function readToStringSync(path: PathBuf) {
   return $resultSync(()=> Deno.readTextFileSync(path));
 }
 
+/**
+ * Removes a directory.
+ * 
+ * ### Errors
+ * This function will return an error in the following situations, but is not limited to just these cases:
+ * * path doesn't exist.
+ * * path isn't a directory.
+ * * The user lacks permissions to remove the directory at the provided path.
+ * * The directory isn't empty. (To remove a non-empty directory pass the second {@linkcode options} argument { recursive: true }.)
+ * 
+ * ### Examples
+ * ```ts
+ * import fs from "@std/fs";
+ * 
+ * await fs.removeDir("/some/dir").unwrap();
+ */
 export function removeDir(path: PathBuf,options?: Deno.RemoveOptions) {
   return $result(()=> Deno.remove(path,options));
 }
 
+/**
+ * Removes a directory synchronously.
+ * 
+ * ### Errors
+ * This function will return an error in the following situations, but is not limited to just these cases:
+ * * path doesn't exist.
+ * * path isn't a directory.
+ * * The user lacks permissions to remove the directory at the provided path.
+ * * The directory isn't empty. (To remove a non-empty directory pass the second {@linkcode options} argument { recursive: true }.)
+ * 
+ * ### Examples
+ * ```ts
+ * import fs from "@std/fs";
+ * 
+ * fs.removeDirSync("/some/dir").unwrap();
+ */
 export function removeDirSync(path: PathBuf,options?: Deno.RemoveOptions) {
   return $resultSync(()=> Deno.removeSync(path,options));
 }
 
+/**
+ * Renames (moves) oldpath to newpath. Paths may be files or directories. If newpath already exists and is not a directory, rename() replaces it. OS-specific restrictions may apply when oldpath and newpath are in different directories.
+ * 
+ * ### Example
+ * ```ts
+ * import fs from "@std/fs";
+ * 
+ * await fs.rename("old/path", "new/path".unwrap());
+ * ```
+ * * Requires allow-read and allow-write permissions.
+ */
 export function rename(oldpath: PathBuf,newpath: PathBuf) {
   return $result(()=> Deno.rename(oldpath,newpath));
 }
 
+/**
+ * Renames (moves) oldpath to newpath synchronously.
+ * Paths may be files or directories. If newpath already exists and is not a directory, rename() replaces it. OS-specific restrictions may apply when oldpath and newpath are in different directories.
+ * 
+ * ### Example
+ * ```ts
+ * import fs from "@std/fs";
+ * 
+ * await fs.rename("old/path", "new/path".unwrap());
+ * ```
+ * * Requires allow-read and allow-write permissions.
+ */
 export function renameSync(oldpath: PathBuf,newpath: PathBuf) {
   return $resultSync(()=> Deno.renameSync(oldpath,newpath));
 }
