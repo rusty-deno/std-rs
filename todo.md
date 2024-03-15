@@ -16,3 +16,5 @@
 # Feature
   # fs
     chmod: mode
+    TempFile
+    FsFile
