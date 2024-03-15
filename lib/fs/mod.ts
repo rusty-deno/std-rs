@@ -23,6 +23,7 @@ export * from "./file.ts";
  * 
  * console.log(`absolute path: ${await fs.canonicalize(`./69420/").unwrap()}`);
  * ```
+ * * **Requires**: `allow-read` permission.
  */
 export function canonicalize(path: PathBuf) {
   return $result(()=> Deno.realPath(path));
@@ -44,6 +45,7 @@ export function canonicalize(path: PathBuf) {
  * 
  * console.log(`absolute path: ${fs.canonicalizeSync(`./69420/").unwrap()}`);
  * ```
+ * * **Requires**: `allow-read` permission.
  */
 export function canonicalizeSync(path: PathBuf) {
   return $resultSync(()=> Deno.realPathSync(path));
@@ -78,6 +80,7 @@ export function copySync(from: PathBuf,to: PathBuf) {
  * 
  * await fs.createDir("/some/dir",{ recursive: true }).unwrap();
  * ```
+ * * **Requires**: `allow-write` permission.
  */
 export function createDir(path: PathBuf,options?: Deno.MkdirOptions) {
   return $result(()=> Deno.mkdir(path,options));
@@ -103,6 +106,7 @@ export function createDir(path: PathBuf,options?: Deno.MkdirOptions) {
  * 
  * fs.createDirSync("/some/dir",{ recursive: true }).unwrap();
  * ```
+ * * **Requires**: `allow-write` permission.
  */
 export function createDirSync(path: PathBuf,options?: Deno.MkdirOptions) {
   return $resultSync(()=> Deno.mkdirSync(path,options));
@@ -133,7 +137,7 @@ export function readFileSync(path: PathBuf) {
 }
 
 export function readDir(path: PathBuf) {
-  return $resultSync(()=> Deno.readDir(path));
+  return Deno.readDir(path);
 }
 
 export function readDirSync(path: PathBuf) {
@@ -171,6 +175,8 @@ export function readToStringSync(path: PathBuf) {
  * import fs from "@std/fs";
  * 
  * await fs.removeDir("/some/dir").unwrap();
+ * ```
+ * * **Requires**: `allow-write` permission.
  */
 export function removeDir(path: PathBuf,options?: Deno.RemoveOptions) {
   return $result(()=> Deno.remove(path,options));
@@ -191,6 +197,8 @@ export function removeDir(path: PathBuf,options?: Deno.RemoveOptions) {
  * import fs from "@std/fs";
  * 
  * fs.removeDirSync("/some/dir").unwrap();
+ * ```
+ * * **Requires**: `allow-write` permission.
  */
 export function removeDirSync(path: PathBuf,options?: Deno.RemoveOptions) {
   return $resultSync(()=> Deno.removeSync(path,options));
@@ -205,7 +213,7 @@ export function removeDirSync(path: PathBuf,options?: Deno.RemoveOptions) {
  * 
  * await fs.rename("old/path", "new/path".unwrap());
  * ```
- * * Requires allow-read and allow-write permissions.
+ * * **Requires**: `allow-read` and `allow-write` permissions.
  */
 export function rename(oldpath: PathBuf,newpath: PathBuf) {
   return $result(()=> Deno.rename(oldpath,newpath));
@@ -221,7 +229,7 @@ export function rename(oldpath: PathBuf,newpath: PathBuf) {
  * 
  * await fs.rename("old/path", "new/path".unwrap());
  * ```
- * * Requires allow-read and allow-write permissions.
+ * * **Requires**: `allow-read` and `allow-write` permissions.
  */
 export function renameSync(oldpath: PathBuf,newpath: PathBuf) {
   return $resultSync(()=> Deno.renameSync(oldpath,newpath));
