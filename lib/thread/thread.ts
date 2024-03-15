@@ -1,7 +1,7 @@
 import { Fn } from '../types.ts';
 import { Drop } from '../drop.ts';
 import * as lib from '../../bindings/std_rs.js';
-import { Some,None,Option,result } from "../../std/mod.ts";
+import { None,Option,result } from "../../std/mod.ts";
 
 
 
@@ -173,16 +173,17 @@ export class Thread extends Drop {
  * This object is created by the {@linkcode Thread.spawn} function.
  */
 export class JoinHandle<T> extends Drop {
+  #consumed=false;
   #return=None<T>();
   #ptr: number;
   #fn;// im too lazy to provide that huge type def here...xd
 
-  protected constructor(f: Fn<[],T>,private name?: string) {
+  protected constructor(f: Fn<[],T>,name?: string) {
     super();
     this.#fn=Deno.UnsafeCallback.threadSafe({
       parameters: [],
       result: "void"
-    },()=> this.#return=Some(f()));
+    },()=> this.#return.insert(f()));
 
     this.#ptr=lib.spawn_thread(
       Number(Deno.UnsafePointer.value(this.#fn.pointer)),
@@ -203,7 +204,7 @@ export class JoinHandle<T> extends Drop {
    * This might return true for a brief moment after the thread's main function has returned, but before the thread itself has stopped running. However, once this returns true, join can be expected to return quickly, without blocking for any significant amount of time.
    */
   public isFinished() {
-    return lib.is_finished(this.#ptr);
+    return this.#consumed?true:lib.is_finished(this.#ptr);
   }
 
   /**
@@ -219,7 +220,7 @@ export class JoinHandle<T> extends Drop {
    * 
    * const thread = handle.thread();
    * 
-   * console.log(`thread id: ${thread.id()}`);
+   * console.log(`thread id: ${thread.id}`);
    * ```
    */
   public thread() {
@@ -240,7 +241,7 @@ export class JoinHandle<T> extends Drop {
    * ```ts
    * import { Thread } from "@std/thread";
    * 
-   * const handle=Thread.spawn(()=> {
+   * const handle = Thread.spawn(()=> {
    *   // some work here
    * }).unwrap();
    * 
@@ -248,6 +249,9 @@ export class JoinHandle<T> extends Drop {
    * ```
    */
   public join() {
+    if(this.#consumed) return;
+    this.#consumed=true;
+
     return result.$resultSync(()=> {
       lib.join(this.#ptr);
       return this.#return.value as T;
