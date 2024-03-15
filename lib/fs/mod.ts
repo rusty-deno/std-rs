@@ -136,10 +136,92 @@ export function readFileSync(path: PathBuf) {
   return $resultSync(()=> Deno.readFileSync(path));
 }
 
+/**
+ * Returns an {@linkcode Result} of {@linkcode AsyncIterable} over the entries within a directory.
+ * 
+ * The iterator will yield instances of {@linkcode Deno.DirEntry}
+ * Entries for the current and parent directories (typically `.` and `..`) are skipped.
+ * 
+ * ### Errors
+ * This function will return an error in the following situations, but is not limited to just these cases:
+ * 
+ * * The provided path doesn't exist.
+ * * The process lacks permissions to view the contents.
+ * * The path points at a non-directory file.
+ * 
+ * ### Examples
+ * 
+ * ```ts
+ * // Example 1
+ * import fs from "@std/fs";
+ * 
+ * // one possible implementation of walking a directory only visiting files
+ * async function visitDir(dir: string,f: (entry: Deno.DirEntry)=> void) {
+ *   for await(const entry of fs.readDir(dir).unwrap()) {
+ *     if(entry.isDirectory) {
+ *       await visitDir(entry.name);
+ *     } else {
+ *       f(entry);
+ *     }
+ *   }
+ * }
+ * 
+ * 
+ * // Example 2
+ * import fs from "@std/fs";
+ * 
+ * for await(const entry of fs.readDir(".").unwrap()) {
+ *   if(!entry.isFile) continue;
+ *   console.log(entry.name);
+ * }
+ * 
+ * ```
+ */
 export function readDir(path: PathBuf) {
   return Deno.readDir(path);
 }
 
+/**
+ * Returns an {@linkcode Result} of {@linkcode Iterable} over the entries within a directory.
+ * 
+ * The iterator will yield instances of {@linkcode Deno.DirEntry}
+ * Entries for the current and parent directories (typically `.` and `..`) are skipped.
+ * 
+ * ### Errors
+ * This function will return an error in the following situations, but is not limited to just these cases:
+ * 
+ * * The provided path doesn't exist.
+ * * The process lacks permissions to view the contents.
+ * * The path points at a non-directory file.
+ * 
+ * ### Examples
+ * 
+ * ```ts
+ * // Example 1
+ * import fs from "@std/fs";
+ * 
+ * // one possible implementation of walking a directory only visiting files
+ * function visitDir(dir: string,f: (entry: Deno.DirEntry)=> void) {
+ *   for (const entry of fs.readDirSync(dir).unwrap()) {
+ *     if(entry.isDirectory) {
+ *       visitDir(entry.name);
+ *     } else {
+ *       f(entry);
+ *     }
+ *   }
+ * }
+ * 
+ * 
+ * // Example 2
+ * import fs from "@std/fs";
+ * 
+ * for(const entry of fs.readDirSync(".").unwrap()) {
+ *   if(!entry.isFile) continue;
+ *   console.log(entry.name);
+ * }
+ * 
+ * ```
+ */
 export function readDirSync(path: PathBuf) {
   return $resultSync(()=> Deno.readDirSync(path));
 }
