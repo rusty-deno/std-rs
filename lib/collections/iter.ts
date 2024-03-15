@@ -1,4 +1,4 @@
-import { $unimplemented,None,Option,Some,Vec } from "../../std/mod.ts";
+import { $unimplemented,None,Option,Some,Vec } from "../../mod.ts";
 import { Fn } from "../types.ts";
 
 

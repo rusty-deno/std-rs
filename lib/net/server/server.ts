@@ -1,5 +1,6 @@
 import { Application } from './application.ts';
 import { Thread } from "../../thread/thread.ts";
+import { Hostname } from "../types/server.ts";
 
 
 /**
@@ -8,12 +9,13 @@ import { Thread } from "../../thread/thread.ts";
  * # Example
  * ```ts
  * import { Server } from "./mod/net.ts";
+import { Hostname } from '../types/server';
  * 
  * 
  * const port=6969;
  * 
  * const server=new Server();
- * server.get("/",()=> new Response("hello wrld",{ status: 200 }));
+ * server.get("/",()=> new Response("Hello, World\n",{ status: 200 }));
  * 
  * server.listen({ port });
  * ```
@@ -26,15 +28,13 @@ export class Server extends Application {
   }
 
   /** Initiates a {@linkcode Server} on a new {@linkcode Thread}.*/
-  public static async serve(handler: Deno.ServeHandler,options: Deno.ServeOptions|Deno.ServeTlsOptions={}) {
-    return await Thread.spawn(async ()=> {
-      const _serve=Deno.serve(options,handler);
-      await _serve.finished;
-    });
+  public static serve(handler: Deno.ServeHandler,options: Deno.ServeOptions|Deno.ServeTlsOptions={}) {
+    return Thread.spawn(()=> Deno.serve(options,handler));
   }
 
   /**
    * Indicates whether the {@linkcode Server} is still running.
+   * 
    * * It is set to `true` when the {@linkcode Server} is closed.
    */
   public get finished() {
@@ -42,10 +42,11 @@ export class Server extends Application {
   }
 
   /** hostname of the {@linkcode Server} */
-  public get hostname() {
-    return this._options.hostname??"0.0.0.0";
+  public get hostname(): Hostname {
+    return (this._options.hostname??"0.0.0.0") as Hostname;
   }
-  public set hostname(hostname) {
+  public set hostname(hostname: Hostname) {
+    this.hostname="0.0.0.0";
     this._options.hostname=hostname;
   }
   
@@ -93,15 +94,15 @@ export class Server extends Application {
 
 
   /** Closes the {@linkcode Server}. */
-  public async close() {}
+  public async close() {/* by default this is an empty function. this only works after `this.listen()` is called */}
   
   /** Starts the {@linkcode Server}. */
-  public async listen() {
+  public listen(options?: Deno.ServeOptions|Deno.ServeTlsOptions) {
+    if(options) this._options=options;
     const _serve=Deno.serve(this._options,(req,info)=> this.handle(req,info));
 
     this.close=()=> _serve.shutdown();
-    await _serve.finished;
-    this._finished=true;
+    _serve.finished.then(()=> this._finished=true);
   }
 }
 

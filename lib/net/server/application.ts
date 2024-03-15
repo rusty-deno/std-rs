@@ -1,8 +1,7 @@
 // deno-lint-ignore-file no-unused-vars
 import { Server } from "./server.ts";
 import { Handler,Route,Method,Req } from "../types/server.ts";
-import { LinkedList,HashMap } from "../../collections/mod.ts";
-import { HandlerDecorator,HandlerDescriptor } from "../types/macros.ts";
+import { Vec,HashMap } from "../../collections/mod.ts";
 
 
 type Token=`${Method}${Route}`;
@@ -10,7 +9,7 @@ const DYNAMIC_TOKEN=/:\w+|(\([\w+\|]+\))/;
 
 export class Application {
   protected _routes=new HashMap<Token,Handler>();
-  protected _dyn_routes=new LinkedList<[RegExp,Handler,string]>();
+  protected _dyn_routes=new Vec<[RegExp,Handler,string]>();
 
 
   /**
@@ -28,7 +27,13 @@ export class Application {
 
   private pushRoute(route: Route,method: Method,handler: Handler) {
     const token=`${method}${route}` satisfies Token;
-    isDynamic(route)?this._dyn_routes.pushBack([intoRegex(token),handler,route]):this._routes.set(token,handler);
+
+    if(!isDynamic(route)) {
+      this._routes.set(token,handler);
+      return;
+    }
+
+    this._dyn_routes.push([intoRegex(token),handler,route]);
   }
   
   /**
@@ -119,25 +124,12 @@ export class Application {
 
     return new Response("Not Found",{ status: 404 });
   }
-  //route macros
-
-  public static GET(route: Route): HandlerDecorator {
-    return function(_this: Application,_name: PropertyKey,descriptor: HandlerDescriptor) {
-      _this.get(route,descriptor.value!);
-    };
-  }
-
-
 }
 
 function isDynamic(route: Route) {
   return Boolean(route.search(DYNAMIC_TOKEN)+1);
 }
 
-/**
- * # Panics
- * Panics if {@linkcode path} is not a dynamic route.
- */
 function intoRegex(token: Token) {
   return new RegExp(token.replace(/:\w+/g,"\\w+"));
 }

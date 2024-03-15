@@ -10,7 +10,9 @@ export type Class={
   new(...args: any[]): Object
 };
 
-export type DerivableMacro=(...args: any[])=> Array<[keyof any,any]>;
 
+export interface DerivableMacro {
+  <C extends Class>(constructor: C): C;
+}
 
 

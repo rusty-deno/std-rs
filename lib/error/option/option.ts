@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { $panic } from '../../../std/mod.ts';
+import { $panic } from '../../../mod.ts';
 import { Fn } from "../../types.ts";
 import { Exception } from '../exception.ts';
 
@@ -267,7 +267,7 @@ export class Option<T> extends Exception<T,None> {
    * Empties the current {@linkcode Option}
    * # Example
    * ```ts
-   * const xd=None(null);
+   * const xd=Some(69);
    * $assertEq(xd.empty(),None());
    * ```
    */

@@ -158,6 +158,7 @@ export function parkWithTimeout(dur: number|bigint) {
  * import thread from "@std/thread";
  * 
  * thread.sleep(69000);// The thread sleeps for atleast 69 seconds never less. (It maybe sightly longer, about a few nanos)
+ * ```
  */
 export function sleep(dur: number|bigint) {
   lib.sleep(BigInt(dur));
