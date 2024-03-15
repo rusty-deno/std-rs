@@ -216,7 +216,7 @@ export class Duration {
    * const duration = new Duration(5, 730023852);
    * assertEq(duration.secs, 5n);
    * ```
-   * To determine the total number of seconds represented by the {@linkcode Duration} including the fractional part, use {@linkcode asSecsNumber}.
+   * To determine the total number of seconds represented by the {@linkcode Duration} including the fractional part, use {@linkcode asSecs}.
    */
   public get secs() {
     return this.#secs;
@@ -251,7 +251,7 @@ export class Duration {
    * const duration = new Duration(5, 730023852);
    * assertEq(duration.asSecs(), 5);
    * ```
-   * To determine the total number of seconds represented by the {@linkcode Duration} including the fractional part, use {@linkcode asSecsNumber}.
+   * To determine the total number of seconds represented by the {@linkcode Duration} including the fractional part, use {@linkcode asSecs}.
    * 
    * ### Unstable
    * Output of this function may not be always correct if the contained value is too big to be represented as a number.
@@ -432,7 +432,7 @@ export class Duration {
 }
 
 
-function calc(duration: DurationValue,format: bigint,nanoCount: number) {
+function calc<const F extends bigint>(duration: DurationValue,format: F,nanoCount: number) {
   const dur=BigInt(duration);
   return new Duration(dur/format,Number(dur%format)*nanoCount);
 }
