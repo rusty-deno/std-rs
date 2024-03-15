@@ -1,7 +1,7 @@
 import { Fn } from '../types.ts';
 import { Drop } from '../drop.ts';
 import * as lib from '../../bindings/std_rs.js';
-import { None,Option,result } from "../../std/mod.ts";
+import { None,Option,result } from "../../mod.ts";
 
 
 
