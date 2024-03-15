@@ -4,6 +4,7 @@
 
 # ADD:
   # modules
+    io,
     time,
     str,
     sync,
@@ -11,3 +12,7 @@
   # thread
     mod.ts
     park,unpark
+
+# Feature
+  # fs
+    chmod: mode
