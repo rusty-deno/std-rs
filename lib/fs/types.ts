@@ -1,5 +1,5 @@
 
-
+/** Representation of the various timestamps on a file. */
 export interface FileTimes {
   accessed: number|Date,
   modified: number|Date

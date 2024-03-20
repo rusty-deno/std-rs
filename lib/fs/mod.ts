@@ -1,9 +1,11 @@
+import { Permission } from "./types.ts";
 import { $result,$resultSync } from '../error/result/mod.ts';
 import { PathBuf } from '../path.ts';
 import { FsFile } from './file.ts';
 
-export * from "./directory_builder.ts";
 export * from "./file.ts";
+export * from "./types.ts";
+export * from "./directory_builder.ts";
 
 
 
@@ -20,6 +22,7 @@ export * from "./file.ts";
  * ### Examples
  * ```ts
  * import fs from "@std/fs";
+import { Permission } from './types';
  * 
  * console.log(`absolute path: ${await fs.canonicalize(`./69420/").unwrap()}`);
  * ```
@@ -546,27 +549,21 @@ export function renameSync(oldpath: PathBuf,newpath: PathBuf) {
  * The last/right-most number specifies the permissions for others.
  * For example, with a mode of 0o764, the owner (7) can read/write/execute, the group (6) can read/write and everyone else (4) can read only.
  * 
- * | Number | Description |
- * | ------ | ----------- |
- * | 7      | read, write, and execute |
- * | 6      | read and write |
- * | 5      | read and execute |
- * | 4      | read only |
- * | 3      | write and execute |
- * | 2      | write only |
- * | 1      | execute only |
- * | 0      | no permission |
+ * ### Errors
+ * * This function will return an error if the user lacks permission to change attributes on the underlying file.
+ * * It may also return an error in other os-specific unspecified cases.
  * 
  * **NOTE**: This API currently throws on Windows
  * ### Example
 ```ts
 import fs from "@std/fs";
+import { Permission } from "@std/fs";
 
-await fs.chmod("/path/to/file", 0o666).unwrap();
+await fs.setPermissions("/path/to/file", Permission.Readonly).unwrap();
 ```
  * * **Requires**: `allow-write` permission.
  */
-export function chmod(path: PathBuf,mode: number) {
+export function setPermissions(path: PathBuf,mode: Permission) {
   return $result(()=> Deno.chmod(path,mode));
 }
 
@@ -580,27 +577,21 @@ export function chmod(path: PathBuf,mode: number) {
  * The last/right-most number specifies the permissions for others.
  * For example, with a mode of 0o764, the owner (7) can read/write/execute, the group (6) can read/write and everyone else (4) can read only.
  * 
- * | Number | Description |
- * | ------ | ----------- |
- * | 7      | read, write, and execute |
- * | 6      | read and write |
- * | 5      | read and execute |
- * | 4      | read only |
- * | 3      | write and execute |
- * | 2      | write only |
- * | 1      | execute only |
- * | 0      | no permission |
+ * ### Errors
+ * * This function will return an error if the user lacks permission to change attributes on the underlying file.
+ * * It may also return an error in other os-specific unspecified cases.
  * 
  * **NOTE**: This API currently throws on Windows
  * ### Example
 ```ts
 import fs from "@std/fs";
+import { Permission } from "@std/fs";
 
-fs.chmodSync("/path/to/file", 0o666).unwrap();
+fs.setPermissionsSync("/path/to/file", Permission.Readonly).unwrap();
 ```
  * * **Requires**: `allow-write` permission.
  */
-export function chmodSync(path: PathBuf,mode: number) {
+export function setPermissionsSync(path: PathBuf,mode: Permission) {
   return $resultSync(()=> Deno.chmodSync(path,mode));
 }
 

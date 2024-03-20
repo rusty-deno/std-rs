@@ -19,9 +19,9 @@ import { FileTimes } from "./types.ts";
 // example 1
 import { FsFile } from "@std/fs";
 
-using file = await File.create("foo.txt")?;
+using file = await File.create("foo.txt").unwrap();
 
-await file.writeFromString(new TextEncoder().encode("Hello, world!"))?;
+await file.writeFromString(new TextEncoder().encode("Hello, world!")).unwrap();
 ```
  * Read the contents of a file into a String (you can also use read):
  * 
@@ -29,9 +29,9 @@ await file.writeFromString(new TextEncoder().encode("Hello, world!"))?;
 // example 2
 import { FsFile } from "@std/fs";
 
-using file = await File.open("foo.txt")?;
+using file = await File.open("foo.txt").unwrap();
 
-const str=await file.readToString()?;
+const str=await file.readToString().unwrap();
 ```
 
  * **NOTE**: Many operating systems allow concurrent modification of files by different processes.
@@ -99,10 +99,10 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
   
-  const file = await FsFile.open("foo.txt")?;
+  const file = await FsFile.open("foo.txt").unwrap();
   const buf = new Uint8Array();
 
-  await file.readToEnd(buf)?;
+  await file.readToEnd(buf).unwrap();
   ```
    * * **Requires**: `allow-read` and/or `allow-write` permissions depending on {@linkcode options}
    */
@@ -125,10 +125,10 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
   
-  const file = FsFile.openSync("foo.txt")?;
+  const file = FsFile.openSync("foo.txt").unwrap();
   const buf = new Uint8Array();
   
-  file.readToEndSync(buf)?;
+  file.readToEndSync(buf).unwrap();
   ```
    * * **Requires**: `allow-read` and/or `allow-write` permissions depending on {@linkcode options}
    */
@@ -144,7 +144,7 @@ export class FsFile {
    * ```ts
    * import { FsFile } from "@std/fs";
    * 
-   * using file = await FsFile.open("my_file.txt", { read: true })?;
+   * using file = await FsFile.open("my_file.txt", { read: true }).unwrap();
    * const decoder = new TextDecoder();
    * for await (const chunk of file.readable) {
    *   console.log(decoder.decode(chunk));
@@ -164,7 +164,7 @@ export class FsFile {
    * import { FsFile } from "@std/fs";
    * 
    * const items = ["hello", "world"];
-   * using file = await FsFile.open("my_file.txt", { write: true })?;
+   * using file = await FsFile.open("my_file.txt", { write: true }).unwrap();
    * const encoder = new TextEncoder();
    * const writer = file.writable.getWriter();
    * for (const item of items) {
@@ -286,8 +286,8 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
   
-  using file = await FsFile.create("foo.txt")?;
-  await file.setLen(10)?;
+  using file = await FsFile.create("foo.txt").unwrap();
+  await file.setLen(10).unwrap();
   ```
    * Note that this method alters the content of the underlying file.
    */
@@ -311,8 +311,8 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
   
-  using file = FsFile.createSync("foo.txt")?;
-  file.setLenSync(10)?;
+  using file = FsFile.createSync("foo.txt").unwrap();
+  file.setLenSync(10).unwrap();
   ```
    * Note that this method alters the content of the underlying file.
    */
@@ -327,8 +327,8 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
 
-  using file = await FsFile.open("foo.txt")?;
-  const metadata = await file.metadata()?;
+  using file = await FsFile.open("foo.txt").unwrap();
+  const metadata = await file.metadata().unwrap();
   ```
    */
   public metadata() {
@@ -342,8 +342,8 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
 
-  using file = FsFile.openSync("foo.txt")?;
-  const metadata = file.metadataSync()?;
+  using file = FsFile.openSync("foo.txt").unwrap();
+  const metadata = file.metadataSync().unwrap();
   ```
    */
   public metadataSync() {
@@ -362,10 +362,10 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
   
-  const { accessed,modified } = await fs.metadata("src")?;
-  const dest = await FsFile.open("dest")?;
+  const { accessed,modified } = await fs.metadata("src").unwrap();
+  const dest = await FsFile.open("dest").unwrap();
 
-  await dest.setTimes({ accessed, modified })?;
+  await dest.setTimes({ accessed, modified }).unwrap();
   ```
    */
   public setTimes(times: FileTimes) {this.metadataSync().unwrap().atime;
@@ -383,10 +383,10 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
   
-  const { accessed,modified } = fs.metadataSync("src")?;
-  const dest = FsFile.openSync("dest")?;
+  const { accessed,modified } = fs.metadataSync("src").unwrap();
+  const dest = FsFile.openSync("dest").unwrap();
 
-  dest.setTimesSync({ accessed, modified })?;
+  dest.setTimesSync({ accessed, modified }).unwrap();
   ```
    */
   public setTimesSync(times: FileTimes) {
@@ -398,7 +398,7 @@ export class FsFile {
    * 
    * This is an alias for
   ```ts
-  await file.setTimes({ accessed, modified })?;
+  await file.setTimes({ accessed, modified }).unwrap();
   ```
    */
   public setModified(modified: number|Date) {
@@ -415,7 +415,7 @@ export class FsFile {
    * 
    * This is an alias for
   ```ts
-  file.setTimesSync({ accessed, modified })?;
+  file.setTimesSync({ accessed, modified }).unwrap();
   ```
    */
   public setModifiedSync(modified: number|Date) {
@@ -441,9 +441,9 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
   
-  using file = await FsFile.open("/foo/bar.txt")?;
+  using file = await FsFile.open("/foo/bar.txt").unwrap();
   const buf = new Uint8Array(100);
-  const numberOfBytesRead = await file.read(buf)?;// 11 bytes
+  const numberOfBytesRead = await file.read(buf).unwrap();// 11 bytes
   const text = new TextDecoder().decode(buf);// "hello world"
   ```
   * * It is possible for a read to successfully return with 0 bytes. This does not indicate EOF.
@@ -471,18 +471,19 @@ export class FsFile {
   ```ts
   import { FsFile } from "@std/fs";
   
-  using file = FsFile.openSync("/foo/bar.txt")?;
+  using file = FsFile.openSync("/foo/bar.txt").unwrap();
   const buf = new Uint8Array(100);
-  const numberOfBytesRead = file.readSync(buf)?;// 11 bytes
+  const numberOfBytesRead = file.readSync(buf).unwrap();// 11 bytes
   const text = new TextDecoder().decode(buf);// "hello world"
   ```
   * * It is possible for a read to successfully return with 0 bytes. This does not indicate EOF.
    */
-  public readSync() {
+  public readSync(buf: Uint8Array) {
     return $resultSync(()=> {
-      const buf=new Uint8Array;
-      const bytes=this.inner.readSync(buf);
-      return bytes==null?bytes:buf;
+      const len=this.inner.readSync(buf);
+      if(len===null) throw "EOF";
+      
+      return len;
     });
   }
 
@@ -505,8 +506,8 @@ export class FsFile {
   const encoder = new TextEncoder();
   const data = encoder.encode("Hello world");
 
-  using file = await FsFile.open("/foo/bar.txt", { write: true })?;
-  const bytesWritten = await file.write(data)?; // 11
+  using file = await FsFile.open("/foo/bar.txt", { write: true }).unwrap();
+  const bytesWritten = await file.write(data).unwrap(); // 11
   ```
    */
   public write(buf: Uint8Array) {
@@ -532,8 +533,8 @@ export class FsFile {
   const encoder = new TextEncoder();
   const data = encoder.encode("Hello world");
 
-  using file = FsFile.openSync("/foo/bar.txt", { write: true })?;
-  const bytesWritten = file.writeSync(data)?; // 11
+  using file = FsFile.openSync("/foo/bar.txt", { write: true }).unwrap();
+  const bytesWritten = file.writeSync(data).unwrap(); // 11
   ```
    */
   public writeSync(buf: Uint8Array) {
@@ -557,14 +558,14 @@ export class FsFile {
   import { FsFile,SeekFrom } from "@std/fs";
 
   // Given file pointing to file with "Hello world", which is 11 bytes long:
-  using file = await FsFile.open("hello.txt",{ read: true, write: true, truncate: true, create: true })?;
-  await file.write(new TextEncoder().encode("Hello world"))?;
+  using file = await FsFile.open("hello.txt",{ read: true, write: true, truncate: true, create: true }).unwrap();
+  await file.write(new TextEncoder().encode("Hello world")).unwrap();
 
   // advance cursor 6 bytes
-  const cursorPosition = await file.seek(6, SeekFrom.Start)?;
+  const cursorPosition = await file.seek(6, SeekFrom.Start).unwrap();
   console.log(cursorPosition);// 6
   const buf = new Uint8Array(100);
-  await file.read(buf)?;
+  await file.read(buf).unwrap();
   console.log(new TextDecoder().decode(buf));// "world"
   ```
    * 
@@ -574,15 +575,15 @@ export class FsFile {
   import { FsFile,SeekFrom } from "@std/fs";
 
   // Given file.rid pointing to file with "Hello world", which is 11 bytes long:
-  const file = await FsFile.open("hello.txt",{ read: true, write: true, truncate: true, create: true })?;
-  await file.write(new TextEncoder().encode("Hello world"))?;
+  const file = await FsFile.open("hello.txt",{ read: true, write: true, truncate: true, create: true }).unwrap();
+  await file.write(new TextEncoder().encode("Hello world")).unwrap();
 
   // Seek 6 bytes from the start of the file
-  console.log(await file.seek(6, SeekFrom.Start)?);// "6"
+  console.log(await file.seek(6, SeekFrom.Start).unwrap());// "6"
   // Seek 2 more bytes from the current position
-  console.log(await file.seek(2, SeekFrom.Current)?);// "8"
+  console.log(await file.seek(2, SeekFrom.Current).unwrap());// "8"
   // Seek backwards 2 bytes from the end of the file
-  console.log(await file.seek(-2, SeekFrom.End)?);// "9" (i.e. 11-2)
+  console.log(await file.seek(-2, SeekFrom.End).unwrap());// "9" (i.e. 11-2)
   ```
    */
   public seek(offset: number|bigint,whench: SeekFrom) {
@@ -606,14 +607,14 @@ export class FsFile {
   import { FsFile,SeekFrom } from "@std/fs";
 
   // Given file pointing to file with "Hello world", which is 11 bytes long:
-  using file = FsFile.openSync("hello.txt",{ read: true, write: true, truncate: true, create: true })?;
-  file.writeSync(new TextEncoder().encode("Hello world"))?;
+  using file = FsFile.openSync("hello.txt",{ read: true, write: true, truncate: true, create: true }).unwrap();
+  file.writeSync(new TextEncoder().encode("Hello world")).unwrap();
 
   // advance cursor 6 bytes
-  const cursorPosition = file.seekSync(6, SeekFrom.Start)?;
+  const cursorPosition = file.seekSync(6, SeekFrom.Start).unwrap();
   console.log(cursorPosition);// 6
   const buf = new Uint8Array(100);
-  file.readSync(buf)?;
+  file.readSync(buf).unwrap();
   console.log(new TextDecoder().decode(buf));// "world"
   ```
    * 
@@ -623,15 +624,15 @@ export class FsFile {
   import { FsFile,SeekFrom } from "@std/fs";
 
   // Given file.rid pointing to file with "Hello world", which is 11 bytes long:
-  const file = FsFile.openSync("hello.txt",{ read: true, write: true, truncate: true, create: true })?;
-  file.writeSync(new TextEncoder().encode("Hello world"))?;
+  const file = FsFile.openSync("hello.txt",{ read: true, write: true, truncate: true, create: true }).unwrap();
+  file.writeSync(new TextEncoder().encode("Hello world")).unwrap();
 
   // Seek 6 bytes from the start of the file
-  console.log(file.seekSync(6, SeekFrom.Start)?);// "6"
+  console.log(file.seekSync(6, SeekFrom.Start).unwrap());// "6"
   // Seek 2 more bytes from the current position
-  console.log(file.seekSync(2, SeekFrom.Current)?);// "8"
+  console.log(file.seekSync(2, SeekFrom.Current).unwrap());// "8"
   // Seek backwards 2 bytes from the end of the file
-  console.log(file.seekSync(-2, SeekFrom.End)?);// "9" (i.e. 11-2)
+  console.log(file.seekSync(-2, SeekFrom.End).unwrap());// "9" (i.e. 11-2)
   ```
    */
   public seekSync(offset: number,whench: SeekFrom) {
