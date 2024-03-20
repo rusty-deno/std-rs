@@ -25,3 +25,5 @@
     chmod: mode
     TempFile
     FsFile
+      writeAll,
+      readToEnd

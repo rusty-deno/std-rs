@@ -2,29 +2,176 @@ import { $result,$resultSync } from "../error/result/mod.ts";
 import { SeekFrom } from "./types.ts";
 import { FileTimes } from "./types.ts";
 
+
+/**
+ * An object providing access to an open file on the filesystem.
+ * 
+ * An instance of a File can be read and/or written depending on what options it was opened with.
+ * Files also implement Seek to alter the logical cursor that the file contains internally.
+ * 
+ * Files are automatically closed when they go out of scope.
+ * Errors detected on closing are ignored by the implementation of {@linkcode Drop}.
+ * Use the method {@linkcode syncAll} if these errors must be manually handled.
+ * 
+ * ### Examples
+ * Creates a new file and write bytes to it (you can also use write):
+```ts
+// example 1
+import { FsFile } from "@std/fs";
+
+using file = await File.create("foo.txt")?;
+
+await file.writeFromString(new TextEncoder().encode("Hello, world!"))?;
+```
+ * Read the contents of a file into a String (you can also use read):
+ * 
+```ts
+// example 2
+import { FsFile } from "@std/fs";
+
+using file = await File.open("foo.txt")?;
+
+const str=await file.readToString()?;
+```
+
+ * **NOTE**: Many operating systems allow concurrent modification of files by different processes.
+ * Avoid assuming that holding a &File means that the file will not change.
+ */
 export class FsFile {
   private constructor(private inner: Deno.FsFile) {};
   
+  /**
+   * Opens a file in `read and write` mode.
+   * 
+   * This function will create a file if it does not exist, and will truncate it if it does.
+   * 
+   * Depending on the platform, this function may fail if the full directory path does not exist.
+   * See the {@linkcode Deno.OpenOptions} for more details.
+   * 
+   * See also {@linkcode fs.writeFile} for a simple function to create a file with a given data.
+   * 
+   * ### Examples
+  ```ts
+  import { FsFile } from "@std/fs";
+  
+  using file = await FsFile.create("foo.txt").unwrap();
+  ```
+   * * **Requires**: `allow-read` and `allow-write` permission to {@linkcode path}
+   */
   public static create(path: string) {
     return $result(async ()=> new FsFile(await Deno.create(path)));
   }
   
+  /**
+   * Opens a file in `read and write` mode synchronously.
+   * 
+   * This function will create a file if it does not exist, and will truncate it if it does.
+   * 
+   * Depending on the platform, this function may fail if the full directory path does not exist.
+   * See the {@linkcode Deno.OpenOptions} for more details.
+   * 
+   * See also {@linkcode fs.writeFileSync} for a simple function to create a file with a given data.
+   * 
+   * ### Examples
+  ```ts
+  import { FsFile } from "@std/fs";
+  
+  using file = FsFile.createSync("foo.txt").unwrap();
+  ```
+   * * **Requires**: `allow-read` and `allow-write` permission to {@linkcode path}
+   */
   public static createSync(path: string) {
     return $resultSync(()=> new FsFile(Deno.createSync(path)));
   }
+
+  /**
+   * Attempts to open a file in `read-only` or `read and write` mode.
+   * 
+   * See the {@linkcode Deno.OpenOptions} method for more details.
+   * 
+   * If you only need to read the entire file contents, consider {@linkcode fs.readFile} or {@linkcode fs.readToString} instead.
+   * 
+   * ### Errors
+   * * This function will return an error if path does not already exist.
+   * * Other errors may also be returned according to {@linkcode Deno.OpenOptions}.
+   * 
+   * ### Examples
+  ```ts
+  import { FsFile } from "@std/fs";
   
+  const file = await FsFile.open("foo.txt")?;
+  const buf = new Uint8Array();
+
+  await file.readToEnd(buf)?;
+  ```
+   * * **Requires**: `allow-read` and/or `allow-write` permissions depending on {@linkcode options}
+   */
   public static open(path: string,options?: Deno.OpenOptions) {
     return $result(async ()=> new FsFile(await Deno.open(path,options)));
   }
   
+  /**
+   * Attempts to synchronously open a file in `read-only` or `read and write` mode.
+   * 
+   * See the {@linkcode Deno.OpenOptions} method for more details.
+   * 
+   * If you only need to read the entire file contents, consider {@linkcode fs.readFile} or {@linkcode fs.readToString} instead.
+   * 
+   * ### Errors
+   * * This function will return an error if path does not already exist.
+   * * Other errors may also be returned according to {@linkcode Deno.OpenOptions}.
+   * 
+   * ### Examples
+  ```ts
+  import { FsFile } from "@std/fs";
+  
+  const file = FsFile.openSync("foo.txt")?;
+  const buf = new Uint8Array();
+  
+  file.readToEndSync(buf)?;
+  ```
+   * * **Requires**: `allow-read` and/or `allow-write` permissions depending on {@linkcode options}
+   */
   public static openSync(path: string,options?: Deno.OpenOptions) {
     return $resultSync(()=> new FsFile(Deno.openSync(path,options)));
   }
 
+  /**
+   * A {@linkcode ReadableStream} instance representing to the byte contents
+   * of the file. This makes it easy to interoperate with other web streams
+   * based APIs.
+   *
+   * ```ts
+   * import { FsFile } from "@std/fs";
+   * 
+   * using file = await FsFile.open("my_file.txt", { read: true })?;
+   * const decoder = new TextDecoder();
+   * for await (const chunk of file.readable) {
+   *   console.log(decoder.decode(chunk));
+   * }
+   * ```
+   */
   public get readable() {
     return this.inner.readable;
   }
-
+  
+  /**
+   * A {@linkcode WritableStream} instance to write the contents of the
+   * file. This makes it easy to interoperate with other web streams based
+   * APIs.
+   *
+   * ```ts
+   * import { FsFile } from "@std/fs";
+   * 
+   * const items = ["hello", "world"];
+   * using file = await FsFile.open("my_file.txt", { write: true })?;
+   * const encoder = new TextEncoder();
+   * const writer = file.writable.getWriter();
+   * for (const item of items) {
+   *   await writer.write(encoder.encode(item));
+   * }
+   * ```
+   */
   public get writable() {
     return this.inner.writable;
   }
@@ -41,7 +188,6 @@ export class FsFile {
    * ### Examples
   ```ts
   import { FsFile } from "@std/fs";
-import { FileTimes, SeekFrom } from './types';
   
   const encoder = new TextEncoder();
   using file = await FsFile.create("foo.txt").unwrap();
@@ -217,7 +363,7 @@ import { FileTimes, SeekFrom } from './types';
   import { FsFile } from "@std/fs";
   
   const { accessed,modified } = await fs.metadata("src")?;
-  const dest = await File.open("dest")?;
+  const dest = await FsFile.open("dest")?;
 
   await dest.setTimes({ accessed, modified })?;
   ```
@@ -238,7 +384,7 @@ import { FileTimes, SeekFrom } from './types';
   import { FsFile } from "@std/fs";
   
   const { accessed,modified } = fs.metadataSync("src")?;
-  const dest = File.openSync("dest")?;
+  const dest = FsFile.openSync("dest")?;
 
   dest.setTimesSync({ accessed, modified })?;
   ```
@@ -424,7 +570,6 @@ import { FileTimes, SeekFrom } from './types';
    * 
    * The seek modes work as follows:
    * 
-   * 
   ```ts
   import { FsFile,SeekFrom } from "@std/fs";
 
@@ -473,7 +618,6 @@ import { FileTimes, SeekFrom } from './types';
   ```
    * 
    * The seek modes work as follows:
-   * 
    * 
   ```ts
   import { FsFile,SeekFrom } from "@std/fs";
