@@ -1,6 +1,13 @@
 
 # FIX:
   Thread
+  # fs types
+    metadata,
+    permissions
+
+# Remaaster
+  iter,
+  errors
 
 # ADD:
   # modules
