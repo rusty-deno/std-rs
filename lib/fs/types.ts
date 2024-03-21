@@ -13,11 +13,11 @@ export interface FileTimes {
 /**
  * Enumeration of possible methods to seek within an I/O object.
  */
-export type SeekFrom=0|1|2;
+export type SeekFrom=typeof SeekFrom[keyof typeof SeekFrom];
 export const SeekFrom={
-  Start: 0,
-  Current: 1,
-  End: 2
+  Start: 0 as const,
+  Current: 1 as const,
+  End: 2 as const
 };
 
 /**
