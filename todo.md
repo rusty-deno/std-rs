@@ -8,6 +8,7 @@
 # Remaaster
   iter,
   errors
+  vector
 
 # ADD:
   # modules

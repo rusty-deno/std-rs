@@ -1,6 +1,6 @@
 import { $result,$resultSync } from "../error/result/mod.ts";
-import { SeekFrom } from "./types.ts";
-import { FileTimes } from "./types.ts";
+import { SeekFrom,FileTimes } from "./types.ts";
+import { Drop } from "../drop.ts";
 
 
 /**
@@ -18,6 +18,7 @@ import { FileTimes } from "./types.ts";
 ```ts
 // example 1
 import { FsFile } from "@std/fs";
+import { Drop } from '../drop';
 
 using file = await File.create("foo.txt").unwrap();
 
@@ -35,11 +36,21 @@ const str=await file.readToString().unwrap();
 ```
 
  * **NOTE**: Many operating systems allow concurrent modification of files by different processes.
- * Avoid assuming that holding a &File means that the file will not change.
+ * Avoid assuming that holding a File means that the file will not change.
  */
-export class FsFile {
-  private constructor(private inner: Deno.FsFile) {};
-  
+export class FsFile extends Drop implements Disposable {
+  private constructor(private inner: Deno.FsFile) {
+    super();
+  }
+
+  protected drop(): void {
+    this.inner[Symbol.dispose]();
+  }
+
+  [Symbol.dispose]() {
+    this.inner[Symbol.dispose]();
+  }
+
   /**
    * Opens a file in `read and write` mode.
    * 
