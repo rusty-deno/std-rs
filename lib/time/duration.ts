@@ -1,9 +1,10 @@
 import { $unimplemented } from "../declarative-macros/mod.ts";
 import { MILLIS_PER_SEC,NANOS_PER_MILLI,MICROS_PER_SEC,NANOS_PER_MICRO,NANOS_PER_SEC } from "./mod.ts";
 
-
+/** Represents the numeric value of a duration. */
 export type DurationValue=number|bigint;
 
+const U64_MAX=0xFFFFFFFFFFFFFFFFn;
 
 
 export class Duration {
@@ -35,7 +36,7 @@ export class Duration {
    * $assertEq(Duration.MAX,new Duration(0xFFFFFFFFFFFFFFFFn,1_000_000_000 - 1));
    * ```
    */
-  public static readonly MAX=new Duration(0xFFFFFFFFFFFFFFFFn,9999999999);
+  public static readonly MAX=new Duration(U64_MAX,9999999999);
 
   /**
    * The duration of one second.

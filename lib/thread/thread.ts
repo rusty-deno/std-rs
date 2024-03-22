@@ -5,7 +5,7 @@ import { None,Option,result } from "../../mod.ts";
 
 
 
-// TODO: seal the class/**
+
 /**
  * A handle to a thread.
  * Threads are represented via the {@linkcode Thread} type, which you can get in one of two ways:
@@ -17,6 +17,7 @@ import { None,Option,result } from "../../mod.ts";
  * 
  * There is usually no need to create a {@linkcode Thread} object yourself, one should instead use a function like {@linkcode Thread.spawn} to create new threads, see the docs of Builder and spawn for more details.
  */
+// TODO(kakashi): async-thread-spawn.
 export class Thread extends Drop {
   public readonly id: bigint;
   public readonly name: Option<string>;
