@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 // deno-lint-ignore no-unused-vars
 import { Clone } from "../clone.ts";
 import { Class } from "./types.ts";
@@ -5,11 +6,15 @@ import { Class } from "./types.ts";
 
 
 
-// deno-lint-ignore no-explicit-any
-export function Clone<C extends Class>(constructor: C,_: any) {
+export function Clone<T extends Class>(constructor: T,_: any): T {
   return class extends constructor implements Clone {
-    clone(): C {
-      return structuredClone(this);
+    public clone() {
+      const clone={} as any;
+      for(const [key,val] of Object.entries(this)) {
+        clone[key]=val.clone instanceof Function?val.clone():structuredClone(val);
+      }
+
+      return clone;
     }
   };
 }
