@@ -19,7 +19,6 @@
 
 # Feature
   # fs
-    TempFile
     FsFile
       writeAll,
       readToEnd
