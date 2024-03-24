@@ -830,7 +830,7 @@ export function makeTempDirSync(options: Deno.MakeTempOptions) {
  * * **Requires**: `allow-read` permission.
  */
 export function makeTempFile(options: Deno.MakeTempOptions) {
-  return $result(()=> Deno.makeTempFile(options));
+  return $result(async ()=> FsFile.open(await Deno.makeTempFile(options)).unwrapOrThrow());
 }
 
 /**
@@ -852,7 +852,7 @@ export function makeTempFile(options: Deno.MakeTempOptions) {
  * * **Requires**: `allow-read` permission.
  */
 export function makeTempFileSync(options: Deno.MakeTempOptions) {
-  return $resultSync(()=> Deno.makeTempFileSync(options));
+  return $resultSync(()=> FsFile.openSync(Deno.makeTempFileSync(options)).unwrapOrThrow());
 }
 
 /**
