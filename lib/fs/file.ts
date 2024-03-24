@@ -439,7 +439,7 @@ export class FsFile extends Drop implements Disposable {
   }
 
   /**
-   * Read the file into an array buffer (p).
+   * Read the file into an array buffer {@linkcode buf}.
    * Resolves to the number of bytes read during the operation.
    * 
    * **NOTE**: It is not guaranteed that the full buffer will be read in a single call.
@@ -469,7 +469,7 @@ export class FsFile extends Drop implements Disposable {
   }
 
   /**
-   * Read the file into an array buffer (p) synchrounously.
+   * Read the file into an array buffer {@linkcode buf} synchrounously.
    * Resolves to the number of bytes read during the operation.
    * 
    * **NOTE**: It is not guaranteed that the full buffer will be read in a single call.
@@ -499,7 +499,49 @@ export class FsFile extends Drop implements Disposable {
   }
 
   /**
-   * Write the contents of the array buffer (p) to the file.
+   * Read the exact number of bytes required to fill {@linkcode buf}.
+   * 
+   * This function reads as many bytes as necessary to completely fill the specified buffer {@linkcode buf}.
+   * 
+   * No guarantees are provided about the contents of {@linkcode buf} when this function is called,
+   * so implementations cannot rely on any property of the contents of {@linkcode buf} being true.
+   * It is recommended that implementations only write data to buf instead of reading its contents.
+   * The documentation on {@linkcode read} has a more detailed explanation on this subject.
+   * 
+   * ### Errors
+   * * If this function encounters an error of the kind {@linkcode ErrorKind.Interrupted} then the error is ignored and the operation will continue.
+   * * If this function encounters an `end of file` before completely filling the buffer, it returns an error of the kind {@linkcode ErrorKind.UnexpectedEof}. The contents of buf are unspecified in this case.
+   * * If any other read error is encountered then this function immediately returns. The contents of buf are unspecified in this case.
+   * * If this function returns an error, it is unspecified how many bytes it has read, but it will never read more than would be necessary to completely fill the buffer.
+   * 
+   * ### Examples
+  ```ts
+  import { FsFile } from "@std/fs";
+  
+  
+  using file = await File.open("foo.txt").unwrap();
+  const buf = new Uint8Array(69);
+
+  // read exactly 69 bytes
+  await file.readExact(buf).unwrap();
+  ```
+   */
+  public readExact(buf: Uint8Array) {
+    return $result(async ()=> {
+      let i=0;
+      for await(const chunk of this.readable)
+      for(const byte of chunk) {
+        if(i===buf.length) return;
+        buf[i++]=byte;
+      }
+
+      throw "Unexpected Eof";
+    });
+  }
+
+
+  /**
+   * Write the contents of the array buffer {@linkcode buf} to the file.
    * Resolves to the number of bytes written.
    * 
    * **NOTE**: It is not guaranteed that the full buffer will be written in a single call.
@@ -526,7 +568,7 @@ export class FsFile extends Drop implements Disposable {
   }
 
   /**
-   * Write the contents of the array buffer (p) to the file synchronously.
+   * Write the contents of the array buffer {@linkcode buf} to the file synchronously.
    * Resolves to the number of bytes written.
    * 
    * **NOTE**: It is not guaranteed that the full buffer will be written in a single call.
