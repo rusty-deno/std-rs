@@ -76,7 +76,7 @@ export interface Metadata {
    * permissions for this file/directory.
    *
    * _Linux/Mac OS only._ */
-  readonly mode: Option<number>;
+  readonly permissions: Option<number>;
   /** Number of hard links pointing to this file.
    *
    * _Linux/Mac OS only._ */
