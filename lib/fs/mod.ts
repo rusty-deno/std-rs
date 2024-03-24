@@ -1,7 +1,8 @@
-import { Permission } from "./types.ts";
-import { $result,$resultSync } from '../error/result/mod.ts';
-import { PathBuf } from '../path.ts';
 import { FsFile } from './file.ts';
+import { PathBuf } from '../path.ts';
+import { Permission } from "./types.ts";
+import { parseMetadata } from "./_metadata.ts";
+import { $result,$resultSync } from '../error/result/mod.ts';
 
 export * from "./file.ts";
 export * from "./types.ts";
@@ -22,7 +23,6 @@ export * from "./directory_builder.ts";
  * ### Examples
  * ```ts
  * import fs from "@std/fs";
-import { Permission } from './types';
  * 
  * console.log(`absolute path: ${await fs.canonicalize(`./69420/").unwrap()}`);
  * ```
@@ -213,7 +213,7 @@ fs.metadata("/some/file/path.txt").unwrap();
  * * **Requires**: `allow-read` permission.
  */
 export function metadata(path: PathBuf) {
-  return $result(()=> Deno.stat(path));
+  return $result(async ()=> parseMetadata(await Deno.stat(path)));
 }
 
 /**
@@ -1016,3 +1016,4 @@ await file.write(new TextEncode().encode("69420xd")).unwrap();
 export function createSync(path: string) {
   return FsFile.createSync(path);
 }
+
