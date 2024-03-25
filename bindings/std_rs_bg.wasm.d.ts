@@ -1,6 +1,16 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export function new_vec(): number;
+export function new_vec_with_capacity(a: number): number;
+export function vec_from_iter(a: number, b: number): number;
+export function push(a: number, b: number): void;
+export function pop(a: number): number;
+export function vec_at(a: number, b: number): number;
+export function vec_len(a: number): number;
+export function vec_capacity(a: number): number;
+export function vec_index(a: number, b: number): number;
+export function drop_vec(a: number): void;
 export function spawn_thread(a: number, b: number, c: number): number;
 export function available_parallelism(): number;
 export function current_thread(): number;

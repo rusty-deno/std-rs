@@ -1,6 +1,9 @@
 
 #[macro_use]
 mod util_macro;
+mod vec;
+pub use vec::*;
+
 
 use macros::method;
 use wasm_bindgen::prelude::*;
