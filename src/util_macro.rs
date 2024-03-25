@@ -28,4 +28,13 @@ macro_rules! thread_ptr {
   };
 }
 
+#[macro_export]
+macro_rules! nullable {
+  ($x:expr)=> {
+    match $x {
+      Some(element)=> element,
+      None=> JsValue::NULL
+    }
+  };
+}
 

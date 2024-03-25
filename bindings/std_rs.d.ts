@@ -1,6 +1,56 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
+* @returns {number}
+*/
+export function new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function new_vec_with_capacity(capacity: number): number;
+/**
+* @param {any[]} vec
+* @returns {number}
+*/
+export function vec_from_iter(vec: any[]): number;
+/**
+* @param {number} _this
+* @param {any} element
+*/
+export function push(_this: number, element: any): void;
+/**
+* @param {number} _this
+* @returns {any}
+*/
+export function pop(_this: number): any;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {any}
+*/
+export function vec_at(_this: number, i: number): any;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {any}
+*/
+export function vec_index(_this: number, i: number): any;
+/**
+* @param {number} ptr
+*/
+export function drop_vec(ptr: number): void;
+/**
 * @param {number} ptr
 * @param {string | undefined} [name]
 * @returns {number}
