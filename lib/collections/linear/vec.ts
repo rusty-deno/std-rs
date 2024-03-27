@@ -1,9 +1,10 @@
+import { Clone } from '../../clone.ts';
 import * as lib from "../../../bindings/std_rs.js";
 import { Option } from "../../error/option/option.ts";
 
 // TODO(kakashi): implement Drop trait using decorator
 // TODO(kakashi): implement IterTrait
-export class Vec<T> implements Iterable<T> {
+export class Vec<T> implements Iterable<T>,Clone {
   #ptr: number;
 
   constructor(...elements: T[]) {
@@ -45,6 +46,13 @@ export class Vec<T> implements Iterable<T> {
 
   public pop() {
     return new Option(lib.pop(this.#ptr) as T|null);
+  }
+
+  public clone() {
+    const clone=Vec.withCapacity<T>(this.capacity);
+    for(let i=0;i<this.length;i++) this.push(structuredClone(lib.vec_index(this.#ptr,i)));
+
+    return clone;
   }
 }
 
