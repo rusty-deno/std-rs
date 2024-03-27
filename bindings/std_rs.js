@@ -1,5 +1,25 @@
 
 
+const heap = new Array(128).fill(undefined);
+
+heap.push(undefined, null, true, false);
+
+function getObject(idx) { return heap[idx]; }
+
+let heap_next = heap.length;
+
+function dropObject(idx) {
+    if (idx < 132) return;
+    heap[idx] = heap_next;
+    heap_next = idx;
+}
+
+function takeObject(idx) {
+    const ret = getObject(idx);
+    dropObject(idx);
+    return ret;
+}
+
 const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
 
 if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
@@ -18,14 +38,6 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
 
-const heap = new Array(128).fill(undefined);
-
-heap.push(undefined, null, true, false);
-
-function getObject(idx) { return heap[idx]; }
-
-let heap_next = heap.length;
-
 function addHeapObject(obj) {
     if (heap_next === heap.length) heap.push(heap.length + 1);
     const idx = heap_next;
@@ -33,18 +45,6 @@ function addHeapObject(obj) {
 
     heap[idx] = obj;
     return idx;
-}
-
-function dropObject(idx) {
-    if (idx < 132) return;
-    heap[idx] = heap_next;
-    heap_next = idx;
-}
-
-function takeObject(idx) {
-    const ret = getObject(idx);
-    dropObject(idx);
-    return ret;
 }
 /**
 * @returns {number}
@@ -147,6 +147,126 @@ export function vec_capacity(_this) {
 export function vec_index(_this, i) {
     const ret = wasm.vec_index(_this, i);
     return takeObject(ret);
+}
+
+let cachedInt32Memory0 = null;
+
+function getInt32Memory0() {
+    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
+        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
+    }
+    return cachedInt32Memory0;
+}
+
+function getArrayJsValueFromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    const mem = getUint32Memory0();
+    const slice = mem.subarray(ptr / 4, ptr / 4 + len);
+    const result = [];
+    for (let i = 0; i < slice.length; i++) {
+        result.push(takeObject(slice[i]));
+    }
+    return result;
+}
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @param {any[]} replace_with
+* @returns {any[]}
+*/
+export function vec_splice(_this, start, end, replace_with) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        const ptr0 = passArrayJsValueToWasm0(replace_with, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.vec_splice(retptr, _this, start, end, ptr0, len0);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var v2 = getArrayJsValueFromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 4, 4);
+        return v2;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {any[]}
+*/
+export function vec_split_off(_this, at) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        wasm.vec_split_off(retptr, _this, at);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var v1 = getArrayJsValueFromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 4, 4);
+        return v1;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function vec_append(_this, other) {
+    wasm.vec_append(_this, other);
+}
+
+/**
+* @param {number} _this
+*/
+export function vec_empty(_this) {
+    wasm.vec_empty(_this);
+}
+
+/**
+* @param {number} _this
+* @param {number} index
+* @param {any} element
+*/
+export function vec_insert(_this, index, element) {
+    wasm.vec_insert(_this, index, addHeapObject(element));
+}
+
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {any}
+*/
+export function vec_remove(_this, index) {
+    const ret = wasm.vec_remove(_this, index);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function vec_shrink_to(_this, min_capacity) {
+    wasm.vec_shrink_to(_this, min_capacity);
+}
+
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function vec_swap(_this, a, b) {
+    wasm.vec_swap(_this, a, b);
+}
+
+/**
+* @param {number} _this
+* @param {number} index
+*/
+export function vec_swap_remove(_this, index) {
+    wasm.vec_swap_remove(_this, index);
 }
 
 /**
@@ -307,14 +427,6 @@ export function thread_unpark(_this) {
     wasm.thread_unpark(_this);
 }
 
-let cachedInt32Memory0 = null;
-
-function getInt32Memory0() {
-    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
-        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
-    }
-    return cachedInt32Memory0;
-}
 /**
 * @param {number} _this
 * @returns {string | undefined}
@@ -352,15 +464,15 @@ export function drop_join_handle(this_ptr) {
 
 const imports = {
     __wbindgen_placeholder__: {
+        __wbindgen_object_drop_ref: function(arg0) {
+            takeObject(arg0);
+        },
         __wbindgen_throw: function(arg0, arg1) {
             throw new Error(getStringFromWasm0(arg0, arg1));
         },
         __wbindgen_object_clone_ref: function(arg0) {
             const ret = getObject(arg0);
             return addHeapObject(ret);
-        },
-        __wbindgen_object_drop_ref: function(arg0) {
-            takeObject(arg0);
         },
     },
 
