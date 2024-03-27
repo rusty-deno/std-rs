@@ -47,6 +47,57 @@ export function vec_capacity(_this: number): number;
 */
 export function vec_index(_this: number, i: number): any;
 /**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @param {any[]} replace_with
+* @returns {any[]}
+*/
+export function vec_splice(_this: number, start: number, end: number, replace_with: any[]): any[];
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {any[]}
+*/
+export function vec_split_off(_this: number, at: number): any[];
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+*/
+export function vec_empty(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {any} element
+*/
+export function vec_insert(_this: number, index: number, element: any): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {any}
+*/
+export function vec_remove(_this: number, index: number): any;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+*/
+export function vec_swap_remove(_this: number, index: number): void;
+/**
 * @param {number} ptr
 */
 export function drop_vec(ptr: number): void;
