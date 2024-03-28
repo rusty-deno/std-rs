@@ -56,13 +56,13 @@ pub fn vec_index(this: &Vec<JsValue>,i: usize)-> JsValue {
 }
 
 #[method]
-pub fn vec_splice(this: &mut Vec<JsValue>,start: usize,end: usize,replace_with: Vec<JsValue>)-> Vec<JsValue> {
-  this.splice(start..end,replace_with).collect()
+pub fn vec_splice(this: &mut Vec<JsValue>,start: usize,end: usize,replace_with: Vec<JsValue>)-> Vector {
+  as_ptr!(this.splice(start..end,replace_with).collect())
 }
 
 #[method]
-pub fn vec_split_off(this: &mut Vec<JsValue>,at: usize)-> Vec<JsValue> {
-  this.split_off(at)
+pub fn vec_split_off(this: &mut Vec<JsValue>,at: usize)-> Vector {
+  as_ptr!(this.split_off(at))
 }
 
 #[method]
