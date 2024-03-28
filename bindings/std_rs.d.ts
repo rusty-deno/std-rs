@@ -51,15 +51,15 @@ export function vec_index(_this: number, i: number): any;
 * @param {number} start
 * @param {number} end
 * @param {any[]} replace_with
-* @returns {any[]}
+* @returns {number}
 */
-export function vec_splice(_this: number, start: number, end: number, replace_with: any[]): any[];
+export function vec_splice(_this: number, start: number, end: number, replace_with: any[]): number;
 /**
 * @param {number} _this
 * @param {number} at
-* @returns {any[]}
+* @returns {number}
 */
-export function vec_split_off(_this: number, at: number): any[];
+export function vec_split_off(_this: number, at: number): number;
 /**
 * @param {number} _this
 * @param {number} other
