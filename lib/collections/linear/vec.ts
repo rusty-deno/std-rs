@@ -12,16 +12,24 @@ export class Vec<T> implements Iterable<T>,Clone {
   }
 
   public static withCapacity<T>(capacity: number) {
-    const self=new Vec<T>();
+    return Vec.fromPtr(lib.new_vec_with_capacity(capacity));
+  }
 
-    lib.drop_vec(self.#ptr);
-    self.#ptr=lib.new_vec_with_capacity(capacity);
-
-    return self;
+  public static from<T>(vec: T[]|Vec<T>) {
+    return vec instanceof Vec?vec:new Vec(...vec);
   }
 
   public static fromIter<T>(iter: Iterable<T>) {
     return new Vec<T>(...iter);
+  }
+
+  private static fromPtr<T>(ptr: number) {
+    const self=new Vec<T>();
+
+    lib.drop_vec(self.#ptr);
+    self.#ptr=ptr;
+
+    return self;
   }
 
   public get length() {
@@ -53,6 +61,18 @@ export class Vec<T> implements Iterable<T>,Clone {
     for(let i=0;i<this.length;i++) this.push(structuredClone(lib.vec_index(this.#ptr,i)));
 
     return clone;
+  }
+
+  public splice(start: number,end: number,replaceWith: Iterable<T>) {
+    return Vec.fromPtr<T>(lib.vec_splice(this.#ptr,start,end,Array.from(replaceWith)));
+  }
+
+  public splitOff(at: number) {
+    return Vec.fromPtr<T>(lib.vec_split_off(this.#ptr,at));
+  }
+
+  public append(other: T[]|Vec<T>) {
+    lib.vec_append(this.#ptr,Vec.from(other).#ptr);
   }
 }
 
