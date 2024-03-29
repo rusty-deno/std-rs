@@ -15,8 +15,8 @@ export class Vec<T> implements Iterable<T>,Clone {
     return Vec.fromPtr(lib.new_vec_with_capacity(capacity));
   }
 
-  public static from<T>(iter: Iterable<T>) {
-    return new Vec<T>(...iter);
+  public static from<T>(iter: Iterable<T>): Vec<T> {
+    return iter instanceof Vec?iter:new Vec(...iter);
   }
 
   private static fromPtr<T>(ptr: number) {
