@@ -113,11 +113,11 @@ export function pop(_this) {
 
 /**
 * @param {number} _this
-* @param {number} i
+* @param {number} index
 * @returns {any}
 */
-export function vec_at(_this, i) {
-    const ret = wasm.vec_at(_this, i);
+export function vec_at(_this, index) {
+    const ret = wasm.vec_at(_this, index);
     return takeObject(ret);
 }
 

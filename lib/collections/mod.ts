@@ -12,8 +12,10 @@ export * from "./hash_set/mod.ts";
 //btree
 export * as btree from "./btree/mod.ts";
 
-//linear
-export * as linear from "./linear/mod.ts";
+// vec
+export * as vec from "./vec/mod.ts";
+
+
 
 export * as linked_list from "./linear/linked_list/mod.ts";
 export * from "./linear/linked_list/linked_list.ts";

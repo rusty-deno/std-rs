@@ -74,6 +74,30 @@ export class Vec<T> implements Iterable<T>,Clone {
   public append(other: T[]|Vec<T>) {
     lib.vec_append(this.#ptr,Vec.from(other).#ptr);
   }
+
+  public empty() {
+    lib.vec_empty(this.#ptr);
+  }
+
+  public insert(index: number,element: T) {
+    lib.vec_insert(this.#ptr,index,element);
+  }
+
+  public remove(index: number) {
+    lib.vec_remove(this.#ptr,index);
+  }
+
+  public shrinkTo(minCapacity: number) {
+    lib.vec_shrink_to(this.#ptr,minCapacity);
+  }
+
+  public swap(start: number,end: number) {
+    lib.vec_swap(this.#ptr,start,end);
+  }
+
+  public swapRemove(index: number) {
+    lib.vec_swap_remove(this.#ptr,index);
+  }
 }
 
 

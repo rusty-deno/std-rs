@@ -33,11 +33,8 @@ pub fn pop(this: &mut Vec<JsValue>)-> JsValue {
 }
 
 #[method]
-pub fn vec_at(this: &Vec<JsValue>,i: usize)-> JsValue {
-  match this.get(i) {
-    Some(element)=> element.clone(),
-    _=> JsValue::NULL
-  }
+pub fn vec_at(this: &Vec<JsValue>,index: usize)-> JsValue {
+  nullable!(this.get(index).cloned())
 }
 
 #[method]
