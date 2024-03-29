@@ -26,10 +26,10 @@ export function push(_this: number, element: any): void;
 export function pop(_this: number): any;
 /**
 * @param {number} _this
-* @param {number} i
+* @param {number} index
 * @returns {any}
 */
-export function vec_at(_this: number, i: number): any;
+export function vec_at(_this: number, index: number): any;
 /**
 * @param {number} _this
 * @returns {number}
