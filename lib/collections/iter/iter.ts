@@ -5,6 +5,7 @@ import { Option,Some } from "../../error/option/option.ts";
 
 
 export abstract class IteratorTrait<T> implements Iterable<T> {
+  public static readonly reversedIter: unique symbol=Symbol.for("reversed_iter");
   public abstract [Symbol.iterator](): Iterator<T>;
 
   public next() {
