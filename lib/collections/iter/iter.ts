@@ -55,11 +55,26 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
 
 
 
-export abstract class IterTrait<T> extends IteratorTrait<T> {
-
+export interface IterTrait<T> extends IteratorTrait<T> {
+  chain(other: Iterable<T>): IterTrait<T>;
+  cycle(): IterTrait<T>;
+  enumerate(): IterTrait<T>;
+  filter(f: Fn<[element: T],boolean>): IterTrait<T>;
+  find(f: Fn<[element: T],boolean>): Option<T>;
+  findMap<U>(f: Fn<[element: T],Option<U>>): Option<T>;
+  flatMap<U>(f: Fn<[element: T],Option<U>>): IterTrait<U>;
+  // flatten<U>(): IterTrait<U>;
+  inspect(f: Fn<[element: T],void>): IterTrait<T>;
+  map<U>(f: Fn<[element: T,index: number],U>): IterTrait<U>;
+  mapWhile<U>(f: Fn<[element: T,index: number],U>): IterTrait<U>;
+  position(f: Fn<[element: T],boolean>): number;
+  skip(skip: number): IterTrait<T>;
+  skipWhile(f: Fn<[element: T],boolean>): IterTrait<T>;
+  stepBy(step: number): IterTrait<T>;
+  take(n: number): IterTrait<T>;
+  takeWhile(f: Fn<[element: T],boolean>): IterTrait<T>;
+  zip<U>(other: Iterable<U>): IterTrait<[T,U]>;
 }
-
-
 
 
 
