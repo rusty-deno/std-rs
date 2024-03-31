@@ -24,12 +24,12 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * Advances the iterator and returns the next value.
    * 
    * Returns None when iteration is finished.
-   * Individual iterator implementations may choose to resume iteration, and so calling {@linkcode next} again may or may not eventually start returning {@linkcode Some(T)} again at some point.
+   * Individual iterator implementations may choose to resume iteration, and so calling {@linkcode next()} again may or may not eventually start returning {@linkcode Some(T)} again at some point.
    * 
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec } from "std";
+  import { $vec,$assertEq } from "std";
 
   const vec = $vec(1, 2, 3);
   const iter = vec.iter();
@@ -54,11 +54,11 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   /**
    * Tests if every element of the iterator matches a predicate.
    * 
-   * {@linkcode all} takes a function that returns `true` or `false`.
-   * It applies this function to each element of the iterator, and if they all return `true`, then so does {@linkcode all}.
+   * {@linkcode all()} takes a function that returns `true` or `false`.
+   * It applies this function to each element of the iterator, and if they all return `true`, then so does {@linkcode all()}.
    * If any of them return `false`, it returns false.
    * 
-   * {@linkcode all} is short-circuiting;
+   * {@linkcode all()} is short-circuiting;
    * in other words, it will stop processing as soon as it finds a false, given that no matter what else happens, the result will also be `false`.
    * 
    * * An empty iterator returns `true`.
@@ -83,11 +83,11 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   /**
    * Tests if any element of the iterator matches a predicate.
    * 
-   * {@linkcode any} takes a function that returns `true` or `false`.
-   * It applies this function to each element of the iterator, and if any of them return `true`, then so does {@linkcode any}.
+   * {@linkcode any()} takes a function that returns `true` or `false`.
+   * It applies this function to each element of the iterator, and if any of them return `true`, then so does {@linkcode any()}.
    * If they all return false, it returns `false`.
    * 
-   * {@linkcode any} is short-circuiting;
+   * {@linkcode any()} is short-circuiting;
    * in other words, it will stop processing as soon as it finds a `true`, given that no matter what else happens, the result will also be `true`.
    * 
    * * An empty iterator returns false.
@@ -120,7 +120,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec } from "std";
+  import { $vec,$assertEq } from "std";
 
   const vec = $vec(1, 2, 3);
 
@@ -134,29 +134,29 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   /**
    * Folds every element into an accumulator by applying an operation, returning the final result.
    * 
-   * {@linkcode fold} takes two arguments: an initial value, and a function with two arguments: an 'accumulator', and an element.
+   * {@linkcode fold()} takes two arguments: an initial value, and a function with two arguments: an 'accumulator', and an element.
    * The function returns the value that the accumulator should have for the next iteration.
    * 
    * The initial value is the value the accumulator will have on the first call.
    * 
-   * After applying this function to every element of the iterator, {@linkcode fold} returns the accumulator.
+   * After applying this function to every element of the iterator, {@linkcode fold()} returns the accumulator.
    * 
    * This operation is sometimes called 'reduce' or 'inject'.
    * 
    * Folding is useful whenever you have a collection of something, and want to produce a single value from it.
    * 
    * * **Note**: [reduce] can be used to use the first element as the initial value, if the accumulator type and item type is the same.
-   * * **Note**: {@linkcode fold} combines elements in a left-associative fashion. For associative operators like +, the order the elements are combined in is not important, but for non-associative operators like - the order will affect the final result. For a right-associative version of {@linkcode fold}, see DoubleEndedIterator::rfold.
+   * * **Note**: {@linkcode fold()} combines elements in a left-associative fashion. For associative operators like +, the order the elements are combined in is not important, but for non-associative operators like - the order will affect the final result. For a right-associative version of {@linkcode fold()}, see DoubleEndedIterator::rfold.
    * 
    * ### Note to Implementors
    * Several of the other (forward) methods have default implementations in terms of this one, so try to implement this explicitly if it can do something better than the default for loop implementation.
    * 
-   * In particular, try to have this call {@linkcode fold} on the internal parts from which this iterator is composed.
+   * In particular, try to have this call {@linkcode fold()} on the internal parts from which this iterator is composed.
    * 
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec } from "std";
+  import { $vec,$assertEq } from "std";
 
   const vec = $vec(1, 2, 3);
   
@@ -176,13 +176,13 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * Calls a function on each element of an iterator.
    * 
    * This is equivalent to using a for loop on the iterator, although break and continue are not possible from a function.
-   * It's generally more idiomatic to use a for loop, but {@linkcode forEach} may be more legible when processing items at the end of longer iterator chains.
+   * It's generally more idiomatic to use a for loop, but {@linkcode forEach()} may be more legible when processing items at the end of longer iterator chains.
    * In some cases for_each may also be faster than a loop, because it will use internal iteration on adapters like `Chain`.
    * 
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec } from "std";
+  import { $vec,$assertEq } from "std";
 
   $vec(0,1,2,3,4,5,69,13)
   .filter(x => x % 2===1)
@@ -199,7 +199,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * 
    * ### Example
   ```ts
-  import { $vec } from "std";
+  import { $vec,$assertEq } from "std";
 
   const vec = $vec(0,1,2,3,4,5,69,13);
   const iter = vec.iter();
@@ -217,12 +217,12 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * 
    * This method will evaluate the iterator until it's consumed.
    * While doing so, it keeps track of the current element.
-   * After the iterator is returned, {@linkcode last} will then return the last element it saw.
+   * After the iterator is returned, {@linkcode last()} will then return the last element it saw.
    * 
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec } from "std";
+  import { $vec,$assertEq } from "std";
 
   const iter = $vec(0,1,2,3,4,5,69);
 
@@ -240,7 +240,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * otherwise, returns the result of the reduction.
    * 
    * The reducing function accepts two arguments: an {@linkcode accumulator}, and an {@linkcode element}.
-   * For iterators with at least one element, this is the same as {@linkcode fold} with the first element of the iterator as the initial accumulator value, folding every subsequent element into it.
+   * For iterators with at least one element, this is the same as {@linkcode fold()} with the first element of the iterator as the initial accumulator value, folding every subsequent element into it.
    * 
    * ### Example
   ```ts
@@ -267,7 +267,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   /**
    * Copies `this` into a new {@linkcode Vec}.
    * 
-   * * **NOTE**: This is a creates a shallow-copy. If you want a deep-copy the use {@linkcode Vec.clone}
+   * * **NOTE**: This is a creates a shallow-copy. If you want a deep-copy the use {@linkcode Vec.clone()}
    */
   public toVec() {
     return Vec.from(this);
@@ -278,8 +278,80 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
 
 
 export interface IterTrait<T> extends IteratorTrait<T> {
+  /**
+   * Takes two iterators and creates a new iterator over both in sequence.
+   * 
+   * {@linkcode chain()} will return a new iterator which will first iterate over values from the first iterator and then over values from the second iterator.
+   * 
+   * In other words, it links two iterators together, in a chain. 🔗
+   * 
+   * ### Example
+  ```ts
+  import { $vec,$assertEq } from "std";
+
+  const a1 = $vec(1, 2, 3);
+  const a2 = $vec(4, 5, 6);
+  
+  const iter = a1.iter().chain(a2);
+
+  $assertEq(iter.next(), Some(1));
+  $assertEq(iter.next(), Some(2));
+  $assertEq(iter.next(), Some(3));
+  $assertEq(iter.next(), Some(4));
+  $assertEq(iter.next(), Some(5));
+  $assertEq(iter.next(), Some(6));
+  $assertEq(iter.next(), None);
+  ```
+   * 
+   * Since the argument to {@linkcode chain()} uses IntoIterator, we can pass anything that can be converted into an Iterator, not just an Iterator itself.
+   */
   chain(other: Iterable<T>): IterTrait<T>;
+  /**
+   * Repeats an iterator endlessly.
+   * 
+   * Instead of stopping at None, the iterator will instead start again, from the beginning.
+   * After iterating again, it will start at the beginning again.
+   * And again. And again. Forever.
+   * 
+   * * **Note**: In case the original iterator is empty, the resulting iterator will also be empty.
+   * 
+   * ### Example
+  ```ts
+  import { $vec,$assertEq } from "std";
+  
+  const a = $vec(1, 2, 3);
+  const iter = a.iter().cycle();
+
+  $assertEq(it.next(), Some(1));
+  $assertEq(it.next(), Some(2));
+  $assertEq(it.next(), Some(3));
+  $assertEq(it.next(), Some(1));
+  $assertEq(it.next(), Some(2));
+  $assertEq(it.next(), Some(3));
+  $assertEq(it.next(), Some(1));
+  ```
+   */
   cycle(): IterTrait<T>;
+  /**
+   * Creates an iterator which gives the current iteration count as well as the next value.
+   * 
+   * The iterator returned yields pairs `[i: number, element: T]`, where `i` is the current index of iteration and `element` is the value returned by the iterator.
+   * 
+   * {@linkcode enumerate()} keeps its count as a `number`.
+   * 
+   * ### Example
+  ```ts
+  import { $vec, $assertEq } from "std";
+  
+  const a = $vec('a', 'b', 'c');
+  const iter = a.iter().enumerate();
+
+  $assertEq(iter.next(), Some([0, 'a']));
+  $assertEq(iter.next(), Some([1, 'b']));
+  $assertEq(iter.next(), Some([2, 'c']));
+  $assertEq(iter.next(), None);
+  ```
+   */
   enumerate(): IterTrait<T>;
   filter(f: Fn<[element: T],boolean>): IterTrait<T>;
   find(f: Fn<[element: T],boolean>): Option<T>;
