@@ -53,7 +53,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * Tests if every element of the iterator matches a predicate.
    * 
    * {@linkcode all()} takes a callback function that returns `true` or `false`.
-   * It applies this function to each element of the iterator, and if they all return `true`, then so does {@linkcode all()}.
+   * It applies this callback to each element of the iterator, and if they all return `true`, then so does {@linkcode all()}.
    * If any of them return `false`, it returns false.
    * 
    * {@linkcode all()} is short-circuiting;
@@ -80,7 +80,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * Tests if any element of the iterator matches a predicate.
    * 
    * {@linkcode any()} takes a callback function that returns `true` or `false`.
-   * It applies this function to each element of the iterator, and if any of them return `true`, then so does {@linkcode any()}.
+   * It applies this callback to each element of the iterator, and if any of them return `true`, then so does {@linkcode any()}.
    * If they all return false, it returns `false`.
    * 
    * {@linkcode any()} is short-circuiting;
@@ -131,7 +131,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * 
    * The initial value is the value the accumulator will have on the first call.
    * 
-   * After applying this function to every element of the iterator, {@linkcode fold()} returns the accumulator.
+   * After applying this callback to every element of the iterator, {@linkcode fold()} returns the accumulator.
    * 
    * This operation is sometimes called 'reduce' or 'inject'.
    * 
@@ -165,7 +165,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   /**
    * Calls a callback function on each element of an iterator.
    * 
-   * This is equivalent to using a for loop on the iterator, although break and continue are not possible from a function.
+   * This is equivalent to using a for loop on the iterator, although break and continue are not possible from a callback.
    * It's generally more idiomatic to use a for loop, but {@linkcode forEach()} may be more legible when processing items at the end of longer iterator chains.
    * In some cases for_each may also be faster than a loop, because it will use internal iteration on adapters like `Chain`.
    * 
@@ -382,7 +382,7 @@ export interface IterTrait<T> extends IteratorTrait<T> {
   find(f: Fn<[element: T],boolean>): Option<T>;
 
   /**
-   * Applies function to the elements of iterator and returns the first non-none result.
+   * Applies callback function to the elements of iterator and returns the first non-none result.
    * 
    * `iter.findMap(f)` is equivalent to iter.filterMap(f).next();
    * 
