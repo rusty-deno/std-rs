@@ -1,13 +1,13 @@
-import { IteratorTrait } from './iter.ts';
+import { IntoIterator } from './iter.ts';
 import { Option } from '../../error/option/option.ts';
 import { ExactSizeIterator } from './exact_size_iter.ts';
 import { Fn } from '../../types.ts';
 
 
 export abstract class DoubleEndedIterator<T> extends ExactSizeIterator<T> {
-  public abstract [IteratorTrait.reversedIter](): Iterator<T>;
+  public abstract [IntoIterator.reversedIter](): Iterator<T>;
   public nextBack() {
-    return new Option(this[IteratorTrait.reversedIter]().next().value as T|null|undefined);
+    return new Option(this[IntoIterator.reversedIter]().next().value as T|null|undefined);
   }
 
   public nthBack(n: number) {
