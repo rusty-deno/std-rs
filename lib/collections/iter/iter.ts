@@ -10,7 +10,7 @@ import { Option,Some,None } from "../../error/option/option.ts";
  * 
  * * Implementing it only requires two methods {@linkcode Symbol.iterator} and {@linkcode iter}.
  */
-export abstract class IteratorTrait<T> implements Iterable<T> {
+export abstract class IntoIterator<T> implements Iterable<T> {
   /**
    * A method that returns the reversed iterator for an object.
    * 
@@ -196,7 +196,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   $assertEq(None(),iter.next());
   ```
    */
-  public abstract iter(): IterTrait<T>;
+  public abstract iter(): IteratorTrait<T>;
 
   /**
    * Consumes the iterator, returning the last element.
@@ -259,7 +259,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
 
 
 
-export interface IterTrait<T> extends IteratorTrait<T> {
+export interface IteratorTrait<T> extends IntoIterator<T> {
   /**
    * Takes two iterators and creates a new iterator over both in sequence.
    * 
@@ -286,7 +286,7 @@ export interface IterTrait<T> extends IteratorTrait<T> {
    * Since the argument to {@linkcode chain()} uses IntoIterator, we can pass anything that can be converted into an Iterator, not just an Iterator itself.
    */
 
-  chain(other: Iterable<T>): IterTrait<T>;
+  chain(other: Iterable<T>): IteratorTrait<T>;
   /**
    * Repeats an iterator endlessly.
    * 
@@ -311,7 +311,7 @@ export interface IterTrait<T> extends IteratorTrait<T> {
   ```
    */
 
-  cycle(): IterTrait<T>;
+  cycle(): IteratorTrait<T>;
   /**
    * Creates an iterator which gives the current iteration count as well as the next value.
    * 
@@ -331,7 +331,7 @@ export interface IterTrait<T> extends IteratorTrait<T> {
   ```
    */
 
-  enumerate(): IterTrait<T>;
+  enumerate(): IteratorTrait<T>;
   /**
    * Creates an iterator which uses a callback function to determine if an element should be yielded.
    * 
@@ -350,7 +350,7 @@ export interface IterTrait<T> extends IteratorTrait<T> {
   ```
    */
 
-  filter(f: Fn<[element: T],boolean>): IterTrait<T>;
+  filter(f: Fn<[element: T],boolean>): IteratorTrait<T>;
   /**
    * Searches for an element of an iterator that satisfies a predicate.
    * 
@@ -417,20 +417,21 @@ export interface IterTrait<T> extends IteratorTrait<T> {
   $assertEq(merged, "alphabetagamma");
   ```
    */
-  flatMap<U>(f: Fn<[element: T],Option<U>>): IterTrait<U>;
+  flatMap<U>(f: Fn<[element: T],Option<U>>): IteratorTrait<U>;
   // deno-lint-ignore no-explicit-any
-  flatten<U>(): IterTrait<T extends Iterable<any>?U:T>;
-  inspect(f: Fn<[element: T],void>): IterTrait<T>;
-  map<U>(f: Fn<[element: T,index: number],U>): IterTrait<U>;
-  mapWhile<U>(f: Fn<[element: T,index: number],U>): IterTrait<U>;
+  flatten<U>(): IteratorTrait<T extends Iterable<any>?U:T>;
+  inspect(f: Fn<[element: T],void>): IteratorTrait<T>;
+  map<U>(f: Fn<[element: T,index: number],U>): IteratorTrait<U>;
+  mapWhile<U>(f: Fn<[element: T,index: number],U>): IteratorTrait<U>;
+  at(index: number): Option<T>;
   position(f: Fn<[element: T],boolean>): number;
   join(seperator: string): string;
-  skip(skip: number): IterTrait<T>;
-  skipWhile(f: Fn<[element: T],boolean>): IterTrait<T>;
-  stepBy(step: number): IterTrait<T>;
-  take(n: number): IterTrait<T>;
-  takeWhile(f: Fn<[element: T],boolean>): IterTrait<T>;
-  zip<U>(other: Iterable<U>): IterTrait<[T,U]>;
+  skip(skip: number): IteratorTrait<T>;
+  skipWhile(f: Fn<[element: T],boolean>): IteratorTrait<T>;
+  stepBy(step: number): IteratorTrait<T>;
+  take(n: number): IteratorTrait<T>;
+  takeWhile(f: Fn<[element: T],boolean>): IteratorTrait<T>;
+  zip<U>(other: Iterable<U>): IteratorTrait<[T,U]>;
 }
 
 
