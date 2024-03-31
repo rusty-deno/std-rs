@@ -23,14 +23,12 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * 
    * Advances the iterator and returns the next value.
    * 
-   * Returns None when iteration is finished.
+   * Returns `None` when iteration is finished.
    * Individual iterator implementations may choose to resume iteration, and so calling {@linkcode next()} again may or may not eventually start returning {@linkcode Some(T)} again at some point.
    * 
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec,$assertEq } from "std";
-
   const vec = $vec(1, 2, 3);
   const iter = vec.iter();
   
@@ -54,7 +52,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   /**
    * Tests if every element of the iterator matches a predicate.
    * 
-   * {@linkcode all()} takes a function that returns `true` or `false`.
+   * {@linkcode all()} takes a callback function that returns `true` or `false`.
    * It applies this function to each element of the iterator, and if they all return `true`, then so does {@linkcode all()}.
    * If any of them return `false`, it returns false.
    * 
@@ -66,8 +64,6 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec,$assert } from "std";
-  
   const vec = $vec(1, 2, 3);
 
   $assert(a.iter().all( x => x > 0));
@@ -83,7 +79,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   /**
    * Tests if any element of the iterator matches a predicate.
    * 
-   * {@linkcode any()} takes a function that returns `true` or `false`.
+   * {@linkcode any()} takes a callback function that returns `true` or `false`.
    * It applies this function to each element of the iterator, and if any of them return `true`, then so does {@linkcode any()}.
    * If they all return false, it returns `false`.
    * 
@@ -94,8 +90,6 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec,$assert } from "std";
-  
   const vec = $vec(1, 2, 70, 69, 0);
 
   $assert(a.iter().any( x => x > 69));
@@ -120,8 +114,6 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec,$assertEq } from "std";
-
   const vec = $vec(1, 2, 3);
 
   $assertEq(a.iter().count(), 3);
@@ -134,7 +126,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   /**
    * Folds every element into an accumulator by applying an operation, returning the final result.
    * 
-   * {@linkcode fold()} takes two arguments: an initial value, and a function with two arguments: an 'accumulator', and an element.
+   * {@linkcode fold()} takes two arguments: an initial value, and a callback function with two arguments: an 'accumulator', and an element.
    * The function returns the value that the accumulator should have for the next iteration.
    * 
    * The initial value is the value the accumulator will have on the first call.
@@ -156,8 +148,6 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec,$assertEq } from "std";
-
   const vec = $vec(1, 2, 3);
   
   // the sum of all of the elements of the array
@@ -173,7 +163,7 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
   }
 
   /**
-   * Calls a function on each element of an iterator.
+   * Calls a callback function on each element of an iterator.
    * 
    * This is equivalent to using a for loop on the iterator, although break and continue are not possible from a function.
    * It's generally more idiomatic to use a for loop, but {@linkcode forEach()} may be more legible when processing items at the end of longer iterator chains.
@@ -182,8 +172,6 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec,$assertEq } from "std";
-
   $vec(0,1,2,3,4,5,69,13)
   .filter(x => x % 2===1)
   .forEach(console.log);
@@ -199,15 +187,13 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * 
    * ### Example
   ```ts
-  import { $vec,$assertEq } from "std";
-
   const vec = $vec(0,1,2,3,4,5,69,13);
   const iter = vec.iter();
 
   $assertEq(Some(2),iter.next());
   $assertEq(Some(3),iter.next());
   $assertEq(Some(1),iter.next());
-  $assertEq(None,iter.next());
+  $assertEq(None(),iter.next());
   ```
    */
   public abstract iter(): IterTrait<T>;
@@ -222,8 +208,6 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * ### Examples
    * Basic usage:
   ```ts
-  import { $vec,$assertEq } from "std";
-
   const iter = $vec(0,1,2,3,4,5,69);
 
   $assertEq(Some(69),iter.last());
@@ -239,13 +223,11 @@ export abstract class IteratorTrait<T> implements Iterable<T> {
    * If the iterator is empty, returns `None`;
    * otherwise, returns the result of the reduction.
    * 
-   * The reducing function accepts two arguments: an {@linkcode accumulator}, and an {@linkcode element}.
+   * The reducing callback accepts two arguments: an {@linkcode accumulator}, and an {@linkcode element}.
    * For iterators with at least one element, this is the same as {@linkcode fold()} with the first element of the iterator as the initial accumulator value, folding every subsequent element into it.
    * 
    * ### Example
   ```ts
-  import { $range,$assertEq } from "std";
-
   const reduced = $range(1,10).reduce((acc, e)=>  acc + e).unwrap();
   $assertEq(reduced, 45);
   ```
@@ -287,8 +269,6 @@ export interface IterTrait<T> extends IteratorTrait<T> {
    * 
    * ### Example
   ```ts
-  import { $vec,$assertEq } from "std";
-
   const a1 = $vec(1, 2, 3);
   const a2 = $vec(4, 5, 6);
   
@@ -300,16 +280,17 @@ export interface IterTrait<T> extends IteratorTrait<T> {
   $assertEq(iter.next(), Some(4));
   $assertEq(iter.next(), Some(5));
   $assertEq(iter.next(), Some(6));
-  $assertEq(iter.next(), None);
+  $assertEq(iter.next(), None());
   ```
    * 
    * Since the argument to {@linkcode chain()} uses IntoIterator, we can pass anything that can be converted into an Iterator, not just an Iterator itself.
    */
+
   chain(other: Iterable<T>): IterTrait<T>;
   /**
    * Repeats an iterator endlessly.
    * 
-   * Instead of stopping at None, the iterator will instead start again, from the beginning.
+   * Instead of stopping at end, the iterator will instead start again, from the beginning.
    * After iterating again, it will start at the beginning again.
    * And again. And again. Forever.
    * 
@@ -317,8 +298,6 @@ export interface IterTrait<T> extends IteratorTrait<T> {
    * 
    * ### Example
   ```ts
-  import { $vec,$assertEq } from "std";
-  
   const a = $vec(1, 2, 3);
   const iter = a.iter().cycle();
 
@@ -331,6 +310,7 @@ export interface IterTrait<T> extends IteratorTrait<T> {
   $assertEq(it.next(), Some(1));
   ```
    */
+
   cycle(): IterTrait<T>;
   /**
    * Creates an iterator which gives the current iteration count as well as the next value.
@@ -341,27 +321,110 @@ export interface IterTrait<T> extends IteratorTrait<T> {
    * 
    * ### Example
   ```ts
-  import { $vec, $assertEq } from "std";
-  
   const a = $vec('a', 'b', 'c');
   const iter = a.iter().enumerate();
 
   $assertEq(iter.next(), Some([0, 'a']));
   $assertEq(iter.next(), Some([1, 'b']));
   $assertEq(iter.next(), Some([2, 'c']));
-  $assertEq(iter.next(), None);
+  $assertEq(iter.next(), None());
   ```
    */
+
   enumerate(): IterTrait<T>;
+  /**
+   * Creates an iterator which uses a callback function to determine if an element should be yielded.
+   * 
+   * Given an element the callback function must return `true` or `false`.
+   * The returned iterator will yield only the elements for which {@linkcode f} returns `true`.
+   * 
+   * ### Example
+   * 
+  ```ts
+  const a = $vec(0, 1, 2);
+  const iter = a.iter().filter(x => x > 0);
+
+  $assertEq(iter.next(), Some(1));
+  $assertEq(iter.next(), Some(2));
+  $assertEq(iter.next(), None());
+  ```
+   */
+
   filter(f: Fn<[element: T],boolean>): IterTrait<T>;
+  /**
+   * Searches for an element of an iterator that satisfies a predicate.
+   * 
+   * {@linkcode find()} takes a callback that returns `true` or `false`.
+   * It applies this callback to each element of the iterator, and if any of them return `true`, then {@linkcode find()} returns `Some(T)`. If they all return `false`, it returns `None`.
+   * 
+   * {@linkcode find()} is short-circuiting;
+   * in other words, it will stop processing as soon as the callback function returns `true`.
+   * 
+   * 
+   * * If you need the index of the element, see {@linkcode position}.
+   * 
+   * ### Examples
+  ```ts
+  const a = $vec(1, 2, 3);
+  
+  $assertEq(a.iter().find(x => x == 2), Some(2));
+  
+  $assertEq(a.iter().find(x => x == 5), None());
+  ```
+   * Stopping at the first `true`:
+  ```ts
+  const a = $vec(1, 2, 3);
+  const iter = a.iter();
+  
+  $assertEq(iter.find(x => x == 2), Some(2));
+  ```
+   */
   find(f: Fn<[element: T],boolean>): Option<T>;
-  findMap<U>(f: Fn<[element: T],Option<U>>): Option<T>;
+
+  /**
+   * Applies function to the elements of iterator and returns the first non-none result.
+   * 
+   * `iter.findMap(f)` is equivalent to iter.filterMap(f).next();
+   * 
+   * ### Examples
+  ```ts
+  const a = $vec("lol", "NaN", 69, 5);
+  const firstNumber = a.iter().findMap(x => typeof x==="number");
+  
+  $assertEq(firstNumber, Some(2));
+  ```
+   */
+  findMap<U>(f: Fn<[element: T],Option<U>|None>): Option<T>;
+  /**
+   * Creates an iterator that works like map, but flattens nested structure.
+   * 
+   * The {@linkcode map} adapter is very useful, but only when the callback function produces values.
+   * If it produces an iterator instead, there's an extra layer of indirection.
+   * {@linkcode flatMap()} will remove this extra layer on its own.
+   * 
+   * You can think of {@linkcode flatMap(f)} as the semantic equivalent of {@linkcode map}ping, and then {@linkcode flatten}ing as in `map(f).flatten()`.
+   * 
+   * Another way of thinking about {@linkcode flatMap()}: {@linkcode map}'s closure returns one item for each element, and {@linkcode flatMap()}'s closure returns an iterator for each element.
+   * 
+   * ### Example
+  ```ts
+  const words = $vec("alpha", "beta", "gamma");
+
+  const merged = words.iter()
+  .flatMap(str => [...str])
+  .join("");
+  
+  $assertEq(merged, "alphabetagamma");
+  ```
+   */
   flatMap<U>(f: Fn<[element: T],Option<U>>): IterTrait<U>;
-  // flatten<U>(): IterTrait<U>;
+  // deno-lint-ignore no-explicit-any
+  flatten<U>(): IterTrait<T extends Iterable<any>?U:T>;
   inspect(f: Fn<[element: T],void>): IterTrait<T>;
   map<U>(f: Fn<[element: T,index: number],U>): IterTrait<U>;
   mapWhile<U>(f: Fn<[element: T,index: number],U>): IterTrait<U>;
   position(f: Fn<[element: T],boolean>): number;
+  join(seperator: string): string;
   skip(skip: number): IterTrait<T>;
   skipWhile(f: Fn<[element: T],boolean>): IterTrait<T>;
   stepBy(step: number): IterTrait<T>;
@@ -369,6 +432,5 @@ export interface IterTrait<T> extends IteratorTrait<T> {
   takeWhile(f: Fn<[element: T],boolean>): IterTrait<T>;
   zip<U>(other: Iterable<U>): IterTrait<[T,U]>;
 }
-
 
 

@@ -2,6 +2,7 @@
 # FIX:
   Thread
   Option,Result pretty print
+  Eq
 
 # Remaaster
   errors,
@@ -24,3 +25,5 @@
     FsFile
       writeAll,
       readToEnd
+  # Exceptions
+    impl IteratorTrait for Option and Result
