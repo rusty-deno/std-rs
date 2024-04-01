@@ -396,7 +396,33 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(firstNumber, Some(2));
   ```
    */
-  findMap<U>(f: Fn<[element: T],Option<U>|None>): Option<T>;
+  findMap<U>(f: Fn<[element: T],Option<U>|None|U>): Option<T>;
+
+  /**
+   * Creates an iterator that both filters and maps.
+   * 
+   * The returned iterator yields only the values for which the supplied callback returns `Some(T)`.
+   * 
+   * {@linkcode filterMap} can be used to make chains of {@linkcode filter} and {@linkcode map} more concise.
+   * The example below shows how a `map().filter().map()` can be shortened to a single call to {@linkcode filterMap}.
+   * 
+   * ### Examples
+   * Basic usage:
+  ```ts
+  import { fs,$vec } from "std";
+
+  const filePaths = $vec("hello-friend.txt", "who-am-i.txt", "goodbye-friend.txt");
+
+  const texts = filePaths
+  .iter()
+  .filterMap(path => fs.readToStringSync(path).ok())
+  .collect<Vec<string>>();
+
+  console.log(texts);
+  ```
+   */
+  filterMap<U>(f: Fn<[element: T],Option<U>|None|U>): IteratorTrait<U>;
+
   /**
    * Creates an iterator that works like map, but flattens nested structure.
    * 
@@ -406,7 +432,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
    * 
    * You can think of {@linkcode flatMap(f)} as the semantic equivalent of {@linkcode map}ping, and then {@linkcode flatten}ing as in `map(f).flatten()`.
    * 
-   * Another way of thinking about {@linkcode flatMap()}: {@linkcode map}'s closure returns one item for each element, and {@linkcode flatMap()}'s closure returns an iterator for each element.
+   * Another way of thinking about {@linkcode flatMap()}: {@linkcode map}'s callback function returns one item for each element, and {@linkcode flatMap()}'s closure returns an iterator for each element.
    * 
    * ### Example
   ```ts
@@ -482,7 +508,109 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
    */
   // deno-lint-ignore no-explicit-any
   flatten<U>(): IteratorTrait<T extends Iterable<any>?U:T>;
+
+  /**
+   * Does something with each element of an iterator, passing the value on.
+   * 
+   * When using iterators, you'll often chain several of them together.
+   * While working on such code, you might want to check out what's happening at various parts in the pipeline.
+   * To do that, insert a call to {@linkcode inspect()}.
+   * 
+   * It's more common for {@linkcode inspect()} to be used as a debugging tool than to exist in your final code, but applications may find it useful in certain situations when errors need to be logged before being discarded.
+   * 
+   * ### Examples
+   * Basic usage:
+  ```ts
+  const a = $vec(1, 4, 2, 3);
+  
+  // this iterator sequence is complex.
+  const basicSum = a.iter()
+  .cloned()
+  .filter(x => x % 2 == 0)
+  .fold(0, (sum, i)=> sum + i);
+  
+  console.log(`Sum: ${basicSum}`);
+  
+  // let's add some inspect() calls to investigate what's happening
+  const sum = a.iter()
+  .cloned()
+  .inspect(x => console.log(`about to filter: ${x}`))
+  .filter(x => x % 2 == 0)
+  .inspect(x => console.log(`made it through filter: ${x}`))
+  .fold(0, (sum, i)=> sum + i);
+  
+  console.log();
+  ```
+  This will print:
+  ```pre
+  6
+  about to filter: 1
+  about to filter: 4
+  made it through filter: 4
+  about to filter: 2
+  made it through filter: 2
+  about to filter: 3
+  6
+  ```
+   * Logging errors before discarding them:
+  ```ts
+  import { fs,$vec } from "std";
+
+  const filePaths = $vec("hello-friend.txt", "who-am-i.txt", "goodbye-friend.txt");
+
+  const texts = filePaths
+  .iter()
+  .map(path => fs.readToStringSync(path))
+  .inspect(file => {
+    if(file.containsErr()) {
+      console.log("Some error occured while opening the file...");
+    }
+  })
+  .filterMap(res => res.ok())
+  .collect<Vec<string>>();
+
+  console.log(texts);
+  ```
+   */
   inspect(f: Fn<[element: T],void>): IteratorTrait<T>;
+
+  /**
+   * Takes a callback function and creates an iterator which calls that callback function on each element.
+   * 
+   * {@linkcode map()} transforms one iterator into another, by means of its argument: something that implements FnMut.
+   * It produces a new iterator which calls this callback on each element of the original iterator.
+   * 
+   * If you are good at thinking in types,
+   * you can think of `map()` like this: If you have an iterator that gives you elements of some type `A`,
+   * and you want an iterator of some other type `B`, you can use `map()`,
+   * passing a callback function that takes an A and returns a B.
+   * 
+   * `map()` is conceptually similar to a for loop.
+   * However, as `map()` is lazy, it is best used when you're already working with other iterators.
+   * If you're doing some sort of looping for a side effect, it's considered more idiomatic to use for than `map()`.
+   * 
+   * ### Examples
+   * Basic usage:
+  ```ts
+  const a = $vec(1, 2, 3);
+  const iter = a.iter().map(x =>  2 * x);
+
+  $assertEq(iter.next(), Some(2));
+  $assertEq(iter.next(), Some(4));
+  $assertEq(iter.next(), Some(6));
+  $assertEq(iter.next(), None());
+  ```
+   * If you're doing some sort of side effect, prefer for to map():
+  ```ts
+  // don't do this:
+  $range(0,5).map(console.log);
+
+  // Instead, use a for-loop:
+  for(let x=0;x<5;x++) {
+    console.log(x);
+  }
+  ```
+   */
   map<U>(f: Fn<[element: T,index: number],U>): IteratorTrait<U>;
   mapWhile<U>(f: Fn<[element: T,index: number],U>): IteratorTrait<U>;
   at(index: number): Option<T>;
