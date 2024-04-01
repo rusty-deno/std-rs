@@ -6,8 +6,6 @@ import { Option,Some,None } from "../../error/option/option.ts";
 /**
  * A trait for dealing with iterators.
  * 
- * This is the main iterator trait.
- * 
  * * Implementing it only requires two methods {@linkcode Symbol.iterator} and {@linkcode iter}.
  */
 export abstract class IntoIterator<T> implements Iterable<T> {
@@ -240,7 +238,7 @@ export abstract class IntoIterator<T> implements Iterable<T> {
   }
   
   /**
-   * Copies `this` into a new {@linkcode Array<T>}.
+   * Copies `this` into a new `T[]`.
    */
   public toArray() {
     return Array.from(this);
@@ -258,7 +256,11 @@ export abstract class IntoIterator<T> implements Iterable<T> {
 
 
 
-
+/**
+ * A trait for dealing with iterators.
+ * 
+ * This is the main iterator trait.
+ */
 export interface IteratorTrait<T> extends IntoIterator<T> {
   /**
    * Takes two iterators and creates a new iterator over both in sequence.
@@ -418,6 +420,66 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   ```
    */
   flatMap<U>(f: Fn<[element: T],Option<U>>): IteratorTrait<U>;
+  
+  /**
+   * Creates an iterator that flattens nested structure.
+   * 
+   * This is useful when you have an iterator of iterators or an iterator of things that can be turned into iterators and you want to remove one level of indirection.
+   * 
+   * ### Examples
+   * Basic usage:
+  ```ts
+  const data = $vec($vec(1, 2, 3, 4), $vec(5, 6));
+  const flattened = data.iter().flatten().collect();
+  
+  $assertEq(flattened,[1, 2, 3, 4, 5, 6]);
+  ```
+  ```ts
+  const words = $vec("alpha", "beta", "gamma");
+  const merged = words.iter()
+  .map(str => [...str])
+  .flatten()
+  .join("");
+  
+  $assertEq(merged, "alphabetagamma");
+  ```
+   * You can also rewrite this in terms of {@linkcode flatMap}, which is preferable in this case since it conveys intent more clearly:
+  ```ts
+  const words = $vec("alpha", "beta", "gamma");
+  const merged = words.iter()
+  .flatMap(str => [...str])
+  .join("");
+  
+  $assertEq(merged, "alphabetagamma");
+  ```
+   * Flattening works on any {@linkcode IntoIterator} type, including {@linkcode Option} and {@linkcode Result}:
+  ```ts
+  const options = $vec(Some(123), Some(321), None(), Some(231));
+  const flattenedOptions = options.iter().flatten().collect<Vec<number>>();
+  
+  $assertEq(flattenedOptions, $vec(123, 321, 231));
+  ```
+  ```ts
+  const results = $vec(Ok(123), Ok(321), Err(456), Ok(231));
+  const flattenedResults = results.iter().flatten().collect<Vec<number>>();
+  
+  $assertEq(flattenedResults, $vec(123, 321, 231));
+  ```
+   * Flattening only removes one level of nesting at a time:
+  ```ts
+  const d3 = $vec([[1, 2], [3, 4]], [[5, 6], [7, 8]]);
+  const d2 = d3.iter().flatten().collect<Vec<number>>();
+  
+  $assertEq(d2, [[1, 2], [3, 4], [5, 6], [7, 8]]);
+
+  const d1 = d3.iter().flatten().flatten().collect::<Vec<number>>();
+  $assertEq(d1, [1, 2, 3, 4, 5, 6, 7, 8]);
+  ```
+   * Here we see that {@linkcode flatten()} does not perform a "deep" flatten.
+  Instead, only one level of nesting is removed.
+  That is, if you {@linkcode flatten()} a three-dimensional array, the result will be two-dimensional and not one-dimensional.
+  To get a one-dimensional structure, you have to {@linkcode flatten()} again.
+   */
   // deno-lint-ignore no-explicit-any
   flatten<U>(): IteratorTrait<T extends Iterable<any>?U:T>;
   inspect(f: Fn<[element: T],void>): IteratorTrait<T>;
