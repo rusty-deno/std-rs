@@ -1,8 +1,6 @@
 import { Fn } from '../../types.ts';
 import { Vec } from '../vec/mod.ts';
 import { Option,Some,None,Optional } from "../../error/option/option.ts";
-import { $unimplemented } from "../../declarative-macros/panics.ts";
-
 
 
 /**
@@ -251,8 +249,13 @@ export abstract class IntoIterator<T> implements Iterable<T> {
   $assertEq(hello, "Hello World");
   ```
    */
-  public join(_seperator: string): string {
-    return $unimplemented();
+  public join(seperator?: string): string {
+    let str="";
+    for(const element of this) {
+      str+=`${element}${seperator}`;
+    }
+
+    return str.substring(1);
   }
   
   /**
