@@ -4,16 +4,18 @@ import { Fn } from "../../types.ts";
 import { Exception } from '../exception.ts';
 
 
-
-
+/**
+ * The Option type.
+ * It holds optional (nullable) value.
+ */
 export class Option<T> extends Exception<T,None> {
   protected isException: boolean;
-
+  
   constructor(private _value: T|None) {
     super();
     this.isException=_value==null;
   }
-
+  
   protected match<S,N>(t: (t: T)=> S,e: (e: None)=> N): S|N {
     const res=this.res();
     return (this.isException?e:t)(res);
@@ -23,16 +25,19 @@ export class Option<T> extends Exception<T,None> {
     return this._value;
   }
 
+  /**
+   * Inner value of the option
+   */
   public get value() {
     return this._value;
   }
-
+  
   public set value(val) {
     this._value=val;
     this.isException=val==null;
   }
-
-
+  
+  
   /**
    * Returns `None` if the value is `None`,otherwise returns {@linkcode optb}.
    * 
@@ -65,7 +70,7 @@ export class Option<T> extends Exception<T,None> {
   public andThen(f: (xd: T)=> Option<T>): Option<T> {
     return this.match(f,_=> this.clone());
   }
-
+  
   /**
    * Returns `None` if the option is `None`, otherwise calls predicate with the wrapped value and returns:
    * * `Some` if predicate returns true (where t is the wrapped value), and
@@ -87,7 +92,7 @@ export class Option<T> extends Exception<T,None> {
   public override or(optb: this): this {
     return this.isException?optb:this.clone();
   }
-
+  
   /**
    * Returns the {@linkcode Option} if it contains a value, otherwise calls {@linkcode f} and returns the result.
    * 
@@ -100,7 +105,7 @@ export class Option<T> extends Exception<T,None> {
   public override orElse(f: (err: None)=> this): this {
     return this.match(_=> this.clone(),f);
   }
-
+  
   /**
    * Returns the contained `Some` value.
    * 
@@ -142,11 +147,11 @@ export class Option<T> extends Exception<T,None> {
    * ```
    */
   public insert(val: T) {
-    this._value=val;
-    this.isException=false;
+   this._value=val;
+   this.isException=false;
     return this;
   }
-
+  
   /**
    * Returns the contained `Some` value or Inserts the given `Some` value in the current {@linkcode Option} and returns it.
    * # Example
@@ -158,7 +163,7 @@ export class Option<T> extends Exception<T,None> {
   public getOrInsert(val: T) {
     return this.match(t=> t,_=> this.value=val);
   }
-
+  
   /**
    * Maps an {@linkcode Option<T>} to {@linkcode Option<U>} by applying a function to a contained value (if `Some`) or returns `None` (if `None`).
    * 
@@ -167,7 +172,7 @@ export class Option<T> extends Exception<T,None> {
   public map<U>(f: Fn<[val: T], U>) {
     return new Option(this.match(val=> f(val),none=> none));
   }
-
+  
   /**
    * Returns the provided default result (if `None`), or applies a function to the contained value.
    * 
@@ -176,14 +181,14 @@ export class Option<T> extends Exception<T,None> {
   public mapOr<U>(def: U,f: Fn<[val: T],U>) {
     return this.match(f,_=> def);
   }
-
+  
   /**
    * Computes a default function result (if `None`), or applies a different function to the contained value.
    */
   public mapOrElse<U>(def: Fn<[],U>,f: Fn<[val: T],U>) {
     return this.match(f,def);
   }
-
+  
   /**
    * Returns the contained `Some` value or a provided default {@linkcode optb}.
    * 
@@ -200,7 +205,7 @@ export class Option<T> extends Exception<T,None> {
   public override unwrapOr(optb: T): T {
     return this.match(s=> s,_=> optb);
   }
-
+  
   /**
    * Returns the contained `Some` value.
    * 
@@ -218,7 +223,7 @@ export class Option<T> extends Exception<T,None> {
   public override unwrap(): T {
     return this.match(s=> s,e=> $panic(e as any));
   }
-
+  
   /**
    * Returns the contained `Some` value or if the value is `None` calls {@linkcode f} and returns the result.
    * # Example
@@ -230,7 +235,7 @@ export class Option<T> extends Exception<T,None> {
   public override unwrapOrElse(f: (none: None)=> T): T {
     return this.match(s=> s,f);
   }
-
+  
   /**
    * Returns the contained `Some` value or if the value is `None` throws an exception.
    * #### Not recommended to use.
@@ -248,21 +253,21 @@ export class Option<T> extends Exception<T,None> {
   public override unwrapUnchecked(): T|None {
     return this._value;
   }
-
+  
   /**
    * Returns whether the object contains a `Some` value.
    */
   public override contains() {
     return !this.isException;
   }
-
+  
   /**
    * Returns whether the object contains a `None` value.
    */
   public containsNone() {
     return this.isException;
   }
-
+  
   /**
    * Empties the current {@linkcode Option}
    * # Example
@@ -274,19 +279,28 @@ export class Option<T> extends Exception<T,None> {
   public empty() {
     this._value=null;
   }
-
+  
   public static get None() {
     return None<any>(null);
   }
-
+  
   public static Some<T>(val: T) {
     return new Option<T>(val);
   }
 }
 
+
+/** No value. */
 export type None=undefined|null;
+/** Some value of type `T`. */
 export type Some<T>=NonNullable<T>;
-export const none=Option.None;
+
+/**
+ * Optional {@linkcode T}
+ * 
+ * Simply `Option<T>|None|T`
+ */
+export type Optional<T>=Option<T>|None|T;
 
 export function Some<T>(val: T) {
   return Option.Some(val);
