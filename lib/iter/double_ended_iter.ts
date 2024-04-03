@@ -1,7 +1,7 @@
 import { IntoIterator } from './iter.ts';
-import { Option } from '../../error/option/option.ts';
+import { Option } from '../error/option/option.ts';
 import { ExactSizeIterator } from './exact_size_iter.ts';
-import { Fn } from '../../types.ts';
+import { Fn } from '../types.ts';
 
 
 export abstract class DoubleEndedIterator<T> extends ExactSizeIterator<T> {

@@ -3,7 +3,7 @@ import { PartailEq } from '../../cmp/eq.ts';
 import * as lib from "../../../bindings/std_rs.js";
 import { Option } from "../../error/option/option.ts";
 import { $todo } from "../../declarative-macros/panics.ts";
-import { IntoIterator,IteratorTrait } from '../iter/iter.ts';
+import { IntoIterator,IteratorTrait } from '../../iter/iter.ts';
 import { $eq } from "../../cmp/macros.ts";
 
 type Equivalent<T>=Vec<T>|T[];

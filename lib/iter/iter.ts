@@ -1,6 +1,6 @@
-import { Fn } from '../../types.ts';
-import { Vec } from '../vec/mod.ts';
-import { Option,Some,None,Optional } from "../../error/option/option.ts";
+import { Fn } from '../types.ts';
+import { Vec } from '../collections/vec/mod.ts';
+import { Option,Some,None,Optional } from "../error/option/option.ts";
 
 
 /**
@@ -282,7 +282,7 @@ export abstract class IntoIterator<T> implements Iterable<T> {
  * 
  * This is the main iterator trait.
  */
-export interface IteratorTrait<T> extends IntoIterator<T> {
+export abstract class IteratorTrait<T> extends IntoIterator<T> {
   /**
    * Takes two iterators and creates a new iterator over both in sequence.
    * 
@@ -309,7 +309,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
    * Since the argument to {@linkcode chain()} uses IntoIterator, we can pass anything that can be converted into an Iterator, not just an Iterator itself.
    */
 
-  chain(other: Iterable<T>): IteratorTrait<T>;
+  public abstract chain(other: Iterable<T>): IteratorTrait<T>;
 
   /**
    * Transforms an iterator into a collection.
@@ -358,7 +358,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   ```
    * Because {@linkcode collect()} only cares about what you're collecting into.
    */
-  collect<I extends IteratorTrait<T>>(): I;
+  public abstract collect<I extends IteratorTrait<T>>(): I;
 
   /**
    * Repeats an iterator endlessly.
@@ -384,7 +384,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   ```
    */
 
-  cycle(): IteratorTrait<T>;
+  public abstract cycle(): IteratorTrait<T>;
 
   /**
    * Creates an iterator which gives the current iteration count as well as the next value.
@@ -405,7 +405,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   ```
    */
 
-  enumerate(): IteratorTrait<T>;
+  public abstract enumerate(): IteratorTrait<T>;
   /**
    * Creates an iterator which uses a callback function to determine if an element should be yielded.
    * 
@@ -424,7 +424,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   ```
    */
 
-  filter(f: Fn<[element: T],boolean>): IteratorTrait<T>;
+  public abstract filter(f: Fn<[element: T],boolean>): IteratorTrait<T>;
   /**
    * Searches for an element of an iterator that satisfies a predicate.
    * 
@@ -453,7 +453,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(iter.find(x => x == 2), 2);
   ```
    */
-  find(f: Fn<[element: T],boolean>): Option<T>;
+  public abstract find(f: Fn<[element: T],boolean>): Option<T>;
 
   /**
    * Applies callback function to the elements of iterator and returns the first non-none result.
@@ -468,7 +468,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(firstNumber, 69);
   ```
    */
-  findMap<U>(f: Fn<[element: T],Optional<U>>): Option<T>;
+  public abstract findMap<U>(f: Fn<[element: T],Optional<U>>): Option<T>;
 
   /**
    * Creates an iterator that both filters and maps.
@@ -493,7 +493,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   console.log(texts);
   ```
    */
-  filterMap<U>(f: Fn<[element: T],Optional<U>>): IteratorTrait<U>;
+  public abstract filterMap<U>(f: Fn<[element: T],Optional<U>>): IteratorTrait<U>;
 
   /**
    * Creates an iterator that works like map, but flattens nested structure.
@@ -517,7 +517,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(merged, "alphabetagamma");
   ```
    */
-  flatMap<U>(f: Fn<[element: T],Option<U>>): IteratorTrait<U>;
+  public abstract flatMap<U>(f: Fn<[element: T],Option<U>>): IteratorTrait<U>;
   
   /**
    * Creates an iterator that flattens nested structure.
@@ -579,7 +579,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   To get a one-dimensional structure, you have to {@linkcode flatten()} again.
    */
   // deno-lint-ignore no-explicit-any
-  flatten<U>(): IteratorTrait<T extends Iterable<any>?U:T>;
+  public abstract flatten<U>(): IteratorTrait<T extends Iterable<any>?U:T>;
 
   /**
    * Does something with each element of an iterator, passing the value on.
@@ -644,7 +644,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   console.log(texts);
   ```
    */
-  inspect(f: Fn<[element: T],void>): IteratorTrait<T>;
+  public abstract inspect(f: Fn<[element: T],void>): IteratorTrait<T>;
 
   /**
    * Takes a callback function and creates an iterator which calls that callback function on each element.
@@ -683,7 +683,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   }
   ```
    */
-  map<U>(f: Fn<[element: T,index: number],U>): IteratorTrait<U>;
+  public abstract map<U>(f: Fn<[element: T,index: number],U>): IteratorTrait<U>;
 
   /**
    * Creates an iterator that both yields elements based on a predicate and maps.
@@ -717,8 +717,8 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
    * Because {@linkcode mapWhile()} needs to look at the value in order to see if it should be included or not, consuming iterators will see that it is removed:
    * * Note that unlike {@linkcode takeWhile} this iterator doesn't short-circuit.
    */
-  mapWhile<U>(f: Fn<[element: T,index: number],Optional<U>>): IteratorTrait<U>;
-  
+  public abstract mapWhile<U>(f: Fn<[element: T,index: number],Optional<U>>): IteratorTrait<U>;
+
   /**
    * Returns the nth element of the iterator.
    * 
@@ -735,7 +735,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(a.iter().nth(1), Some(2));
   ```
    */
-  nth(n: number): Option<T>;
+  public abstract nth(n: number): Option<T>;
 
   /**
    * Searches for an element in an iterator, returning its index.
@@ -763,7 +763,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(iter.position(x => x >= 2), Some(1));
   ```
    */
-  position(f: Fn<[element: T],boolean>): number;
+  public abstract position(f: Fn<[element: T],boolean>): number;
 
   /**
    * An iterator adapter which, like {@linkcode fold}, holds internal state, but unlike {@linkcode fold}, produces a new iterator.
@@ -799,7 +799,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(iter.next(), None());
   ```
    */
-  scan<St,B>(init: St,f: Fn<[prev: St,element: T],Optional<B>>): IteratorTrait<T>;
+  public abstract scan<St,B>(init: St,f: Fn<[prev: St,element: T],Optional<B>>): IteratorTrait<T>;
 
   /**
    * Creates an iterator that skips the first {@linkcode n} elements.
@@ -819,7 +819,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(iter.next(), 3);
   $assertEq(iter.next(), None());
    */
-  skip(n: number): IteratorTrait<T>;
+  public abstract skip(n: number): IteratorTrait<T>;
 
   /**
    * Creates an iterator that {@linkcode skip}s elements based on a predicate.
@@ -855,7 +855,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(iter.next(), None());
   ```
    */
-  skipWhile(f: Fn<[element: T],boolean>): IteratorTrait<T>;
+  public abstract skipWhile(f: Fn<[element: T],boolean>): IteratorTrait<T>;
 
   /**
    * Creates an iterator starting at the same point, but stepping by the given amount at each iteration.
@@ -876,7 +876,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq!(iter.next(), None());
   ```
    */
-  stepBy(step: number): IteratorTrait<T>;
+  public abstract stepBy(step: number): IteratorTrait<T>;
 
   /**
    * Creates an iterator that yields the first {@linkcode n} elements, or fewer if the underlying iterator ends sooner.
@@ -913,8 +913,8 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(iter.next(), None());
   ```
    */
-  take(n: number): IteratorTrait<T>;
-  
+  public abstract take(n: number): IteratorTrait<T>;
+
   /**
    * Creates an iterator that yields elements based on a predicate.
    * 
@@ -934,7 +934,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(iter.next(), None());
   ```
    */
-  takeWhile(f: Fn<[element: T],boolean>): IteratorTrait<T>;
+  public abstract takeWhile(f: Fn<[element: T],boolean>): IteratorTrait<T>;
 
   /**
    * 'Zips up' two iterators into a single iterator of pairs.
@@ -1004,7 +1004,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   .zip(b.iter().map(x => x * 2).skip(1));
   ```
    */
-  zip<U>(other: Iterable<U>): IteratorTrait<[T,U]>;
+  public abstract zip<U>(other: Iterable<U>): IteratorTrait<[T,U]>;
 
   /**
    * Converts an iterator of pairs into a pair of containers.
@@ -1024,7 +1024,7 @@ export interface IteratorTrait<T> extends IntoIterator<T> {
   $assertEq(Arr.from(right), [2, 4, 6]);
   ```
    */
-  unzip(): never;
+  public abstract unzip(): never;
 }
 
 
