@@ -1,13 +1,20 @@
 import { Clone } from '../../clone.ts';
+import { PartailEq } from '../../cmp/eq.ts';
 import * as lib from "../../../bindings/std_rs.js";
 import { Option } from "../../error/option/option.ts";
+import { $todo } from "../../declarative-macros/panics.ts";
+import { IntoIterator,IteratorTrait } from '../iter/iter.ts';
+
+type Equivalent<T>=Vec<T>|T[];
+
 
 // TODO(kakashi): implement Drop trait using decorator
 // TODO(kakashi): implement IterTrait
-export class Vec<T> implements Iterable<T>,Clone {
+export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalent<T>> {
   #ptr: number;
 
   constructor(...elements: T[]) {
+    super();
     this.#ptr=elements.length>0?lib.vec_from_iter(elements):lib.new_vec();
   }
 
@@ -38,6 +45,21 @@ export class Vec<T> implements Iterable<T>,Clone {
 
   *[Symbol.iterator](): Iterator<T> {
     for(let i=0;i<this.length;i++) yield lib.vec_index(this.#ptr,i);
+  }
+
+  public eq(rhs: Equivalent<T>): boolean {
+    if(this.length !== rhs.length) return false;
+    if(rhs instanceof Vec && this.#ptr === rhs.#ptr) return true;
+
+    for(const [a,b] of this.iter().zip(rhs)) {
+      if(a!=b) return false; // TODO(psiman): fix `!==` with `not-equals`
+    }
+
+    return true;
+  }
+
+  public iter(): IteratorTrait<T> {
+    return $todo();
   }
 
   public at(index: number) {
