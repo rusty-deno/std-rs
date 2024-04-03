@@ -1,5 +1,5 @@
 //iter
-export * as iter from "./iter/mod.ts";
+export * as iter from "../iter/mod.ts";
 export * from "./iter.ts";
 
 //hash_map
