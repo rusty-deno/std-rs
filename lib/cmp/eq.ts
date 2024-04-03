@@ -42,14 +42,19 @@ class Vec2 implements Eq {
        return this.x === rhs.x && this.y === rhs.y;
      }
 }
+
+const vec=new Vec2(1,1);
+const vec2=new Vec2(1,1);
+
+$assertEq(vec,vec2);
 ```
  */
-export interface Eq extends PartailEq {
+export interface Eq extends PartailEq<ThisType<unknown>> {
   /**
    * This method tests for `this` and other values to be equal, and uses `===` internally.
    * @returns {boolean}
    */
-  eq(rhs: this): rhs is this;
+  eq(rhs: this): boolean;
 }
 
 
@@ -96,11 +101,12 @@ const BookFormat={
      Ebook=2
 }
 
+// Implement <Book> == <BookFormat> comparisons
 class Book implements PartialEq {
      constructor(isbn: number,format: BookFormat) {}
 
      public eq(rhs: Book) {
-       return this.isbn === rhs.isbn && this.format === rhs.format;
+       return this.format === rhs.format;
      }
 }
 
@@ -110,7 +116,7 @@ const b2 = new Book(3, BookFormat.Ebook);
 const b3 = new Book(10, BookFormat.Paperback);
 
 $assertEq(b1, b2);
-$assertEq(b1, b3);
+$assert(!b1.eq(b3));
 ```
  * #### How can I compare two different types?
  * 
@@ -124,6 +130,7 @@ const BookFormat={
      Ebook=2
 }
 
+
 class Book implements PartialEq<Book|BookFormat> {
      constructor(isbn: number,format: BookFormat) {}
 
@@ -134,10 +141,10 @@ class Book implements PartialEq<Book|BookFormat> {
 
 const b1 = new Book(3, BookFormat.Paperback);
 
-$assertEq(b1,BookFormat::Paperback);
+$assertEq(b1,BookFormat.Paperback);
 ```
  */
-export interface PartailEq<Rhs=ThisType<unknown>> {
+export interface PartailEq<Rhs> {
   /**
    * This method returns whether `this` and {@linkcode rhs} are equal.
    * It is similiar to `==`.
