@@ -8,10 +8,12 @@ export * as path from "./lib/path.ts";
 export * as thread from "./lib/thread/mod.ts";
 export * as ffi from "./lib/ffi/mod.ts";
 export * as time from "./lib/time/mod.ts";
+export * as cmp from "./lib/cmp/mod.ts";
 
 //export * from "";
 
 //rust features
+export * from "./lib/cmp/mod.ts";
 export * from "./lib/drop.ts";
 export * from "./lib/clone.ts";
 export * from "./lib/collections/iter.ts";
