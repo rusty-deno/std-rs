@@ -16,6 +16,7 @@
   # iter
     # IteratorTrait
       next_chunk
+      collect
 # Docs:
   # thread
     park,unpark
