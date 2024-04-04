@@ -1,7 +1,42 @@
 import { Fn } from "../../types.ts";
-import { Result } from "./result.ts";
+import { Result,Err,Ok } from "./result.ts";
+
+/**
+ * {@linkcode AsyncOk} value of type {@linkcode T}
+ */
+export type AsyncOk<T>=Promise<T>;
+
+/**
+ * {@linkcode AsyncErr} value of type {@linkcode E}
+ */
+export type AsyncErr<E=Error>=Promise<E>;
+
+export function AsyncErr<T,E>(err: E|AsyncErr<E>): AsyncResult<T,E> {
+  return new AsyncResult<T,E>(
+    err instanceof Promise?
+      err.then(err=> Err(err))
+    :
+      new Promise(resolve=> resolve(Err(err)))
+  );
+}
+
+export function AsyncOk<T,E>(ok: T|AsyncOk<T>): AsyncResult<T,E> {
+  return new AsyncResult<T,E>(
+    ok instanceof Promise?
+      ok.then(ok=> Ok(ok))
+    :
+      new Promise(resolve=> resolve(Ok(ok)))
+  );
+}
 
 
+
+/**
+ * A promised {@linkcode Result} value.
+ * Which can either be success ({@linkcode AsyncOk}) or failure ({@linkcode AsyncErr}).
+ * 
+ * it is equivalent to `Promise<Result<T,E>>`
+ */
 export class AsyncResult<T,E> extends Promise<Result<T,E>> {
   constructor(res: Promise<Result<T,E>>) {
     super(resolve=> resolve(res));
@@ -64,10 +99,34 @@ export class AsyncResult<T,E> extends Promise<Result<T,E>> {
     return new AsyncResult(this.then(res=> res.orElse(f)));
   }
 
+  /**
+   * Converts from {@linkcode Result<T, E>} to {@linkcode Option<E>}.
+   * 
+   * ### Examples
+  ```ts
+  const x: AsyncResult<number, string> = AsyncOk(2);
+  $assertEq(x.err(), None());
+  
+  const x: AsyncResult<number, string> = AsyncErr("Nothing here");
+  $assertEq(x.err(), Some("Nothing here"));
+  ```
+   */
   public async err() {
     return (await this).err();
   }
 
+  /**
+   * Converts from {@linkcode Result<T, E>} to {@linkcode Option<T>}.
+   * 
+   * ### Examples
+  ```ts
+  const x: AsyncResult<number, string> = AsyncOk(2);
+  $assertEq(x.ok(), Some(2));
+  
+  const x: AsyncResult<number, string> = AsyncErr("Nothing here");
+  $assertEq(x.ok(), None());
+  ```
+   */
   public async ok() {
     return (await this).ok();
   }
