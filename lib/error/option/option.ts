@@ -2,13 +2,15 @@
 import { $panic } from '../../../mod.ts';
 import { Fn } from "../../types.ts";
 import { Exception } from '../exception.ts';
+import { PartailEq } from '../../cmp/eq.ts';
+import { $eq } from "../../cmp/macros.ts";
 
 
 /**
  * The Option type.
  * It holds optional (nullable) value.
  */
-export class Option<T> extends Exception<T,None> {
+export class Option<T> extends Exception<T,None> implements PartailEq<Optional<T>> {
   protected isException: boolean;
   
   constructor(private _value: T|None) {
@@ -23,6 +25,10 @@ export class Option<T> extends Exception<T,None> {
 
   protected res(): any {
     return this._value;
+  }
+
+  public eq(rhs: Optional<T>): boolean {
+    return $eq(this._value,rhs instanceof Option?rhs._value:rhs);
   }
 
   /**

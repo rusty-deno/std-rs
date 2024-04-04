@@ -4,12 +4,13 @@ import { Exception } from '../exception.ts';
 import { $panic } from "../../../mod.ts";
 import { Res } from './mod.ts';
 import { Fn } from "../../types.ts";
+import { PartailEq,$eq } from '../../cmp/mod.ts';
 
 export type Ok<T>=T;
 export type Err<E=Error>=E;
 
 
-export class Result<T,E> extends Exception<T,E> {
+export class Result<T,E> extends Exception<T,E> implements PartailEq<T|E|Result<T,E>> {
   protected isException: boolean;
 
   constructor(private _result: Res<T,E>) {
@@ -29,6 +30,10 @@ export class Result<T,E> extends Exception<T,E> {
 
   public get result(): T|E {
     return this.res();
+  }
+
+  public eq(rhs: Result<T,E>|T|E): boolean {
+    return $eq(this.res(),rhs instanceof Result?rhs.res():rhs);
   }
 
   /**
