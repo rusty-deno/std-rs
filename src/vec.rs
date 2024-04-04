@@ -53,6 +53,12 @@ pub fn vec_index(this: &Vec<JsValue>,i: usize)-> JsValue {
 }
 
 #[method]
+pub fn vec_set(this: &mut Vec<JsValue>,index: usize,element: JsValue) {
+  this[index]=element;
+}
+
+
+#[method]
 pub fn vec_splice(this: &mut Vec<JsValue>,start: usize,end: usize,replace_with: Vec<JsValue>)-> Vector {
   as_ptr!(this.splice(start..end,replace_with).collect())
 }

@@ -1,10 +1,10 @@
 import { Clone } from '../../clone.ts';
-import { PartailEq } from '../../cmp/eq.ts';
+import { PartailEq,$eq } from '../../cmp/mod.ts';
 import * as lib from "../../../bindings/std_rs.js";
 import { Option } from "../../error/option/option.ts";
+import { $resultSync } from "../../error/result/macros.ts";
 import { $todo } from "../../declarative-macros/panics.ts";
 import { IntoIterator,IteratorTrait } from '../../iter/iter.ts';
-import { $eq } from "../../cmp/macros.ts";
 
 type Equivalent<T>=Vec<T>|T[];
 
@@ -65,6 +65,10 @@ export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalen
 
   public at(index: number) {
     return new Option(lib.vec_at(this.#ptr,index) as T|null);
+  }
+
+  public set(index: number,element: T) {
+    return $resultSync(lib.vec_set,this.#ptr,index,element);
   }
 
   public push(element: T) {

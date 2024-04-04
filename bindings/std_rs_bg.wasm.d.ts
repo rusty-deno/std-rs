@@ -10,6 +10,7 @@ export function vec_at(a: number, b: number): number;
 export function vec_len(a: number): number;
 export function vec_capacity(a: number): number;
 export function vec_index(a: number, b: number): number;
+export function vec_set(a: number, b: number, c: number): void;
 export function vec_splice(a: number, b: number, c: number, d: number, e: number): number;
 export function vec_split_off(a: number, b: number): number;
 export function vec_append(a: number, b: number): void;
