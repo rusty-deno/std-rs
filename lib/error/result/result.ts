@@ -12,7 +12,7 @@ import { PartailEq,$eq } from '../../cmp/mod.ts';
 export type Ok<T>=T;
 
 /**
- * {@linkcode E} value of type {@linkcode E}
+ * {@linkcode Err} value of type {@linkcode E}
  */
 export type Err<E=Error>=E;
 
@@ -105,10 +105,34 @@ export class Result<T,E> extends Exception<T,E> implements PartailEq<T|E|Result<
     return this.match(_=> this.clone(),f);
   }
 
+  /**
+   * Converts from {@linkcode Result<T, E>} to {@linkcode Option<E>}.
+   * 
+   * ### Examples
+  ```ts
+  const x: Result<number, string> = Ok(2);
+  $assertEq(x.err(), None());
+  
+  const x: Result<number, string> = Err("Nothing here");
+  $assertEq(x.err(), Some("Nothing here"));
+  ```
+   */
   public err(): Option<E> {
     return this.match(_=> None(null),err=> Some(err));
   }
 
+  /**
+   * Converts from {@linkcode Result<T, E>} to {@linkcode Option<T>}.
+   * 
+   * ### Examples
+  ```ts
+  const x: Result<number, string> = Ok(2);
+  $assertEq(x.ok(), Some(2));
+  
+  const x: Result<number, string> = Err("Nothing here");
+  $assertEq(x.ok(), None());
+  ```
+   */
   public ok(): Option<T> {
     return this.match(ok=> Some(ok),_=> None(null));
   }
