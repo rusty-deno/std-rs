@@ -6,10 +6,19 @@ import { Res } from './mod.ts';
 import { Fn } from "../../types.ts";
 import { PartailEq,$eq } from '../../cmp/mod.ts';
 
+/**
+ * {@linkcode Ok} value of type {@linkcode T}
+ */
 export type Ok<T>=T;
+
+/**
+ * {@linkcode E} value of type {@linkcode E}
+ */
 export type Err<E=Error>=E;
 
-
+/**
+ * Result is a type that represents either success ({@linkcode Ok}) or failure ({@linkcode Err}).
+ */
 export class Result<T,E> extends Exception<T,E> implements PartailEq<T|E|Result<T,E>> {
   protected isException: boolean;
 
@@ -28,6 +37,9 @@ export class Result<T,E> extends Exception<T,E> implements PartailEq<T|E|Result<
     return res[Object.hasOwn(res,"ok")?"ok":"err"];
   }
 
+  /**
+   * Inner value of the result.
+   */
   public get result(): T|E {
     return this.res();
   }
@@ -275,12 +287,19 @@ export class Result<T,E> extends Exception<T,E> implements PartailEq<T|E|Result<
   }
 
 
-  public static Ok<T>(ok: T) {
-    return new Result<T,any>({ ok });
+  /**
+   * {@linkcode Ok} value of type {@linkcode T}
+   */
+  public static Ok<T,E=any>(ok: T) {
+    return new Result<T,E>({ ok });
   }
 
-  public static Err<E>(err: E) {
-    return new Result<any,E>({ err });
+
+  /**
+   * {@linkcode Err} value of type {@linkcode E}
+   */
+  public static Err<E,T=any>(err: E) {
+    return new Result<T,E>({ err });
   }
 }
 
@@ -288,6 +307,7 @@ export class Result<T,E> extends Exception<T,E> implements PartailEq<T|E|Result<
 export function Err<T,E>(err: E) {
   return new Result<T,E>({ err });
 }
+
 export function Ok<T,E>(ok: T) {
   return new Result<T,E>({ ok });
 }
