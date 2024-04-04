@@ -1,6 +1,6 @@
 import { Fn } from '../types.ts';
 import { Vec } from '../collections/vec/mod.ts';
-import { Option,Some,None,Optional } from "../error/option/option.ts";
+import { Option,Some,None,Optional,Result,Err,Ok } from "../error/mod.ts";
 
 
 /**
@@ -45,6 +45,34 @@ export abstract class IntoIterator<T> implements Iterable<T> {
    */
   public next() {
     return new Option(this[Symbol.iterator]().next().value as T|null);
+  }
+
+  /**
+   * Advances the iterator and returns an array containing the next {@linkcode N} values.
+   * 
+   * If there are not enough elements to fill the array then {@linkcode Err} is returned containing an iterator over the remaining elements.
+   * 
+   * ### Examples
+   * Basic usage:
+  ```ts
+  const iter = $chars("lorem");
+
+  $assertEq(iter.nextChunk().unwrap(), ['l', 'o']);              // N is inferred as 2
+  $assertEq(iter.nextChunk().unwrap(), ['r', 'e', 'm']);         // N is inferred as 3
+  $assertEq(iter.nextChunk::<4>().unwrapErr(), []);              // N is explicitly 4
+  ```
+   * Split a string and get the first three items.
+   */
+  public nextChunk<const N extends number>(count: N): Result<T[],T[]> {
+    const chunk=new Array<T>(count);
+    for(let i=0;i<count;i++) {
+      const next=this.next().value;
+      if(next==null) return Err(chunk);
+
+      chunk[i]=next;
+    }
+
+    return Ok(chunk);
   }
 
   /**
@@ -482,6 +510,7 @@ export abstract class IteratorTrait<T> extends IntoIterator<T> {
    * Basic usage:
   ```ts
   import { fs,$vec } from "std";
+import { Err, Ok } from '../error/result/result';
 
   const filePaths = $vec("hello-friend.txt", "who-am-i.txt", "goodbye-friend.txt");
 

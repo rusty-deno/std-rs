@@ -2,7 +2,6 @@
 # FIX:
   Thread
   Option,Result pretty print
-  Eq
 
 # Remaaster
   errors,
@@ -15,7 +14,6 @@
     sync,
   # iter
     # IteratorTrait
-      next_chunk
       collect
 # Docs:
   # thread
