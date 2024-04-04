@@ -16,7 +16,7 @@
   # iter
     # IteratorTrait
       collect
-      vec methods
+      vec methods and Eq impl
   # Arr
 # Docs:
   # thread

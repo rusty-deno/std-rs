@@ -4,6 +4,11 @@ import { Vec } from '../linear/vector.ts';
 import { HashSet } from '../hash_set/hash_set.ts';
 import { Clone } from '../../clone.ts';
 import { IteratorTrait } from "../mod.ts";
+import { PartailEq } from '../../cmp/eq.ts';
+import { $eq } from "../../cmp/macros.ts";
+
+type PartiallyEqual<K,V>=HashMap<K,V>|Map<K,V>;
+type Equivalent<K,V>=K extends PropertyKey?PartiallyEqual<K,V>|Record<K,V>:PartiallyEqual<K,V>;
 
 /**
  * An improved version of native {@linkcode Map} with extra type safety
@@ -14,12 +19,12 @@ import { IteratorTrait } from "../mod.ts";
  * $assertEq(map.get(69),Some("xd"));
  * ```
  */
-export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
-  private unordered_map: Map<K,V>;
+export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,PartailEq<Equivalent<K,V>> {
+  #inner: Map<K,V>;
 
   constructor(...entries: Entry<K,V>[]) {
     super();
-    this.unordered_map=new Map(entries);
+    this.#inner=new Map(entries);
   }
 
   /**
@@ -32,7 +37,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    */
   public static fromIter<K,V>(iter: Iterable<Entry<K,V>>) {
     const map=new HashMap<K,V>();
-    map.unordered_map=new Map(iter);
+    map.#inner=new Map(iter);
     return map;
   }
 
@@ -57,12 +62,24 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
     return map;
   }
 
+
+  public eq(rhs: Equivalent<K, V>): boolean {
+    if(rhs instanceof HashMap) return this === rhs as HashMap<K,V> || $eq(this.#inner,rhs.#inner);
+    if(rhs instanceof Map) return $eq(this.#inner,rhs);
+
+    for(const [key,val] of this.#inner) {
+      if($eq(val, (rhs as Record<PropertyKey,V>)[key as PropertyKey] )) return false;
+    }
+
+    return true;
+  }
+
   *[Symbol.iterator](): Iterator<Entry<K,V>> {
-    yield* this.unordered_map;
+    yield* this.#inner;
   }
 
   public get size() {
-    return this.unordered_map.size;
+    return this.#inner.size;
   }
 
   /**
@@ -75,7 +92,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * ```
    */
   public get(key: K) {
-    return new Option(this.unordered_map.get(key));
+    return new Option(this.#inner.get(key));
   }
   
   /**
@@ -92,7 +109,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    */
   public set(key: K,value: V) {
     const prev=this.get(key);
-    this.unordered_map.set(key,value);
+    this.#inner.set(key,value);
     return prev;
   }
 
@@ -106,7 +123,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * ```
    */
   public has(key: K) {
-    return this.unordered_map.has(key);
+    return this.#inner.has(key);
   }
 
   /**
@@ -119,7 +136,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * ```
    */
   public remove(key: K) {
-    return this.unordered_map.delete(key);
+    return this.#inner.delete(key);
   }
 
   /**
@@ -133,7 +150,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * ```
    */
   public empty() {
-    this.unordered_map.clear();
+    this.#inner.clear();
   }
 
   /**
@@ -176,12 +193,12 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * Returns a set of the keys present in the current map.
    * # Example
    * ```ts
-   * const map=new HashMap<number,string>(,["xd",69],["xd1",0]);
+   * const map=new HashMap<number,string>(["xd",69],["xd1",0]);
    * $assertEq(map.keySet(),new HashSet("xd","xd1"));
    * ```
    */
   public keySet() {
-    return HashSet.formIter(this.unordered_map.keys());
+    return HashSet.formIter(this.#inner.keys());
   }
 
   /**
@@ -193,7 +210,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * ```
    */
   public keys() {
-    return Vec.fromIter(this.unordered_map.keys());
+    return Vec.fromIter(this.#inner.keys());
   }
 
   /**
@@ -205,7 +222,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * ```
    */
   public entrySet(): HashSet<Entry<K,V>> {
-    return HashSet.formIter(this.unordered_map.entries());
+    return HashSet.formIter(this.#inner.entries());
   }
 
   /**
@@ -217,7 +234,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * ```
    */
   public entries(): Vec<Entry<K,V>> {
-    return new Vec(...this.unordered_map);
+    return new Vec(...this.#inner);
   }
 
   /**
@@ -229,7 +246,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * ```
    */
   public valueSet() {
-    return HashSet.formIter(this.unordered_map.values());
+    return HashSet.formIter(this.#inner.values());
   }
 
   /**
@@ -241,11 +258,11 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
    * ```
    */
   public values() {
-    return Vec.fromIter(this.unordered_map.values());
+    return Vec.fromIter(this.#inner.values());
   }
   
   public clone() {
-    return HashMap.fromIter(this.unordered_map);
+    return HashMap.fromIter(this.#inner);
   }
 
 }
