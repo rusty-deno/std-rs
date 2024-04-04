@@ -285,11 +285,13 @@ export class Option<T> extends Exception<T,None> implements PartailEq<Optional<T
   public empty() {
     this._value=null;
   }
-  
+
+  /** No value. */
   public static get None() {
     return None<any>(null);
   }
-  
+
+  /** Some value of type `T`. */
   public static Some<T>(val: T) {
     return new Option<T>(val);
   }
@@ -298,7 +300,7 @@ export class Option<T> extends Exception<T,None> implements PartailEq<Optional<T
 
 /** No value. */
 export type None=undefined|null;
-/** Some value of type `T`. */
+/** {@linkcode Some} value of type {@linkcode T}. */
 export type Some<T>=NonNullable<T>;
 
 /**
@@ -312,9 +314,6 @@ export function Some<T>(val: T) {
   return Option.Some(val);
 }
 
-/**
- * Use it for type safety
- */
 export function None<T=any>(val: None=null): Option<T> {
   return new Option<T>(val);
 }
