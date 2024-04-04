@@ -3,6 +3,8 @@
   Thread
   Option,Result pretty print
   Async Eq
+  $eq for Map,Set
+  circular import
 
 # Remaaster
   errors,

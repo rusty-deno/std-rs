@@ -3,9 +3,12 @@ import { Entry } from './mod.ts';
 import { HashSet, Vec } from '../mod.ts';
 import { HashMap } from './hash_map.ts';
 import { IteratorTrait } from "../mod.ts";
+import { PartailEq } from '../../cmp/eq.ts';
+import { $eq } from "../../cmp/macros.ts";
 
 export type HasherFn<K>=(obj: K)=> number;
 
+type Equivalent<K,V>=HashMap<K,V>|HashTable<K,V>|Map<K,V>;
 
 /**
  * A HashTable that implementes constant time look-ups.
@@ -16,22 +19,28 @@ export type HasherFn<K>=(obj: K)=> number;
  * 
  * It's desined to be used only in special cases, for example `Keyword Recognization`.
  * 
- * # Example
+ * * **NOTE**: The {@linkcode hasher} function mustn't return the same hash for two different keys.
+ * 
+ * ### Example
  * * Suppose the keys are Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday.
  * * Then the hash-function may be second char of the string & length of the string
  * ```ts
- * const hash=(key: string)=> key.charCodeAt(1)&key.length;
- * const table=new HashTable(hash,["Sunday",0],["Monday",1],["Tuesday",2],["Wednesday",3],["Thursday",4],["Friday",5],["Saturday",6]);
+ * const hash = (key: string)=> key.charCodeAt(1) & key.length;
+ * const table = new HashTable(hash, ["Sunday", 0], ["Monday", 1], ["Tuesday", 2], ["Wednesday", 3], ["Thursday", 4], ["Friday", 5], ["Saturday", 6]);
  * 
- * $assertEq(table.get("Monday"),Some(1));
+ * $assertEq(table.get("Monday"), Some(1));
  * ```
  */
-export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
+export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,PartailEq<Equivalent<K,V>> {
   private table=new Vec<Entry<K,V>>();
   private length=0;
-  public readonly hasher: HasherFn<K>;
 
-  constructor(hasher: HasherFn<K>,...entries: Entry<K,V>[]) {
+
+  constructor(
+    /** The hasher function used to hash {@linkcode K}. */
+    public readonly hasher: HasherFn<K>,
+    ...entries: Entry<K,V>[]
+  ) {
     super();
 
     this.hasher=hasher;
@@ -64,6 +73,14 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone {
     const map=new HashTable<K,V>(hasher);
     for(const key in record) map.set(key,record[key]);
     return map;
+  }
+
+  public eq(rhs: Equivalent<K,V>): boolean {
+    for(const [key,val] of rhs) {
+      if(!$eq(this.table.at(this.hasher(key))?.[1], val)) return false;
+    }
+
+    return true;
   }
 
   public clone(): HashTable<K,V> {
