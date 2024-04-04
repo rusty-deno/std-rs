@@ -1,14 +1,15 @@
 import { Entry } from './mod.ts';
+import { Clone } from '../../clone.ts';
 import { Option } from '../../../mod.ts';
 import { Vec } from '../linear/vector.ts';
-import { HashSet } from '../hash_set/hash_set.ts';
-import { Clone } from '../../clone.ts';
-import { IteratorTrait } from "../mod.ts";
-import { PartailEq } from '../../cmp/eq.ts';
 import { $eq } from "../../cmp/macros.ts";
+import { IteratorTrait } from "../mod.ts";
+import { HashTable } from './hash_table.ts';
+import { PartailEq } from '../../cmp/eq.ts';
+import { HashSet } from '../hash_set/hash_set.ts';
 
-type PartiallyEqual<K,V>=HashMap<K,V>|Map<K,V>;
-type Equivalent<K,V>=K extends PropertyKey?PartiallyEqual<K,V>|Record<K,V>:PartiallyEqual<K,V>;
+type Equivalent<K,V>=HashMap<K,V>|Map<K,V>|HashTable<K,V>;
+
 
 /**
  * An improved version of native {@linkcode Map} with extra type safety
@@ -64,14 +65,15 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
 
 
   public eq(rhs: Equivalent<K, V>): boolean {
-    if(rhs instanceof HashMap) return this === rhs as HashMap<K,V> || $eq(this.#inner,rhs.#inner);
-    if(rhs instanceof Map) return $eq(this.#inner,rhs);
-
-    for(const [key,val] of this.#inner) {
-      if($eq(val, (rhs as Record<PropertyKey,V>)[key as PropertyKey] )) return false;
-    }
-
-    return true;
+    return rhs instanceof HashMap?
+      this === rhs || this.#inner===rhs.#inner || $eq(this.#inner,rhs.#inner)
+    :rhs instanceof Map?
+      this.#inner===rhs || $eq(this.#inner,rhs)
+    :rhs instanceof HashTable?
+      rhs.eq(this)
+    :
+      false
+    ;
   }
 
   *[Symbol.iterator](): Iterator<Entry<K,V>> {
