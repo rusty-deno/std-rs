@@ -48,6 +48,12 @@ export function vec_capacity(_this: number): number;
 export function vec_index(_this: number, i: number): any;
 /**
 * @param {number} _this
+* @param {number} index
+* @param {any} element
+*/
+export function vec_set(_this: number, index: number, element: any): void;
+/**
+* @param {number} _this
 * @param {number} start
 * @param {number} end
 * @param {any[]} replace_with

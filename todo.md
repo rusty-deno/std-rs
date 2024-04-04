@@ -2,6 +2,7 @@
 # FIX:
   Thread
   Option,Result pretty print
+  Async Eq
 
 # Remaaster
   errors,
@@ -15,6 +16,8 @@
   # iter
     # IteratorTrait
       collect
+      vec methods
+  # Arr
 # Docs:
   # thread
     park,unpark

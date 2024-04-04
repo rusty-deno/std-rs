@@ -151,6 +151,15 @@ export function vec_index(_this, i) {
 
 /**
 * @param {number} _this
+* @param {number} index
+* @param {any} element
+*/
+export function vec_set(_this, index, element) {
+    wasm.vec_set(_this, index, addHeapObject(element));
+}
+
+/**
+* @param {number} _this
 * @param {number} start
 * @param {number} end
 * @param {any[]} replace_with
