@@ -101,7 +101,6 @@ const BookFormat={
      Ebook=2
 }
 
-// Implement <Book> == <BookFormat> comparisons
 class Book implements PartialEq {
      constructor(isbn: number,format: BookFormat) {}
 
@@ -131,6 +130,7 @@ const BookFormat={
 }
 
 
+// Implement <Book> == <BookFormat> comparisons
 class Book implements PartialEq<Book|BookFormat> {
      constructor(isbn: number,format: BookFormat) {}
 
