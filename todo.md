@@ -6,7 +6,7 @@
   $eq for Map,Set
   circular import
 
-# Remaaster
+# Remaster
   errors,
 
 # ADD:
@@ -19,6 +19,8 @@
     # IteratorTrait
       collect
       vec methods and Eq impl
+  # trait
+    Joinable
   # Arr
 # Docs:
   # thread
