@@ -59,7 +59,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * const table=new HashTable(hashFn,arr);
    * ```
    */
-  public static fromIter<K,V>(hasher: HasherFn<K>,iter: Iterable<Entry<K,V>>) {
+  public static fromIter<K,V>(hasher: HasherFn<K>,iter: Iterable<Entry<K,V>>): HashTable<K,V> {
     const map=new HashTable<K,V>(hasher);
     for(const entry of iter) map.set(...entry);
     return map;
@@ -72,14 +72,14 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    *    xd: 69
    * });
    */
-  public static formRecord<K extends string|number|symbol,V>(hasher: HasherFn<K>,record: Record<K,V>) {
+  public static formRecord<K extends string|number|symbol,V>(hasher: HasherFn<K>,record: Record<K,V>): HashTable<K,V> {
     const map=new HashTable<K,V>(hasher);
     for(const key in record) map.set(key,record[key]);
     return map;
   }
 
   public eq(rhs: Equivalent<K,V>): boolean {
-    if(this.#size!==rhs.size) return false;
+    if(this.#size!==(rhs instanceof Map?rhs.size:rhs.length)) return false;
     if(this===rhs || rhs instanceof HashTable && this.table===rhs.table) //(this.table===rhs.table || rhs.table.length==this.table.length))
       return true;
 
@@ -97,7 +97,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   /**
    * Constructs a HashMap from the current table and returns it.
    */
-  public hashMap() {
+  public hashMap(): HashMap<K,V> {
     return HashMap.fromIter(this.entries());
   }
 
@@ -109,8 +109,21 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   public get capacity(): number {
     return this.table.length;
   }
-  /** Size of the table */
-  public get size() {
+
+  /**
+   * Returns the number of elements in the map.
+   * 
+   * ### Examples
+  ```ts
+  import { HashMap } from "std/collections";
+
+  const a = new HashTable();
+  
+  $assertEq(a.length, 0);
+  a.insert(1, "a");
+  $assertEq(a.length, 1);
+   */
+  public get length() {
     return this.#size;
   }
   
@@ -158,8 +171,9 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   }
   
   /**
-   * Emties the current table.
-   * # Example
+   * Clears the map, removing all key-value pairs. Keeps the allocated memory for reuse.
+   * 
+   * ### Example
    * ```ts
    * const table=new HashTable<number,string>(hashFn);
    * table.set(69,"xd");
@@ -168,7 +182,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * ```
    */
   public empty() {
-    this.table=new Vec;
+    for(let i=0;i<this.table.length;i++) delete this.table[i];
     this.#size=0;
   }
   
@@ -180,7 +194,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * $assert(table.isEmpty());
    * ```
    */
-  public isEmpty() {
+  public isEmpty(): boolean {
     return !this.#size;
   }
   
@@ -200,7 +214,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
     return entry;
   }
   
-  [Symbol.toStringTag]() {
+  public get [Symbol.toStringTag](): string {
     if(this.isEmpty()) return "{}";
     let str="{\n\t";
     for(const [key,value] of this) str+=`${key} => ${value}\n`;
@@ -218,8 +232,8 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * }`);
    * ```
    */
-  public toString() {
-    return this[Symbol.toStringTag]();
+  public toString(): string {
+    return this[Symbol.toStringTag];
   }
 
   /**
@@ -230,8 +244,8 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * $assertEq(table.keySet(),new HashSet("xd","xd1"));
    * ```
    */
-  public keySet() {
-    return HashSet.formIter(this.keys());
+  public keySet(): HashSet<K> {
+    return HashSet.fromIter(this.keys());
   }
 
   /**
@@ -242,7 +256,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * $assertEq(table.keys(),$vec("xd","xd1"));
    * ```
    */
-  public keys() {
+  public keys(): Vec<K> {
     return this.table.map(([key,_])=> key);
   }
 
@@ -278,8 +292,8 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * $assertEq(table.valueSet(),new HashSet(69));
    * ```
    */
-  public valueSet() {
-    return HashSet.formIter(this.values());
+  public valueSet(): HashSet<V> {
+    return HashSet.fromIter(this.values());
   }
   
   /**
@@ -290,7 +304,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * $assertEq(table.values(),$vec(69,0));
    * ```
    */
-  public values() {
+  public values(): Vec<V> {
     return this.table.map(([_,value])=> value);
   }
 }
