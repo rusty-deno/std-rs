@@ -104,10 +104,12 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   *[Symbol.iterator](): Iterator<Entry<K,V>> {
     yield* this.table;
   }
-  
+
+  /** Capacity of the table. */
   public get capacity(): number {
     return this.table.length;
   }
+  /** Size of the table */
   public get size() {
     return this.#size;
   }
