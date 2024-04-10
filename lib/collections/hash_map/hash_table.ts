@@ -33,7 +33,7 @@ type Equivalent<K,V>=HashMap<K,V>|HashTable<K,V>|Map<K,V>;
  */
 export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,PartailEq<Equivalent<K,V>> {
   private table=new Vec<Entry<K,V>>();
-  private length=0;
+  #size=0;
 
 
   constructor(
@@ -42,10 +42,13 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
     ...entries: Entry<K,V>[]
   ) {
     super();
+    this.#size=entries.length;
+    for(const [key,value] of entries) {
+      const hash=this.hasher(key);
+      if(this.table.nth(hash).value!=null) this.#size--;
 
-    this.hasher=hasher;
-    for(const [key,value] of entries) this.table[this.hasher(key)]=[key,value];
-    this.length=entries.length;
+      this.table[hash]=[key,value];
+    }
   }
 
   /**
@@ -76,6 +79,10 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   }
 
   public eq(rhs: Equivalent<K,V>): boolean {
+    if(this.#size!==rhs.size) return false;
+    if(this===rhs || rhs instanceof HashTable && this.table===rhs.table) //(this.table===rhs.table || rhs.table.length==this.table.length))
+      return true;
+
     for(const [key,val] of rhs) {
       if(!$eq(this.table.at(this.hasher(key))?.[1], val)) return false;
     }
@@ -97,12 +104,14 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   *[Symbol.iterator](): Iterator<Entry<K,V>> {
     yield* this.table;
   }
-  
+
+  /** Capacity of the table. */
   public get capacity(): number {
     return this.table.length;
   }
+  /** Size of the table */
   public get size() {
-    return this.length;
+    return this.#size;
   }
   
   /**
@@ -118,7 +127,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   public set(key: K,value: V): Option<Entry<K,V>> {
     const index=this.hasher(key),entry=this.table.nth(index);
     this.table[index]=[key,value];
-    ++this.length;
+    ++this.#size;
     return entry;
   }
 
@@ -160,7 +169,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    */
   public empty() {
     this.table=new Vec;
-    this.length=0;
+    this.#size=0;
   }
   
   /**
@@ -172,7 +181,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * ```
    */
   public isEmpty() {
-    return !this.length;
+    return !this.#size;
   }
   
   /**
@@ -187,7 +196,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   public remove(key: K): Option<V> {
     const index=this.hasher(key),entry=new Option(this.table.nth(index).value?.[1]);
     delete this.table[index];
-    --this.length;
+    --this.#size;
     return entry;
   }
   
