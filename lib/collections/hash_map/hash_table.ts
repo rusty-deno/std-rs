@@ -181,7 +181,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * $assertEq(table.size,0);
    * ```
    */
-  public empty() {
+  public clear() {
     for(let i=0;i<this.table.length;i++) delete this.table[i];
     this.#size=0;
   }
