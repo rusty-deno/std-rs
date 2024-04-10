@@ -14,17 +14,19 @@ $assertEq(xd,xd1);
 ```
  */
 export function $eq<Lhs,Rhs>(lhs: Lhs,rhs: Rhs): boolean {
-  return lhs===(rhs as unknown) || $partialEq(lhs,rhs) || ((
+  return lhs===(rhs as unknown) || $partialEq(lhs,rhs) || (
     lhs instanceof Map && rhs instanceof Map?
-      mapEq
+      lhs.size===rhs.size && mapEq(lhs,rhs)
     : lhs instanceof Set && rhs instanceof Set?
-      setEq
+      lhs.size===rhs.size && setEq(lhs,rhs)
     : lhs instanceof Array && rhs instanceof Array?
-      arrayEq
+      lhs.length===rhs.length && arrayEq(lhs,rhs)
     : $isTypedBuf(lhs) && $isTypedBuf(rhs)?
-      typedBufEq
-    : objectEq
-  ) as (lhs: any,rhs: any)=> boolean)(lhs,rhs);
+      lhs.BYTES_PER_ELEMENT===lhs.BYTES_PER_ELEMENT && lhs.length===rhs.length && arrayEq<number|bigint>(lhs,rhs)
+    : $isArrayBuf(lhs) && $isArrayBuf(rhs)?
+      lhs.byteLength===rhs.byteLength && arrBufEq(lhs,rhs)
+    : objectEq(lhs,rhs)
+  );
 }
 
 
@@ -42,7 +44,6 @@ function $partialEq(lhs: any,rhs: any): boolean {
   return ($implsPartialEq(lhs) && lhs.eq(rhs)) || ($implsPartialEq(rhs) && rhs.eq(lhs));
 }
 
-// deno-lint-ignore no-unused-vars
 function $isArrayBuf(buf: any): buf is ArrayBufferLike {
   return buf instanceof ArrayBuffer || buf instanceof SharedArrayBuffer;
 }
@@ -57,6 +58,7 @@ function mapEq<K,V>(lhs: Map<K,V>,rhs: Map<K,V>): boolean {
   for(const [key,val] of lhs) {
     if(!$eq(rhs.get(key),val)) return false;
   }
+
   return true;
 }
 
@@ -64,12 +66,11 @@ function setEq<T>(lhs: Set<T>,rhs: Set<T>): boolean {
   for(const element of lhs) {
     if(!rhs.has(element)) return false;
   }
+
   return true;
 }
 
 function arrayEq<T>(lhs: ArrayLike<T>,rhs: ArrayLike<T>): boolean {
-  if(lhs.length!==rhs.length) return false;
-
   for(let i=0;i<lhs.length;i++) {
     if(!$eq(lhs[i],rhs[i])) return false;
   }
@@ -88,10 +89,22 @@ function objectEq(lhs: any,rhs: any): boolean {
   return arrayEq(lhsEntries,rhsEntries);
 }
 
-function typedBufEq(lhs: TypedArray,rhs: TypedArray): boolean {
-  return lhs.BYTES_PER_ELEMENT===rhs.BYTES_PER_ELEMENT && arrayEq<number|bigint>(lhs,rhs);
+function arrBufEq(lhs: ArrayBufferLike,rhs: ArrayBufferLike) {
+  const Constructor=typedBuf(lhs.byteLength%8);
+  const lhsBuf=new Constructor(lhs);
+  const rhsBuf=new Constructor(rhs);
+
+  return lhsBuf.length===rhsBuf.length && arrayEq<number|bigint>(lhsBuf,rhsBuf);
 }
 
+function typedBuf(BYTES_PER_ELEMENT: number) {
+  switch(BYTES_PER_ELEMENT) {
+    case 0: return BigInt64Array;
+    case 4: return Int32Array;
+    case 2: return Int16Array;
+    default: return Int8Array;
+  }
+}
 
 
 
