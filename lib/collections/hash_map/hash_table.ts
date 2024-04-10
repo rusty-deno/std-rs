@@ -42,10 +42,13 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
     ...entries: Entry<K,V>[]
   ) {
     super();
-
-    this.hasher=hasher;
-    for(const [key,value] of entries) this.table[this.hasher(key)]=[key,value];
     this.#size=entries.length;
+    for(const [key,value] of entries) {
+      const hash=this.hasher(key);
+      if(this.table.nth(hash).value!=null) this.#size--;
+
+      this.table[hash]=[key,value];
+    }
   }
 
   /**
