@@ -149,16 +149,17 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
   }
 
   /**
-   * Emties the current map.
+   * Clears the map, removing all key-value pairs. Keeps the allocated memory for reuse.
+   * 
    * # Example
    * ```ts
    * const map=new HashMap<number,string>();
    * map.set(69,"xd");
-   * map.empty();
+   * map.clear();
    * $assertEq(map.size,0);
    * ```
    */
-  public empty() {
+  public clear() {
     this.#inner.clear();
   }
 
