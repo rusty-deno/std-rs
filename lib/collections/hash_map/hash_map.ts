@@ -4,8 +4,8 @@ import { Option } from '../../../mod.ts';
 import { Vec } from '../linear/vector.ts';
 import { $eq } from "../../cmp/macros.ts";
 import { IteratorTrait } from "../mod.ts";
-import { HashTable } from './hash_table.ts';
 import { PartailEq } from '../../cmp/eq.ts';
+import type { HashTable } from './hash_table.ts';
 import { HashSet } from '../hash_set/hash_set.ts';
 
 type Equivalent<K,V>=HashMap<K,V>|Map<K,V>|HashTable<K,V>;
@@ -36,14 +36,10 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * const map=HashMap.fromIter(iter);
    * ```
    */
-  public static fromIter<K,V>(iter: Iterable<Entry<K,V>>) {
+  public static fromIter<K,V>(iter: Iterable<Entry<K,V>>): HashMap<K,V> {
     const map=new HashMap<K,V>();
     map.#inner=new Map(iter);
     return map;
-  }
-
-  public static form<K,V>(map: Iterable<Entry<K,V>>) {
-    return HashMap.fromIter(map);
   }
 
   /**
@@ -57,7 +53,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * ```
    */
   // deno-lint-ignore no-explicit-any
-  public static formRecord<K extends keyof any,V>(record: Record<K,V>) {
+  public static formRecord<K extends keyof any,V>(record: Record<K,V>): HashMap<K,V> {
     const map=new HashMap<K,V>();
     for(const key in record) map.set(key,record[key]);
     return map;
@@ -67,20 +63,29 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
   public eq(rhs: Equivalent<K, V>): boolean {
     return rhs instanceof HashMap?
       this === rhs || this.#inner===rhs.#inner || $eq(this.#inner,rhs.#inner)
-    :rhs instanceof Map?
+    : rhs instanceof Map?
       this.#inner===rhs || $eq(this.#inner,rhs)
-    :rhs instanceof HashTable?
-      rhs.eq(this)
-    :
-      false
-    ;
+    : rhs.eq(this);
   }
 
   *[Symbol.iterator](): Iterator<Entry<K,V>> {
     yield* this.#inner;
   }
 
-  public get size() {
+  /**
+   * Returns the number of elements in the map.
+   * 
+   * ### Examples
+  ```ts
+  import { HashMap } from "std/collections";
+
+  const a = new HashMap();
+  
+  $assertEq(a.length, 0);
+  a.insert(1, "a");
+  $assertEq(a.length, 1);
+   */
+  public get length(): number {
     return this.#inner.size;
   }
 
@@ -93,7 +98,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * $assertEq(map.get(69),Some("xd"));
    * ```
    */
-  public get(key: K) {
+  public get(key: K): Option<V> {
     return new Option(this.#inner.get(key));
   }
   
@@ -109,9 +114,10 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * $assertEq(map.set(69,"xd"),Option.None);
    * ```
    */
-  public set(key: K,value: V) {
+  public set(key: K,value: V): Option<V> {
     const prev=this.get(key);
     this.#inner.set(key,value);
+
     return prev;
   }
 
@@ -121,10 +127,11 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * ```ts
    * const map=new HashMap<number,string>();
    * map.set(69,"xd");
-   * $assert(map.has(69));
+   * 
+   * $assert(map.contains(69));
    * ```
    */
-  public has(key: K) {
+  public contains(key: K): boolean {
     return this.#inner.has(key);
   }
 
@@ -137,7 +144,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * $assertEq(map.remove(69),Some("xd"));
    * ```
    */
-  public remove(key: K) {
+  public remove(key: K): boolean {
     return this.#inner.delete(key);
   }
 
@@ -163,8 +170,8 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * $assert(map.isEmpty());
    * ```
    */
-  public isEmpty() {
-    return !this.size;
+  public isEmpty(): boolean {
+    return !this.#inner.size;
   }
 
   /**
@@ -178,7 +185,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * }`);
    * ```
    */
-  public toString() {
+  public toString(): string {
     if(this.isEmpty()) return "{}";
 
     let str="{\n\t";
@@ -187,7 +194,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
     return str+"\n}";
   }
 
-  public get [Symbol.toStringTag]() {
+  public get [Symbol.toStringTag](): string {
     return this.toString();
   }
 
@@ -199,8 +206,8 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * $assertEq(map.keySet(),new HashSet("xd","xd1"));
    * ```
    */
-  public keySet() {
-    return HashSet.formIter(this.#inner.keys());
+  public keySet(): HashSet<K> {
+    return HashSet.fromIter(this.#inner.keys());
   }
 
   /**
@@ -211,7 +218,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * $assertEq(map.keys(),$vec("xd","xd1"));
    * ```
    */
-  public keys() {
+  public keys(): Vec<K> {
     return Vec.fromIter(this.#inner.keys());
   }
 
@@ -224,7 +231,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * ```
    */
   public entrySet(): HashSet<Entry<K,V>> {
-    return HashSet.formIter(this.#inner.entries());
+    return HashSet.fromIter(this.#inner.entries());
   }
 
   /**
@@ -247,8 +254,8 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * $assertEq(map.valueSet(),new HashSet(69));
    * ```
    */
-  public valueSet() {
-    return HashSet.formIter(this.#inner.values());
+  public valueSet(): HashSet<V> {
+    return HashSet.fromIter(this.#inner.values());
   }
 
   /**
@@ -259,14 +266,13 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * $assertEq(map.values(),$vec(69,0));
    * ```
    */
-  public values() {
+  public values(): Vec<V> {
     return Vec.fromIter(this.#inner.values());
   }
   
-  public clone() {
+  public clone(): HashMap<K,V> {
     return HashMap.fromIter(this.#inner);
   }
-
 }
 
 

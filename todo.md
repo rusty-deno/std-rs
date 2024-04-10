@@ -7,6 +7,8 @@
 
 # Remaster
   errors,
+  Add rust implementation for HashMap and HashSet
+  Improve HashTable empty algo
 
 # ADD:
   # modules
