@@ -9,14 +9,20 @@ import { IntoIterator,IteratorTrait } from '../../iter/iter.ts';
 type Equivalent<T>=Vec<T>|T[];
 
 
+function isNum(p: PropertyKey): p is number {
+  return typeof p==="string" && Number(p)==p as unknown;
+}
+
 // TODO(kakashi): implement Drop trait using decorator
-// TODO(kakashi): implement IterTrait
 export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalent<T>> {
   #ptr: number;
+  [index: number]: T;
 
   constructor(...elements: T[]) {
     super();
     this.#ptr=elements.length>0?lib.vec_from_iter(elements):lib.new_vec();
+
+    return new Proxy<Vec<T>>(this,Vec.#handler);
   }
 
   public static withCapacity<T>(capacity: number) {
@@ -26,6 +32,15 @@ export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalen
   public static from<T>(iter: Iterable<T>): Vec<T> {
     return iter instanceof Vec?iter:new Vec(...iter);
   }
+
+  static #handler: ProxyHandler<Vec<unknown>>={
+    get(self: Vec<unknown>,p) {
+      return isNum(p)?lib.vec_index(self.#ptr,p):self[p as unknown as keyof typeof self];
+    },
+    set(self,p,val): boolean {
+      return isNum(p) && (lib.vec_set(self.#ptr,p,val) as undefined ?? true);
+    }
+  };
 
   private static fromPtr<T>(ptr: number) {
     const self=new Vec<T>();
