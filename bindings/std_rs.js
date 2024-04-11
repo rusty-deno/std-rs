@@ -199,11 +199,11 @@ export function vec_empty(_this) {
 
 /**
 * @param {number} _this
-* @param {number} index
+* @param {number} i
 * @param {any} element
 */
-export function vec_insert(_this, index, element) {
-    wasm.vec_insert(_this, index, addHeapObject(element));
+export function vec_insert(_this, i, element) {
+    wasm.vec_insert(_this, i, addHeapObject(element));
 }
 
 /**

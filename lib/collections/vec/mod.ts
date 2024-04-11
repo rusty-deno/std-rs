@@ -14,7 +14,7 @@ function isNum(p: PropertyKey): p is number {
 }
 
 // TODO(kakashi): implement Drop trait using decorator
-export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalent<T>> {
+export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalent<T>>,ArrayLike<T> {
   #ptr: number;
   [index: number]: T;
 
@@ -38,7 +38,7 @@ export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalen
       return isNum(p)?lib.vec_index(self.#ptr,p):self[p as unknown as keyof typeof self];
     },
     set(self,p,val): boolean {
-      return isNum(p) && (lib.vec_set(self.#ptr,p,val) as undefined ?? true);
+      return isNum(p) && (lib.vec_set(self.#ptr,p,val) as undefined || true);
     }
   };
 

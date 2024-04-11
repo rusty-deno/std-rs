@@ -38,3 +38,19 @@ macro_rules! nullable {
   };
 }
 
+#[macro_export]
+macro_rules! constraints {
+  ($i:expr => $gteq:expr)=> {
+    $i<0 || $i>=$gteq as isize
+  };
+}
+
+
+#[macro_export]
+macro_rules! abs_index {
+  ($i:expr ; $cap:expr)=> {
+    if $i<0 {
+      $i+=$cap as isize;
+    }
+  };
+}

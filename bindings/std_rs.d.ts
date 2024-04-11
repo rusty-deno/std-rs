@@ -77,10 +77,10 @@ export function vec_append(_this: number, other: number): void;
 export function vec_empty(_this: number): void;
 /**
 * @param {number} _this
-* @param {number} index
+* @param {number} i
 * @param {any} element
 */
-export function vec_insert(_this: number, index: number, element: any): void;
+export function vec_insert(_this: number, i: number, element: any): void;
 /**
 * @param {number} _this
 * @param {number} index
