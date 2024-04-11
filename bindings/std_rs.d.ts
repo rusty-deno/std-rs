@@ -55,11 +55,11 @@ export function vec_set(_this: number, index: number, element: any): void;
 /**
 * @param {number} _this
 * @param {number} start
-* @param {number} end
+* @param {number} count
 * @param {any[]} replace_with
 * @returns {number}
 */
-export function vec_splice(_this: number, start: number, end: number, replace_with: any[]): number;
+export function vec_splice(_this: number, start: number, count: number, replace_with: any[]): number;
 /**
 * @param {number} _this
 * @param {number} at

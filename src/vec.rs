@@ -1,11 +1,18 @@
 
-
 use macros::method;
 use wasm_bindgen::prelude::*;
 
 type Vector=*mut Vec<JsValue>;
 const INDEX_OUT_OF_BOUNDS: &str="Index out of bounds.";
 
+
+const fn saturation_cast(x: isize)-> usize {
+  if x<0 {
+    0usize
+  } else {
+    x as _
+  }
+}
 
 
 #[wasm_bindgen]
@@ -78,8 +85,14 @@ pub fn vec_set(this: &mut Vec<JsValue>,index: isize,element: JsValue) {
 
 
 #[method]
-pub fn vec_splice(this: &mut Vec<JsValue>,start: usize,end: usize,replace_with: Vec<JsValue>)-> Vector {
-  as_ptr!(this.splice(start..end,replace_with).collect())
+pub fn vec_splice(this: &mut Vec<JsValue>,mut start: isize,count: isize,replace_with: Vec<JsValue>)-> Vector {
+  abs_index!(start;this.len());
+  let range=start as _..saturation_cast(count-1);
+
+  match this.len() {
+    0=> as_ptr!(this.drain(range).collect()),
+    _=> as_ptr!(this.splice(range,replace_with).collect())
+  }
 }
 
 #[method]

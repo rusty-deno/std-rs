@@ -161,14 +161,14 @@ export function vec_set(_this, index, element) {
 /**
 * @param {number} _this
 * @param {number} start
-* @param {number} end
+* @param {number} count
 * @param {any[]} replace_with
 * @returns {number}
 */
-export function vec_splice(_this, start, end, replace_with) {
+export function vec_splice(_this, start, count, replace_with) {
     const ptr0 = passArrayJsValueToWasm0(replace_with, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.vec_splice(_this, start, end, ptr0, len0);
+    const ret = wasm.vec_splice(_this, start, count, ptr0, len0);
     return ret >>> 0;
 }
 
