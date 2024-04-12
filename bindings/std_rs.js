@@ -99,8 +99,18 @@ export function vec_from_iter(vec) {
 * @param {any} element
 * @returns {number}
 */
-export function push(_this, element) {
-    const ret = wasm.push(_this, addHeapObject(element));
+export function vec_push(_this, element) {
+    const ret = wasm.vec_push(_this, addHeapObject(element));
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @param {any} element
+* @returns {number}
+*/
+export function vec_push_front(_this, element) {
+    const ret = wasm.vec_push_front(_this, addHeapObject(element));
     return ret;
 }
 
@@ -108,8 +118,17 @@ export function push(_this, element) {
 * @param {number} _this
 * @returns {any}
 */
-export function pop(_this) {
-    const ret = wasm.pop(_this);
+export function vec_pop(_this) {
+    const ret = wasm.vec_pop(_this);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
+* @returns {any}
+*/
+export function vec_pop_front(_this) {
+    const ret = wasm.vec_pop_front(_this);
     return takeObject(ret);
 }
 
@@ -155,9 +174,11 @@ export function vec_index(_this, i) {
 * @param {number} _this
 * @param {number} index
 * @param {any} element
+* @returns {number}
 */
 export function vec_set(_this, index, element) {
-    wasm.vec_set(_this, index, addHeapObject(element));
+    const ret = wasm.vec_set(_this, index, addHeapObject(element));
+    return ret;
 }
 
 /**

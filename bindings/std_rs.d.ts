@@ -19,12 +19,23 @@ export function vec_from_iter(vec: any[]): number;
 * @param {any} element
 * @returns {number}
 */
-export function push(_this: number, element: any): number;
+export function vec_push(_this: number, element: any): number;
+/**
+* @param {number} _this
+* @param {any} element
+* @returns {number}
+*/
+export function vec_push_front(_this: number, element: any): number;
 /**
 * @param {number} _this
 * @returns {any}
 */
-export function pop(_this: number): any;
+export function vec_pop(_this: number): any;
+/**
+* @param {number} _this
+* @returns {any}
+*/
+export function vec_pop_front(_this: number): any;
 /**
 * @param {number} _this
 * @param {number} index
@@ -51,8 +62,9 @@ export function vec_index(_this: number, i: number): any;
 * @param {number} _this
 * @param {number} index
 * @param {any} element
+* @returns {number}
 */
-export function vec_set(_this: number, index: number, element: any): void;
+export function vec_set(_this: number, index: number, element: any): number;
 /**
 * @param {number} _this
 * @param {number} start
