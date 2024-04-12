@@ -3,7 +3,14 @@ use macros::method;
 use wasm_bindgen::prelude::*;
 
 type Vector=*mut Vec<JsValue>;
-const INDEX_OUT_OF_BOUNDS: &str="Index out of bounds.";
+
+
+js_enum! {
+  OK=0,
+  INDEX_OUT_OF_BOUNDS=1,
+  EXCEEDED_MAX_CAPACITY=2
+}
+
 
 
 const fn saturation_cast(x: isize)-> usize {
@@ -33,13 +40,17 @@ pub fn vec_from_iter(vec: Vec<JsValue>)-> Vector {
 
 
 #[method]
-pub fn push(this: &mut Vec<JsValue>,element: JsValue) {
-  if isize::MAX==this.capacity() as _ {
-    drop(element);
-    return;
+pub fn push(this: &mut Vec<JsValue>,element: JsValue)-> u8 {
+  match this.capacity()>isize::MAX as _ {
+    true=> {
+      drop(element);
+      EXCEEDED_MAX_CAPACITY
+    }
+    _=> {
+      this.push(element);
+      OK
+    }
   }
-
-  this.push(element);
 }
 
 #[method]
@@ -67,7 +78,7 @@ pub fn vec_capacity(this: &Vec<JsValue>)-> usize {
 #[method]
 pub fn vec_index(this: &Vec<JsValue>,i: isize)-> JsValue {
   if constraints!(i => this.len()) {
-    wasm_bindgen::throw_str(INDEX_OUT_OF_BOUNDS)
+    wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
   }
 
   this.get(i as usize).unwrap_throw().clone()
@@ -77,7 +88,7 @@ pub fn vec_index(this: &Vec<JsValue>,i: isize)-> JsValue {
 pub fn vec_set(this: &mut Vec<JsValue>,index: isize,element: JsValue) {
   if constraints!(index => this.capacity()) {
     drop(element);
-    wasm_bindgen::throw_str(INDEX_OUT_OF_BOUNDS);
+    wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into());
   }
 
   this[index as usize]=element;
@@ -99,31 +110,49 @@ pub fn vec_splice(this: &mut Vec<JsValue>,mut start: isize,count: isize,replace_
 pub fn vec_split_off(this: &mut Vec<JsValue>,mut at: isize)-> Vector {
   abs_index!(at;this.len());
 
-  as_ptr!(this.split_off(at as _))
+  match constraints!(at => this.len()) {
+    true=> as_ptr!(this.split_off(at as _)),
+    _=> wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
+  }
 }
 
 #[method]
-pub unsafe fn vec_append(this: &mut Vec<JsValue>,other: *mut Vec<JsValue>) {
-  this.append(other.as_mut().unwrap());
+pub unsafe fn vec_append(this: &mut Vec<JsValue>,other: *mut Vec<JsValue>)-> u8 {
+  let other=other.as_mut().unwrap();
+  if this.capacity()+other.capacity()>isize::MAX as usize {
+    EXCEEDED_MAX_CAPACITY
+  } else {
+    this.append(other);
+    OK
+  }
 }
 
 #[method]
-pub fn vec_empty(this: &mut Vec<JsValue>) {
+pub fn vec_clear(this: &mut Vec<JsValue>) {
   this.clear();
 }
 
 #[method]
-pub fn vec_insert(this: &mut Vec<JsValue>,mut i: isize,element: JsValue) {
+pub fn vec_insert(this: &mut Vec<JsValue>,mut i: isize,element: JsValue)-> u8 {
   abs_index!(i;this.len());
 
-  this.insert(i as _,element);
+  match constraints!(i => this.len()) {
+    true=> {
+      this.insert(i as _,element);
+      OK
+    },
+    _=> {
+      drop(element);
+      INDEX_OUT_OF_BOUNDS
+    }
+  }
 }
 
 #[method]
-pub fn vec_remove(this: &mut Vec<JsValue>,mut index: isize)-> JsValue {
-  abs_index!(index;this.len());
-
-  this.remove(index as _)
+pub fn vec_remove(this: &mut Vec<JsValue>,index: isize)-> JsValue {
+  checked_idx!{
+    index;this.len() => this.remove(index as _)
+  }
 }
 
 #[method]
@@ -132,18 +161,23 @@ pub fn vec_shrink_to(this: &mut Vec<JsValue>,min_capacity: isize) {
 }
 
 #[method]
-pub fn vec_swap(this: &mut Vec<JsValue>,mut a: isize,mut b: isize) {
-  abs_index!(a;this.len());
-  abs_index!(b;this.len());
+pub fn vec_swap(this: &mut Vec<JsValue>,a: isize,b: isize)-> u8 {
+  let len=this.len();
 
-  this.swap(a as _,b as _)
+  match constraints!(a => len) || constraints!(b => len) {
+    true=> {
+      this.swap(a as _,b as _);
+      OK
+    },
+    _=> INDEX_OUT_OF_BOUNDS
+  }
 }
 
 #[method]
-pub fn vec_swap_remove(this: &mut Vec<JsValue>,mut index: isize) {
-  abs_index!(index;this.len());
-
-  this.swap_remove(index as _);
+pub fn vec_swap_remove(this: &mut Vec<JsValue>,index: isize)-> JsValue {
+  checked_idx! {
+    index;this.len() => this.swap_remove(index as _)
+  }
 }
 
 

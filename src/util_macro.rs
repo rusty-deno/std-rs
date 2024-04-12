@@ -54,3 +54,24 @@ macro_rules! abs_index {
     }
   };
 }
+
+#[macro_export]
+macro_rules! checked_idx {
+  ($index:expr;$len:expr => $f:expr)=> {
+    match $index {
+      i if constraints!(i => $len)=> $f,
+      _=> JsValue::NULL
+    }
+  };
+}
+
+#[macro_export]
+macro_rules! js_enum {
+  ($($member:ident=$val:literal),*)=> {
+    $(
+      const $member: u8=$val;
+    )*
+  }
+}
+
+

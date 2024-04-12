@@ -97,9 +97,11 @@ export function vec_from_iter(vec) {
 /**
 * @param {number} _this
 * @param {any} element
+* @returns {number}
 */
 export function push(_this, element) {
-    wasm.push(_this, addHeapObject(element));
+    const ret = wasm.push(_this, addHeapObject(element));
+    return ret;
 }
 
 /**
@@ -185,25 +187,29 @@ export function vec_split_off(_this, at) {
 /**
 * @param {number} _this
 * @param {number} other
+* @returns {number}
 */
 export function vec_append(_this, other) {
-    wasm.vec_append(_this, other);
+    const ret = wasm.vec_append(_this, other);
+    return ret;
 }
 
 /**
 * @param {number} _this
 */
-export function vec_empty(_this) {
-    wasm.vec_empty(_this);
+export function vec_clear(_this) {
+    wasm.vec_clear(_this);
 }
 
 /**
 * @param {number} _this
 * @param {number} i
 * @param {any} element
+* @returns {number}
 */
 export function vec_insert(_this, i, element) {
-    wasm.vec_insert(_this, i, addHeapObject(element));
+    const ret = wasm.vec_insert(_this, i, addHeapObject(element));
+    return ret;
 }
 
 /**
@@ -228,17 +234,21 @@ export function vec_shrink_to(_this, min_capacity) {
 * @param {number} _this
 * @param {number} a
 * @param {number} b
+* @returns {number}
 */
 export function vec_swap(_this, a, b) {
-    wasm.vec_swap(_this, a, b);
+    const ret = wasm.vec_swap(_this, a, b);
+    return ret;
 }
 
 /**
 * @param {number} _this
 * @param {number} index
+* @returns {any}
 */
 export function vec_swap_remove(_this, index) {
-    wasm.vec_swap_remove(_this, index);
+    const ret = wasm.vec_swap_remove(_this, index);
+    return takeObject(ret);
 }
 
 /**
@@ -450,8 +460,15 @@ const imports = {
         __wbindgen_throw: function(arg0, arg1) {
             throw new Error(getStringFromWasm0(arg0, arg1));
         },
+        __wbindgen_rethrow: function(arg0) {
+            throw takeObject(arg0);
+        },
         __wbindgen_object_clone_ref: function(arg0) {
             const ret = getObject(arg0);
+            return addHeapObject(ret);
+        },
+        __wbindgen_number_new: function(arg0) {
+            const ret = arg0;
             return addHeapObject(ret);
         },
     },
