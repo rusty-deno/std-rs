@@ -7,6 +7,7 @@
 
 # Remaster
   errors,
+  Vec exceptions
   Add rust implementation for HashMap and HashSet
   Improve HashTable empty algo
 
