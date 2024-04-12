@@ -24,7 +24,7 @@ export * from "./linear/linked_list/linked_list.ts";
 export * from "./linear/linked_list/macros.ts";
 
 // data-structs
-export * from "./linear/vector.ts";
+export * from "./vec/mod.ts";
 export * from "./linear/stack.ts";
 export * from "./linear/queue.ts";
 
