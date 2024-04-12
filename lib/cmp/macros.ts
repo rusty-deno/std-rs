@@ -10,26 +10,39 @@ import { PartailEq } from './eq.ts';
 const xd={ xd: 69 };
 const xd1={ xd: 69 };
 
-$assertEq(xd,xd1);
+$assert($eq(xd,xd1));
 ```
  */
 export function $eq<Lhs,Rhs>(lhs: Lhs,rhs: Rhs): boolean {
-  return lhs===(rhs as unknown) || $partialEq(lhs,rhs) || (
-    lhs instanceof Map && rhs instanceof Map?
-      lhs.size===rhs.size && mapEq(lhs,rhs)
-    : lhs instanceof Set && rhs instanceof Set?
-      lhs.size===rhs.size && setEq(lhs,rhs)
-    : lhs instanceof Array && rhs instanceof Array?
-      lhs.length===rhs.length && arrayEq(lhs,rhs)
-    : $isTypedBuf(lhs) && $isTypedBuf(rhs)?
-      lhs.BYTES_PER_ELEMENT===lhs.BYTES_PER_ELEMENT && lhs.length===rhs.length && arrayEq<number|bigint>(lhs,rhs)
-    : $isArrayBuf(lhs) && $isArrayBuf(rhs)?
-      lhs.byteLength===rhs.byteLength && arrBufEq(lhs,rhs)
-    : objectEq(lhs,rhs)
-  );
+  return lhs===(rhs as unknown) || $partialEq(lhs,rhs) || $deepEq(lhs,rhs);
 }
 
+/**
+ * Compares two objects deeply only by the value.
+ * 
+ * * **NOTE**: This function skips `===` and `==`. If you want silly checks too then checkout {@linkcode $eq}
+ * 
+ * ### Example
+```ts
+const xd={ xd: 69 };
+const xd1={ xd: 69 };
 
+$assert($deepEq(xd,xd1));
+```
+ */
+export function $deepEq<Lhs,Rhs>(lhs: Lhs,rhs: Rhs) {
+  return lhs instanceof Map && rhs instanceof Map?
+    lhs.size===rhs.size && mapEq(lhs,rhs)
+  : lhs instanceof Set && rhs instanceof Set?
+    lhs.size===rhs.size && setEq(lhs,rhs)
+  : lhs instanceof Array && rhs instanceof Array?
+    lhs.length===rhs.length && arrayEq(lhs,rhs)
+  : $isTypedBuf(lhs) && $isTypedBuf(rhs)?
+    lhs.BYTES_PER_ELEMENT===lhs.BYTES_PER_ELEMENT && lhs.length===rhs.length && arrayEq<number|bigint>(lhs,rhs)
+  : $isArrayBuf(lhs) && $isArrayBuf(rhs)?
+    lhs.byteLength===rhs.byteLength && arrBufEq(lhs,rhs)
+  : objectEq(lhs,rhs);
+}
 
 
 /**
@@ -38,6 +51,7 @@ export function $eq<Lhs,Rhs>(lhs: Lhs,rhs: Rhs): boolean {
 export function $implsPartialEq(obj: any): obj is PartailEq<any> {
   return typeof obj.eq==="function";
 }
+
 
 /** Checks equality of two object by value */
 function $partialEq(lhs: any,rhs: any): boolean {
