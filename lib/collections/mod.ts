@@ -1,7 +1,3 @@
-//iter
-export * as iter from "../iter/mod.ts";
-export * from "./iter.ts";
-
 //hash_map
 export * as hash_map from "./hash_map/mod.ts";
 export * from "./hash_map/hash_map.ts";
