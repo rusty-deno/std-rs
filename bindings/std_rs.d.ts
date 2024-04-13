@@ -72,7 +72,15 @@ export function vec_set(_this: number, index: number, element: any): number;
 * @param {any[]} replace_with
 * @returns {number}
 */
-export function vec_splice(_this: number, start: number, count: number, replace_with: any[]): number;
+export function vec_splice_arr(_this: number, start: number, count: number, replace_with: any[]): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
 /**
 * @param {number} _this
 * @param {number} at

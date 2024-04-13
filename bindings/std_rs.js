@@ -20,6 +20,15 @@ function takeObject(idx) {
     return ret;
 }
 
+function addHeapObject(obj) {
+    if (heap_next === heap.length) heap.push(heap.length + 1);
+    const idx = heap_next;
+    heap_next = heap[idx];
+
+    heap[idx] = obj;
+    return idx;
+}
+
 const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
 
 if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
@@ -36,15 +45,6 @@ function getUint8Memory0() {
 function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
-}
-
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
-
-    heap[idx] = obj;
-    return idx;
 }
 /**
 * @returns {number}
@@ -188,10 +188,22 @@ export function vec_set(_this, index, element) {
 * @param {any[]} replace_with
 * @returns {number}
 */
-export function vec_splice(_this, start, count, replace_with) {
+export function vec_splice_arr(_this, start, count, replace_with) {
     const ptr0 = passArrayJsValueToWasm0(replace_with, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.vec_splice(_this, start, count, ptr0, len0);
+    const ret = wasm.vec_splice_arr(_this, start, count, ptr0, len0);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function vec_splice_vec(_this, start, count, replace_with) {
+    const ret = wasm.vec_splice_vec(_this, start, count, replace_with);
     return ret >>> 0;
 }
 
@@ -478,12 +490,6 @@ const imports = {
         __wbindgen_object_drop_ref: function(arg0) {
             takeObject(arg0);
         },
-        __wbindgen_throw: function(arg0, arg1) {
-            throw new Error(getStringFromWasm0(arg0, arg1));
-        },
-        __wbindgen_rethrow: function(arg0) {
-            throw takeObject(arg0);
-        },
         __wbindgen_object_clone_ref: function(arg0) {
             const ret = getObject(arg0);
             return addHeapObject(ret);
@@ -491,6 +497,12 @@ const imports = {
         __wbindgen_number_new: function(arg0) {
             const ret = arg0;
             return addHeapObject(ret);
+        },
+        __wbindgen_throw: function(arg0, arg1) {
+            throw new Error(getStringFromWasm0(arg0, arg1));
+        },
+        __wbindgen_rethrow: function(arg0) {
+            throw takeObject(arg0);
         },
     },
 
