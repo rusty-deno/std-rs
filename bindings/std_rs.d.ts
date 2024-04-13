@@ -17,13 +17,25 @@ export function vec_from_iter(vec: any[]): number;
 /**
 * @param {number} _this
 * @param {any} element
+* @returns {number}
 */
-export function push(_this: number, element: any): void;
+export function vec_push(_this: number, element: any): number;
+/**
+* @param {number} _this
+* @param {any} element
+* @returns {number}
+*/
+export function vec_push_front(_this: number, element: any): number;
 /**
 * @param {number} _this
 * @returns {any}
 */
-export function pop(_this: number): any;
+export function vec_pop(_this: number): any;
+/**
+* @param {number} _this
+* @returns {any}
+*/
+export function vec_pop_front(_this: number): any;
 /**
 * @param {number} _this
 * @param {number} index
@@ -50,16 +62,17 @@ export function vec_index(_this: number, i: number): any;
 * @param {number} _this
 * @param {number} index
 * @param {any} element
+* @returns {number}
 */
-export function vec_set(_this: number, index: number, element: any): void;
+export function vec_set(_this: number, index: number, element: any): number;
 /**
 * @param {number} _this
 * @param {number} start
-* @param {number} end
+* @param {number} count
 * @param {any[]} replace_with
 * @returns {number}
 */
-export function vec_splice(_this: number, start: number, end: number, replace_with: any[]): number;
+export function vec_splice(_this: number, start: number, count: number, replace_with: any[]): number;
 /**
 * @param {number} _this
 * @param {number} at
@@ -69,18 +82,20 @@ export function vec_split_off(_this: number, at: number): number;
 /**
 * @param {number} _this
 * @param {number} other
+* @returns {number}
 */
-export function vec_append(_this: number, other: number): void;
+export function vec_append(_this: number, other: number): number;
 /**
 * @param {number} _this
 */
-export function vec_empty(_this: number): void;
+export function vec_clear(_this: number): void;
 /**
 * @param {number} _this
-* @param {number} index
+* @param {number} i
 * @param {any} element
+* @returns {number}
 */
-export function vec_insert(_this: number, index: number, element: any): void;
+export function vec_insert(_this: number, i: number, element: any): number;
 /**
 * @param {number} _this
 * @param {number} index
@@ -96,13 +111,15 @@ export function vec_shrink_to(_this: number, min_capacity: number): void;
 * @param {number} _this
 * @param {number} a
 * @param {number} b
+* @returns {number}
 */
-export function vec_swap(_this: number, a: number, b: number): void;
+export function vec_swap(_this: number, a: number, b: number): number;
 /**
 * @param {number} _this
 * @param {number} index
+* @returns {any}
 */
-export function vec_swap_remove(_this: number, index: number): void;
+export function vec_swap_remove(_this: number, index: number): any;
 /**
 * @param {number} ptr
 */

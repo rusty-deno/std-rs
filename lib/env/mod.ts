@@ -1,10 +1,10 @@
 import { $resultSync } from "../error/result/mod.ts";
 import { HashMap,Option,Result } from "../../mod.ts";
 import { PathBuf } from "../path.ts";
-import { Vec } from "../collections/linear/vector.ts";
+import { Vec } from "../collections/vec/mod.ts";
 
 
-export const args=Vec.fromArr(Deno.args);
+export const args=Vec.from(Deno.args);
 
 /**
  * Returns a {@linkcode Result} of the string representation of current working directory.

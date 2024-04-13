@@ -38,3 +38,40 @@ macro_rules! nullable {
   };
 }
 
+#[macro_export]
+macro_rules! constraints {
+  ($i:expr => $gteq:expr)=> {
+    $i<0 || $i>=$gteq as isize
+  };
+}
+
+
+#[macro_export]
+macro_rules! abs_index {
+  ($i:expr ; $cap:expr)=> {
+    if $i<0 {
+      $i+=$cap as isize;
+    }
+  };
+}
+
+#[macro_export]
+macro_rules! checked_idx {
+  ($index:expr;$len:expr => $f:expr)=> {
+    match $index {
+      i if constraints!(i => $len)=> $f,
+      _=> JsValue::NULL
+    }
+  };
+}
+
+#[macro_export]
+macro_rules! js_enum {
+  ($($member:ident=$val:literal),*)=> {
+    $(
+      const $member: u8=$val;
+    )*
+  }
+}
+
+

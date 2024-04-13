@@ -1,7 +1,7 @@
 import { Entry } from './mod.ts';
 import { Clone } from '../../clone.ts';
 import { Option } from '../../../mod.ts';
-import { Vec } from '../linear/vector.ts';
+import { Vec } from '../vec/mod.ts';
 import { $eq } from "../../cmp/macros.ts";
 import { IteratorTrait } from "../mod.ts";
 import { PartailEq } from '../../cmp/eq.ts';
