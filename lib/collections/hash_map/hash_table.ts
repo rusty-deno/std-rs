@@ -2,9 +2,10 @@ import { Clone,Option } from '../../../mod.ts';
 import { Entry } from './mod.ts';
 import { HashSet, Vec } from '../mod.ts';
 import { HashMap } from './hash_map.ts';
-import { IteratorTrait } from "../mod.ts";
+import { IntoIterator, IteratorTrait } from "../../iter/iter.ts";
 import { PartailEq } from '../../cmp/eq.ts';
 import { $eq } from "../../cmp/macros.ts";
+import { $todo } from "../../declarative-macros/panics.ts";
 
 export type HasherFn<K>=(obj: K)=> number;
 
@@ -31,7 +32,7 @@ type Equivalent<K,V>=HashMap<K,V>|HashTable<K,V>|Map<K,V>;
  * $assertEq(table.get("Monday"), Some(1));
  * ```
  */
-export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,PartailEq<Equivalent<K,V>> {
+export class HashTable<K,V> extends IntoIterator<Entry<K,V>> implements Clone,PartailEq<Equivalent<K,V>> {
   private table=new Vec<Entry<K,V>>();
   #size=0;
 
@@ -45,7 +46,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
     this.#size=entries.length;
     for(const [key,value] of entries) {
       const hash=this.hasher(key);
-      if(this.table.nth(hash).value!=null) this.#size--;
+      if(this.table.at(hash).value!=null) this.#size--;
 
       this.table[hash]=[key,value];
     }
@@ -80,11 +81,11 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
 
   public eq(rhs: Equivalent<K,V>): boolean {
     if(this.#size!==(rhs instanceof Map?rhs.size:rhs.length)) return false;
-    if(this===rhs || rhs instanceof HashTable && this.table===rhs.table) //(this.table===rhs.table || rhs.table.length==this.table.length))
+    if(this===rhs || rhs instanceof HashTable && this.table===rhs.table)
       return true;
 
     for(const [key,val] of rhs) {
-      if(!$eq(this.table.at(this.hasher(key))?.[1], val)) return false;
+      if(!$eq(this.table.at(this.hasher(key)).value?.[1], val)) return false;
     }
 
     return true;
@@ -92,6 +93,10 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
 
   public clone(): HashTable<K,V> {
     return HashTable.fromIter(this.hasher,this.entries());
+  }
+
+  public iter(): IteratorTrait<Entry<K,V>> {
+    return $todo();
   }
   
   /**
@@ -138,9 +143,11 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * ```
    */
   public set(key: K,value: V): Option<Entry<K,V>> {
-    const index=this.hasher(key),entry=this.table.nth(index);
+    const index=this.hasher(key),entry=this.table.at(index);
+
     this.table[index]=[key,value];
     ++this.#size;
+
     return entry;
   }
 
@@ -154,7 +161,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * ```
    */
   public get(key: K): Option<V> {
-    return new Option(this.table.at(this.hasher(key))?.[1]);
+    return new Option(this.table.at(this.hasher(key)).value?.[1]);
   }
 
   /**
@@ -182,7 +189,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * ```
    */
   public clear() {
-    for(let i=0;i<this.table.length;i++) delete this.table[i];
+    this.table.clear();
     this.#size=0;
   }
   
@@ -204,20 +211,24 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * ```ts
    * const table=new HashTable<number,string>(hashFn);
    * table.set(69,"xd");
-   * $assertEq(table.remove(69),Some("xd"));
+   * $assertEq(table.remove(69),"xd");
    * ```
    */
   public remove(key: K): Option<V> {
-    const index=this.hasher(key),entry=new Option(this.table.nth(index).value?.[1]);
+    const index=this.hasher(key),entry=new Option(this.table.at(index).value?.[1]);
+
     delete this.table[index];
     --this.#size;
+
     return entry;
   }
   
   public get [Symbol.toStringTag](): string {
-    if(this.isEmpty()) return "{}";
+    if(!this.#size) return "{}";
     let str="{\n\t";
+
     for(const [key,value] of this) str+=`${key} => ${value}\n`;
+
     return str+"\n}";
   }
   
@@ -227,7 +238,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * ```ts
    * const table=new HashTable<number,string>(hashFn);
    * table.set(69,"xd");
-   * $assertEq(table.toString,`{
+   * $assertEq(table.toString(),`{
    *    69: xd
    * }`);
    * ```
@@ -249,7 +260,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   }
 
   /**
-   * Returns a set of the keys present in the current table.
+   * Returns the keys present in the current table.
    * # Example
    * ```ts
    * const table=new HashTable<number,string>(hashFn,["xd",69],["xd1",0]);
@@ -257,11 +268,11 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * ```
    */
   public keys(): Vec<K> {
-    return this.table.map(([key,_])=> key);
+    return this.table.map(entry=> entry[0]);
   }
 
   /**
-   * Returns a set of the keys present in the current table.
+   * Returns a set of the entries present in the current table.
    * # Example
    * ```ts
    * const table=new HashTable<number,string>(hashFn,["xd",69],["xd1",0]);
@@ -273,7 +284,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   }
 
   /**
-   * Returns a set of the keys present in the current table.
+   * Returns the entries present in the current table.
    * # Example
    * ```ts
    * const table=new HashTable<number,string>(hashFn,["xd",69],["xd1",0]);
@@ -285,7 +296,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   }
 
   /**
-   * Returns a set of the keys present in the current table.
+   * Returns a set of the values present in the current table.
    * # Example
    * ```ts
    * const table=new HashTable<number,string>(hashFn,["xd",69],["xd1",69]);
@@ -295,9 +306,9 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
   public valueSet(): HashSet<V> {
     return HashSet.fromIter(this.values());
   }
-  
+
   /**
-   * Returns a set of the keys present in the current table.
+   * Returns the values present in the current table.
    * # Example
    * ```ts
    * const table=new HashTable<number,string>(hashFn,["xd",69],["xd1",0]);
@@ -305,7 +316,7 @@ export class HashTable<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,P
    * ```
    */
   public values(): Vec<V> {
-    return this.table.map(([_,value])=> value);
+    return this.table.map(entry=> entry[1]);
   }
 }
 

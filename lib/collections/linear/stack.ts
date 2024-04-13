@@ -1,17 +1,18 @@
 import { Option } from '../../../mod.ts';
+import { IntoIterator } from "../../iter/iter.ts";
 import { LinkedList } from './linked_list/linked_list.ts';
-import { IteratorTrait } from "../iter.ts";
+import { $todo } from "../../declarative-macros/panics.ts";
 
 
 
 
-export class Stack<T> extends IteratorTrait<T> {
+export class Stack<T> extends IntoIterator<T> {
   private data: LinkedList<T>;
   private current=0;
 
   constructor(...iter: T[]) {
     super();
-    this.data=LinkedList.fromArray(iter);
+    this.data=LinkedList.fromIter(iter);
   }
   
   public get top() {
@@ -32,6 +33,10 @@ export class Stack<T> extends IteratorTrait<T> {
     stack.current=arr.length;
   
     return stack;
+  }
+
+  public iter() {
+    return $todo();
   }
   
   public pop(): Option<T> {

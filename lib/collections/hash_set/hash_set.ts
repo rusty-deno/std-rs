@@ -1,5 +1,6 @@
-import { IteratorTrait } from "../mod.ts";
+import { IntoIterator } from "../../iter/iter.ts";
 import { PartailEq,$eq } from "../../cmp/mod.ts";
+import { $todo } from "../../declarative-macros/panics.ts";
 
 type Equivalent<T>=HashSet<T>|Set<T>;
 
@@ -9,6 +10,7 @@ type Equivalent<T>=HashSet<T>|Set<T>;
  * ### Examples
 ```ts
 import { HashSet } from "std/collections";
+import { IntoIterator } from '../../iter/iter';
 
 const books = new HashSet("A Dance With Dragons", "To Kill a Mockingbird", "The Odyssey", "The Great Gatsby");
 
@@ -25,7 +27,7 @@ for(const book of books) {
 }
 ```
  */
-export class HashSet<T> extends IteratorTrait<T> implements PartailEq<Equivalent<T>> {
+export class HashSet<T> extends IntoIterator<T> implements PartailEq<Equivalent<T>> {
   #set: Set<T>;
 
   constructor(...entries: T[]) {
@@ -54,6 +56,10 @@ export class HashSet<T> extends IteratorTrait<T> implements PartailEq<Equivalent
     self.#set=set;
 
     return self;
+  }
+
+  public iter() {
+    return $todo();
   }
 
 

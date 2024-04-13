@@ -433,7 +433,7 @@ export abstract class IteratorTrait<T> extends IntoIterator<T> {
   ```
    */
 
-  public abstract enumerate(): IteratorTrait<T>;
+  public abstract enumerate(): IteratorTrait<[number,T]>;
   /**
    * Creates an iterator which uses a callback function to determine if an element should be yielded.
    * 

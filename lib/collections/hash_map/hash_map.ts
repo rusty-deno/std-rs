@@ -3,10 +3,11 @@ import { Clone } from '../../clone.ts';
 import { Option } from '../../../mod.ts';
 import { Vec } from '../vec/mod.ts';
 import { $eq } from "../../cmp/macros.ts";
-import { IteratorTrait } from "../mod.ts";
+import { IntoIterator } from "../../iter/iter.ts";
 import { PartailEq } from '../../cmp/eq.ts';
 import type { HashTable } from './hash_table.ts';
 import { HashSet } from '../hash_set/hash_set.ts';
+import { $todo } from "../../declarative-macros/panics.ts";
 
 type Equivalent<K,V>=HashMap<K,V>|Map<K,V>|HashTable<K,V>;
 
@@ -20,7 +21,7 @@ type Equivalent<K,V>=HashMap<K,V>|Map<K,V>|HashTable<K,V>;
  * $assertEq(map.get(69),Some("xd"));
  * ```
  */
-export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,PartailEq<Equivalent<K,V>> {
+export class HashMap<K,V> extends IntoIterator<Entry<K,V>> implements Clone,PartailEq<Equivalent<K,V>> {
   #inner: Map<K,V>;
 
   constructor(...entries: Entry<K,V>[]) {
@@ -220,7 +221,7 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * ```
    */
   public keys(): Vec<K> {
-    return Vec.fromIter(this.#inner.keys());
+    return Vec.from(this.#inner.keys());
   }
 
   /**
@@ -268,7 +269,11 @@ export class HashMap<K,V> extends IteratorTrait<Entry<K,V>> implements Clone,Par
    * ```
    */
   public values(): Vec<V> {
-    return Vec.fromIter(this.#inner.values());
+    return Vec.from(this.#inner.values());
+  }
+
+  public iter() {
+    return $todo();
   }
   
   public clone(): HashMap<K,V> {
