@@ -7,8 +7,7 @@ export * as hash_set from "./hash_set/mod.ts";
 export * from "./hash_set/mod.ts";
 
 //btree
-export * as btree from "./btree/mod.ts";
-export * from "./btree/btree.ts";
+//
 
 // vec
 export * as vec from "./vec/mod.ts";
@@ -22,7 +21,6 @@ export * from "./linear/linked_list/macros.ts";
 // data-structs
 export * from "./vec/mod.ts";
 export * from "./linear/stack.ts";
-export * from "./linear/queue.ts";
 
 
 
