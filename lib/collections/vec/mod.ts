@@ -1,9 +1,10 @@
+import { Fn } from '../../types.ts';
 import { Clone } from '../../clone.ts';
 import { PartailEq,$eq } from '../../cmp/mod.ts';
 import * as lib from "../../../bindings/std_rs.js";
 import { Option } from "../../error/option/option.ts";
-import { $resultSync,Result } from "../../error/result/mod.ts";
 import { $todo } from "../../declarative-macros/panics.ts";
+import { $resultSync,Result } from "../../error/result/mod.ts";
 import { IntoIterator,IteratorTrait } from '../../iter/iter.ts';
 
 type Equivalent<T>=Vec<T>|T[];
@@ -113,14 +114,6 @@ export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalen
     return new Option(lib.vec_pop_front(this.#ptr) as T|null);
   }
 
-  public clone(): Vec<T> {
-    const clone=Vec.withCapacity<T>(this.capacity);
-    // SAFETY: This never throws an exception as the loop runs within the bound.
-    for(let i=0;i<this.length;i++) this.push(structuredClone(lib.vec_index(this.#ptr,i)));
-
-    return clone;
-  }
-
   public splice(start: number,end: number,replaceWith: Equivalent<T>): Vec<T> {
     return Vec.fromPtr<T>(lib.vec_splice(this.#ptr,start,end,Array.from(replaceWith)));
   }
@@ -160,6 +153,25 @@ export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalen
 
   public swapRemove(index: number): Option<T> {
     return new Option(lib.vec_swap_remove(this.#ptr,index) as T|null);
+  }
+
+  public map<U>(f: Fn<[T,number],U>): Vec<U> {
+    const mapped=Vec.withCapacity<U>(this.length);
+
+    let i=0;
+    for(const element of this) {
+      lib.vec_push(mapped.#ptr,f(element,i++));
+    }
+
+    return mapped;
+  }
+
+  public clone(): Vec<T> {
+    const clone=Vec.withCapacity<T>(this.capacity);
+    // SAFETY: This never throws an exception as the loop runs within the bound.
+    for(let i=0;i<this.length;i++) this.push(structuredClone(lib.vec_index(this.#ptr,i)));
+
+    return clone;
   }
 }
 
