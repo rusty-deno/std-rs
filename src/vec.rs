@@ -8,9 +8,8 @@ type Vector=*mut Vec<JsValue>;
 js_enum! {
   OK=0,
   INDEX_OUT_OF_BOUNDS=1,
-  EXCEEDED_MAX_CAPACITY=2
+  CAPACITY_OVERFLOW=2
 }
-
 
 
 const fn saturation_cast(x: isize)-> usize {
@@ -18,6 +17,23 @@ const fn saturation_cast(x: isize)-> usize {
     0usize
   } else {
     x as _
+  }
+}
+
+const fn cast_or(int: isize,or: usize)-> usize {
+  if int<0 || int as usize>or {
+    or
+  } else {
+    int as _
+  }
+}
+
+
+
+fn any(val: Result<JsValue,JsValue>)-> JsValue {
+  match val {
+    Ok(val)=> val,
+    Err(err)=> err
   }
 }
 
@@ -44,7 +60,7 @@ pub fn vec_push(this: &mut Vec<JsValue>,element: JsValue)-> u8 {
   match this.capacity()==isize::MAX as _ {
     true=> {
       drop(element);
-      EXCEEDED_MAX_CAPACITY
+      CAPACITY_OVERFLOW
     }
     _=> {
       this.push(element);
@@ -58,7 +74,7 @@ pub fn vec_push_front(this: &mut Vec<JsValue>,element: JsValue)-> u8 {
   match (this.len(),this.capacity()) {
     (_,0x7fffffff)=> {
       drop(element);
-      return EXCEEDED_MAX_CAPACITY;
+      return CAPACITY_OVERFLOW;
     }
     (0,_)=> this.push(element),
     _=> this.insert(0,element)
@@ -122,7 +138,7 @@ pub fn vec_set(this: &mut Vec<JsValue>,index: isize,element: JsValue)-> u8 {
 
 
 #[method]
-pub fn vec_splice(this: &mut Vec<JsValue>,mut start: isize,count: isize,replace_with: Vec<JsValue>)-> Vector {
+pub fn vec_splice_arr(this: &mut Vec<JsValue>,mut start: isize,count: isize,replace_with: Vec<JsValue>)-> Vector {
   abs_index!(start;this.len());
   let range=start as _..saturation_cast(count-1);
 
@@ -131,6 +147,12 @@ pub fn vec_splice(this: &mut Vec<JsValue>,mut start: isize,count: isize,replace_
     _=> as_ptr!(this.splice(range,replace_with).collect())
   }
 }
+
+#[wasm_bindgen]
+pub unsafe fn vec_splice_vec(this: *mut Vec<JsValue>,start: isize,count: isize,replace_with: *mut Vec<JsValue>)-> Vector {
+  vec_splice_arr(this,start,count,replace_with.as_mut().unwrap().clone())
+}
+
 
 #[method]
 pub fn vec_split_off(this: &mut Vec<JsValue>,mut at: isize)-> Vector {
@@ -146,7 +168,7 @@ pub fn vec_split_off(this: &mut Vec<JsValue>,mut at: isize)-> Vector {
 pub unsafe fn vec_append(this: &mut Vec<JsValue>,other: *mut Vec<JsValue>)-> u8 {
   let other=other.as_mut().unwrap();
   if this.capacity()+other.capacity()>isize::MAX as usize {
-    EXCEEDED_MAX_CAPACITY
+    CAPACITY_OVERFLOW
   } else {
     this.append(other);
     OK
@@ -180,6 +202,55 @@ pub fn vec_remove(this: &mut Vec<JsValue>,index: isize)-> JsValue {
     index;this.len() => this.remove(index as _)
   }
 }
+
+#[method]
+pub fn vec_reserve(this: &mut Vec<JsValue>,additional: isize)-> u8 {
+  match this.try_reserve(saturation_cast(additional)) {
+    Ok(_)=> OK,
+    _=> CAPACITY_OVERFLOW
+  }
+}
+
+#[method]
+pub fn vec_reserve_exact(this: &mut Vec<JsValue>,additional: isize)-> u8 {
+  match this.try_reserve_exact(saturation_cast(additional)) {
+    Ok(_)=> OK,
+    _=> CAPACITY_OVERFLOW
+  }
+}
+
+#[method]
+pub fn vec_resize(this: &mut Vec<JsValue>,new_len: isize,val: JsValue) {
+  this.resize(saturation_cast(new_len),val)
+}
+
+#[method]
+pub fn vec_resize_with(this: &mut Vec<JsValue>,new_len: isize,f: js_sys::Function) {
+  this.resize_with(saturation_cast(new_len),|| any(f.call0(&JsValue::NULL)))
+}
+
+#[method]
+pub fn vec_retain(this: &mut Vec<JsValue>,f: js_sys::Function) {
+  this.retain_mut(|elem| any(f.call1(&JsValue::NULL,elem)).is_truthy())
+}
+
+#[method]
+pub fn vec_reverse(this: &mut Vec<JsValue>) {
+  this.reverse()
+}
+
+#[method]
+pub fn vec_rotate_left(this: &mut Vec<JsValue>,mid: isize) {
+  let mid=cast_or(mid,this.len());
+  this.rotate_left(mid);
+}
+
+#[method]
+pub fn vec_rotate_right(this: &mut Vec<JsValue>,k: isize) {
+  let k=cast_or(k,this.len());
+  this.rotate_right(k)
+}
+
 
 #[method]
 pub fn vec_shrink_to(this: &mut Vec<JsValue>,min_capacity: isize) {

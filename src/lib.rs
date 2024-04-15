@@ -39,7 +39,7 @@ pub fn spawn_thread(ptr: *const u8,name: Option<String>)-> *const Handler {
   };
 
   as_ptr!(
-    builder.spawn(fn_ptr!(ptr)).unwrap_throw().into()
+    builder.spawn::<fn()-> (),()>(fn_ptr!(ptr)).unwrap_throw().into()
   )
 }
 

@@ -4,7 +4,7 @@
 macro_rules! fn_ptr {
   ($fn_ptr:ident)=> {
     unsafe {
-      std::mem::transmute::<_,fn()-> ()>($fn_ptr)
+      std::mem::transmute::<_,_>($fn_ptr)
     }
   }
 }
