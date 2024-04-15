@@ -74,4 +74,28 @@ macro_rules! js_enum {
   }
 }
 
+#[macro_export]
+macro_rules! call {
+  ($f:ident($arg0:expr,$arg1:expr,$arg2:expr))=> {
+    wasm_bindgen::UnwrapThrowExt::unwrap_throw(
+      $f.call3(&wasm_bindgen::JsValue::UNDEFINED,$arg0,$arg1,$arg2)
+    )
+  };
+  ($f:ident($arg0:expr,$arg1:expr))=> {
+    wasm_bindgen::UnwrapThrowExt::unwrap_throw(
+      $f.call2(&wasm_bindgen::JsValue::UNDEFINED,$arg0,$arg1)
+    )
+  };
+  ($f:ident($arg0:expr))=> {
+    wasm_bindgen::UnwrapThrowExt::unwrap_throw(
+      $f.call1(&wasm_bindgen::JsValue::UNDEFINED,$arg0)
+    )
+  };
+  ($f:expr)=> {
+    wasm_bindgen::UnwrapThrowExt::unwrap_throw(
+      $f.call0(&wasm_bindgen::JsValue::UNDEFINED)
+    )
+  };
+}
+
 
