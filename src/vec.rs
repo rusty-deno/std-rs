@@ -1,5 +1,7 @@
 
 use macros::method;
+use js_sys::Function;
+use std::cmp::Ordering;
 use wasm_bindgen::prelude::*;
 
 type Vector=*mut Vec<JsValue>;
@@ -30,13 +32,6 @@ const fn cast_or(int: isize,or: usize)-> usize {
 
 
 
-fn any(val: Result<JsValue,JsValue>)-> JsValue {
-  match val {
-    Ok(val)=> val,
-    Err(err)=> err
-  }
-}
-
 
 #[wasm_bindgen]
 pub fn new_vec()-> Vector {
@@ -52,6 +47,67 @@ pub fn new_vec_with_capacity(capacity: isize)-> Vector {
 pub fn vec_from_iter(vec: Vec<JsValue>)-> Vector {
   as_ptr!(vec)
 }
+
+
+//A
+
+#[method]
+pub unsafe fn vec_append(this: &mut Vec<JsValue>,other: *mut Vec<JsValue>)-> u8 {
+  let other=other.as_mut().unwrap();
+  if this.capacity()+other.capacity()>isize::MAX as usize {
+    CAPACITY_OVERFLOW
+  } else {
+    this.append(other);
+    OK
+  }
+}
+
+
+#[method]
+pub fn vec_at(this: &Vec<JsValue>,mut index: isize)-> JsValue {
+  abs_index!(index;this.len());
+
+  nullable!(this.get(index as usize).cloned())
+}
+
+// B
+
+#[method]
+pub fn vec_binary_search_by(this: &Vec<JsValue>,f: Function)-> Result<usize,usize> {
+  this.binary_search_by(|element| {
+    match call!{ f(&element) }.unchecked_into_f64() as _ {
+      0=> Ordering::Equal,
+      1=> Ordering::Greater,
+      _=> Ordering::Less
+    }
+  })
+}
+
+// C
+
+
+#[method]
+pub fn vec_capacity(this: &Vec<JsValue>)-> usize {
+  this.capacity()
+}
+
+#[method]
+pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> *mut JsValue {
+  Box::into_raw(
+    this.chunk_by_mut(|x,y| call! { f(x,y) }.is_truthy())
+    .collect()
+  ) as _
+}
+
+
+
+
+#[method]
+pub fn vec_clear(this: &mut Vec<JsValue>) {
+  this.clear();
+}
+
+
 
 
 
@@ -97,21 +153,10 @@ pub fn vec_pop_front(this: &mut Vec<JsValue>)-> JsValue {
 
 
 #[method]
-pub fn vec_at(this: &Vec<JsValue>,mut index: isize)-> JsValue {
-  abs_index!(index;this.len());
-
-  nullable!(this.get(index as usize).cloned())
-}
-
-#[method]
 pub fn vec_len(this: &Vec<JsValue>)-> usize {
   this.len()
 }
 
-#[method]
-pub fn vec_capacity(this: &Vec<JsValue>)-> usize {
-  this.capacity()
-}
 
 #[method]
 pub fn vec_index(this: &Vec<JsValue>,i: isize)-> JsValue {
@@ -120,64 +165,6 @@ pub fn vec_index(this: &Vec<JsValue>,i: isize)-> JsValue {
   }
 
   this.get(i as usize).unwrap_throw().clone()
-}
-
-#[method]
-pub fn vec_set(this: &mut Vec<JsValue>,index: isize,element: JsValue)-> u8 {
-  match constraints!(index => this.capacity()) {
-    true=> {
-      this[index as usize]=element;
-      OK
-    },
-    _=> {
-      drop(element);
-      INDEX_OUT_OF_BOUNDS
-    }
-  }
-}
-
-
-#[method]
-pub fn vec_splice_arr(this: &mut Vec<JsValue>,mut start: isize,count: isize,replace_with: Vec<JsValue>)-> Vector {
-  abs_index!(start;this.len());
-  let range=start as _..saturation_cast(count-1);
-
-  match this.len() {
-    0=> as_ptr!(this.drain(range).collect()),
-    _=> as_ptr!(this.splice(range,replace_with).collect())
-  }
-}
-
-#[wasm_bindgen]
-pub unsafe fn vec_splice_vec(this: *mut Vec<JsValue>,start: isize,count: isize,replace_with: *mut Vec<JsValue>)-> Vector {
-  vec_splice_arr(this,start,count,replace_with.as_mut().unwrap().clone())
-}
-
-
-#[method]
-pub fn vec_split_off(this: &mut Vec<JsValue>,mut at: isize)-> Vector {
-  abs_index!(at;this.len());
-
-  match constraints!(at => this.len()) {
-    true=> as_ptr!(this.split_off(at as _)),
-    _=> wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
-  }
-}
-
-#[method]
-pub unsafe fn vec_append(this: &mut Vec<JsValue>,other: *mut Vec<JsValue>)-> u8 {
-  let other=other.as_mut().unwrap();
-  if this.capacity()+other.capacity()>isize::MAX as usize {
-    CAPACITY_OVERFLOW
-  } else {
-    this.append(other);
-    OK
-  }
-}
-
-#[method]
-pub fn vec_clear(this: &mut Vec<JsValue>) {
-  this.clear();
 }
 
 #[method]
@@ -225,13 +212,13 @@ pub fn vec_resize(this: &mut Vec<JsValue>,new_len: isize,val: JsValue) {
 }
 
 #[method]
-pub fn vec_resize_with(this: &mut Vec<JsValue>,new_len: isize,f: js_sys::Function) {
-  this.resize_with(saturation_cast(new_len),|| any(f.call0(&JsValue::NULL)))
+pub fn vec_resize_with(this: &mut Vec<JsValue>,new_len: isize,f: Function) {
+  this.resize_with(saturation_cast(new_len),|| call!(f))
 }
 
 #[method]
-pub fn vec_retain(this: &mut Vec<JsValue>,f: js_sys::Function) {
-  this.retain_mut(|elem| any(f.call1(&JsValue::NULL,elem)).is_truthy())
+pub fn vec_retain(this: &mut Vec<JsValue>,f: Function) {
+  this.retain_mut(|elem| call!(f(elem)).is_truthy())
 }
 
 #[method]
@@ -251,6 +238,50 @@ pub fn vec_rotate_right(this: &mut Vec<JsValue>,k: isize) {
   this.rotate_right(k)
 }
 
+
+// S
+
+#[method]
+pub fn vec_set(this: &mut Vec<JsValue>,index: isize,element: JsValue)-> u8 {
+  match constraints!(index => this.capacity()) {
+    true=> {
+      this[index as usize]=element;
+      OK
+    },
+    _=> {
+      drop(element);
+      INDEX_OUT_OF_BOUNDS
+    }
+  }
+}
+
+
+#[method]
+pub fn vec_splice_arr(this: &mut Vec<JsValue>,mut start: isize,count: isize,replace_with: Vec<JsValue>)-> Vector {
+  abs_index!(start;this.len());
+  let range=start as _..saturation_cast(count-1);
+
+  match this.len() {
+    0=> as_ptr!(this.drain(range).collect()),
+    _=> as_ptr!(this.splice(range,replace_with).collect())
+  }
+}
+
+#[wasm_bindgen]
+pub unsafe fn vec_splice_vec(this: *mut Vec<JsValue>,start: isize,count: isize,replace_with: *mut Vec<JsValue>)-> Vector {
+  vec_splice_arr(this,start,count,replace_with.as_mut().unwrap().clone())
+}
+
+
+#[method]
+pub fn vec_split_off(this: &mut Vec<JsValue>,mut at: isize)-> Vector {
+  abs_index!(at;this.len());
+
+  match constraints!(at => this.len()) {
+    true=> as_ptr!(this.split_off(at as _)),
+    _=> wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
+  }
+}
 
 #[method]
 pub fn vec_shrink_to(this: &mut Vec<JsValue>,min_capacity: isize) {
@@ -276,6 +307,8 @@ pub fn vec_swap_remove(this: &mut Vec<JsValue>,index: isize)-> JsValue {
     index;this.len() => this.swap_remove(index as _)
   }
 }
+
+
 
 
 

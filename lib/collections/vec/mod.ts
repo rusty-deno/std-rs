@@ -2,10 +2,10 @@ import { Fn } from '../../types.ts';
 import { Clone } from '../../clone.ts';
 import { PartailEq,$eq } from '../../cmp/mod.ts';
 import * as lib from "../../../bindings/std_rs.js";
-import { Option } from "../../error/option/option.ts";
+import { Option,Result,Ok,Err } from "../../error/mod.ts";
 import { $todo } from "../../declarative-macros/panics.ts";
-import { $resultSync,Result } from "../../error/result/mod.ts";
 import { IntoIterator,IteratorTrait } from '../../iter/iter.ts';
+import { Extend } from '../../iter/extend.ts';
 
 type Equivalent<T>=Vec<T>|T[];
 
@@ -20,7 +20,7 @@ const EXCEEDED_MAX_CAPACITY="Exceeded max capacity";
 
 
 // TODO(kakashi): implement Drop trait using decorator
-export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalent<T>>,ArrayLike<T> {
+export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalent<T>>,ArrayLike<T>,Extend<T> {
   #ptr: number;
   [index: number]: T;
 
@@ -84,6 +84,25 @@ export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalen
     return true;
   }
 
+  public extend(iter: Iterable<T>) {
+    // deno-lint-ignore no-explicit-any
+    const _iter=iter as any;
+    const additional: number|null=typeof _iter.length==="number"?
+      _iter.length
+    : typeof _iter.size==="number"?
+      _iter.size
+    : typeof _iter.len==="number"?
+      _iter.len
+    :
+      null;
+    additional && lib.vec_reserve(this.#ptr,additional);
+
+    for(const element of iter) {
+      this.push(element);
+    }
+  }
+
+
   public iter(): IteratorTrait<T> {
     return $todo();
   }
@@ -93,9 +112,7 @@ export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalen
   }
 
   public set(index: number,element: T): Result<void,string> {
-    return $resultSync(()=> {
-      if(lib.vec_set(this.#ptr,index,element)) throw INDEX_OUT_OF_BOUNDS;
-    });
+    return lib.vec_set(this.#ptr,index,element)?Err(INDEX_OUT_OF_BOUNDS):Ok(undefined as void);
   }
 
   public push(element: T) {
@@ -114,8 +131,13 @@ export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalen
     return new Option(lib.vec_pop_front(this.#ptr) as T|null);
   }
 
-  public splice(start: number,end: number,replaceWith: Equivalent<T>): Vec<T> {
-    return Vec.fromPtr<T>(lib.vec_splice(this.#ptr,start,end,Array.from(replaceWith)));
+  public splice(start: number,end: number,replaceWith: Equivalent<T>=[]): Vec<T> {
+    return Vec.fromPtr<T>(
+      replaceWith instanceof Vec?
+        lib.vec_splice_vec(this.#ptr,start,end,replaceWith.#ptr)
+      :
+        lib.vec_splice_arr(this.#ptr,start,end,replaceWith)
+    );
   }
 
   public splitOff(at: number): Vec<T> {

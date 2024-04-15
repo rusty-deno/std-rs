@@ -16,6 +16,39 @@ export function new_vec_with_capacity(capacity: number): number;
 export function vec_from_iter(vec: any[]): number;
 /**
 * @param {number} _this
+* @param {number} other
+* @returns {number}
+*/
+export function vec_append(_this: number, other: number): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {any}
+*/
+export function vec_at(_this: number, index: number): any;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_chunks_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+*/
+export function vec_clear(_this: number): void;
+/**
+* @param {number} _this
 * @param {any} element
 * @returns {number}
 */
@@ -38,26 +71,71 @@ export function vec_pop(_this: number): any;
 export function vec_pop_front(_this: number): any;
 /**
 * @param {number} _this
-* @param {number} index
-* @returns {any}
-*/
-export function vec_at(_this: number, index: number): any;
-/**
-* @param {number} _this
 * @returns {number}
 */
 export function vec_len(_this: number): number;
-/**
-* @param {number} _this
-* @returns {number}
-*/
-export function vec_capacity(_this: number): number;
 /**
 * @param {number} _this
 * @param {number} i
 * @returns {any}
 */
 export function vec_index(_this: number, i: number): any;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {any} element
+* @returns {number}
+*/
+export function vec_insert(_this: number, i: number, element: any): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {any}
+*/
+export function vec_remove(_this: number, index: number): any;
+/**
+* @param {number} _this
+* @param {number} additional
+* @returns {number}
+*/
+export function vec_reserve(_this: number, additional: number): number;
+/**
+* @param {number} _this
+* @param {number} additional
+* @returns {number}
+*/
+export function vec_reserve_exact(_this: number, additional: number): number;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {any} val
+*/
+export function vec_resize(_this: number, new_len: number, val: any): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function vec_rotate_right(_this: number, k: number): void;
 /**
 * @param {number} _this
 * @param {number} index
@@ -87,29 +165,6 @@ export function vec_splice_vec(_this: number, start: number, count: number, repl
 * @returns {number}
 */
 export function vec_split_off(_this: number, at: number): number;
-/**
-* @param {number} _this
-* @param {number} other
-* @returns {number}
-*/
-export function vec_append(_this: number, other: number): number;
-/**
-* @param {number} _this
-*/
-export function vec_clear(_this: number): void;
-/**
-* @param {number} _this
-* @param {number} i
-* @param {any} element
-* @returns {number}
-*/
-export function vec_insert(_this: number, i: number, element: any): number;
-/**
-* @param {number} _this
-* @param {number} index
-* @returns {any}
-*/
-export function vec_remove(_this: number, index: number): any;
 /**
 * @param {number} _this
 * @param {number} min_capacity
