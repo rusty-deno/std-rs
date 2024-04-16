@@ -5,7 +5,7 @@ use std::cmp::Ordering;
 use wasm_bindgen::prelude::*;
 
 type Vector=*mut Vec<JsValue>;
-
+type Slice=*mut JsValue;
 
 js_enum! {
   OK=0,
@@ -92,15 +92,27 @@ pub fn vec_capacity(this: &Vec<JsValue>)-> usize {
 }
 
 #[method]
-pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> *mut JsValue {
-  Box::into_raw(
+pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> Slice {
+  as_ptr!(
     this.chunk_by_mut(|x,y| call! { f(x,y) }.is_truthy())
-    .collect()
-  ) as _
+    .collect::<Box<[_]>>()
+  ) as *mut _
 }
 
+#[method]
+pub fn vec_chunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  as_ptr!(this.chunks_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
+}
 
+#[method]
+pub fn vec_chunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  as_ptr!(this.chunks_exact_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
+}
 
+#[method]
+pub fn vec_contains(this: &mut Vec<JsValue>,element: &JsValue)-> bool {
+  this.contains(element)
+}
 
 #[method]
 pub fn vec_clear(this: &mut Vec<JsValue>) {
