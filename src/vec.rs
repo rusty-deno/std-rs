@@ -119,9 +119,76 @@ pub fn vec_clear(this: &mut Vec<JsValue>) {
   this.clear();
 }
 
+// D
+
+#[method]
+pub fn vec_dedup(this: &mut Vec<JsValue>,f: Function) {
+  this.dedup_by(|a,b| call! { f(a,b) }.is_truthy())
+}
 
 
+#[method]
+pub fn vec_fill(this: &mut Vec<JsValue>,element: JsValue) {
+  this.fill(element);
+}
 
+#[method]
+pub fn vec_fill_with(this: &mut Vec<JsValue>,f: Function) {
+  this.fill_with(|| call!(f))
+}
+
+#[method]
+pub fn vec_first(this: &mut Vec<JsValue>)-> JsValue {
+  nullable!(this.first_mut().cloned())
+}
+
+// I
+
+#[method]
+pub fn vec_index(this: &Vec<JsValue>,i: isize)-> JsValue {
+  if constraints!(i => this.len()) {
+    wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
+  }
+
+  this.get(i as usize).unwrap_throw().clone()
+}
+
+#[method]
+pub fn vec_insert(this: &mut Vec<JsValue>,mut i: isize,element: JsValue)-> u8 {
+  abs_index!(i;this.len());
+
+  match constraints!(i => this.len()) {
+    true=> {
+      this.insert(i as _,element);
+      OK
+    },
+    _=> {
+      drop(element);
+      INDEX_OUT_OF_BOUNDS
+    }
+  }
+}
+
+
+// L
+
+#[method]
+pub fn vec_last(this: &mut Vec<JsValue>)-> JsValue {
+  nullable!(this.last_mut().cloned())
+}
+
+#[method]
+pub fn vec_len(this: &Vec<JsValue>)-> usize {
+  this.len()
+}
+
+
+// P
+
+#[method]
+pub fn vec_partition_point(this: &mut Vec<JsValue>,f: Function)-> usize {
+  this.partition_point(|element| call! { f(element) }.is_truthy())
+}
 
 #[method]
 pub fn vec_push(this: &mut Vec<JsValue>,element: JsValue)-> u8 {
@@ -164,36 +231,18 @@ pub fn vec_pop_front(this: &mut Vec<JsValue>)-> JsValue {
 }
 
 
-#[method]
-pub fn vec_len(this: &Vec<JsValue>)-> usize {
-  this.len()
-}
-
+// R
 
 #[method]
-pub fn vec_index(this: &Vec<JsValue>,i: isize)-> JsValue {
-  if constraints!(i => this.len()) {
-    wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
-  }
-
-  this.get(i as usize).unwrap_throw().clone()
+pub fn vec_rchunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  as_ptr!(this.rchunks_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
 }
 
 #[method]
-pub fn vec_insert(this: &mut Vec<JsValue>,mut i: isize,element: JsValue)-> u8 {
-  abs_index!(i;this.len());
-
-  match constraints!(i => this.len()) {
-    true=> {
-      this.insert(i as _,element);
-      OK
-    },
-    _=> {
-      drop(element);
-      INDEX_OUT_OF_BOUNDS
-    }
-  }
+pub fn vec_rchunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  as_ptr!(this.rchunks_exact_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
 }
+
 
 #[method]
 pub fn vec_remove(this: &mut Vec<JsValue>,index: isize)-> JsValue {
@@ -248,6 +297,23 @@ pub fn vec_rotate_left(this: &mut Vec<JsValue>,mid: isize) {
 pub fn vec_rotate_right(this: &mut Vec<JsValue>,k: isize) {
   let k=cast_or(k,this.len());
   this.rotate_right(k)
+}
+
+#[method]
+pub fn vec_rsplit(this: &mut Vec<JsValue>,f: Function)-> Vector {
+  as_ptr!(this.rsplit_mut(|element| call! { f(element) }.is_truthy()).collect::<Vec<_>>()) as _
+}
+
+#[method]
+pub fn vec_rsplitn(this: &mut Vec<JsValue>,mut n: isize,f: Function)-> Vector {
+  abs_index!(n;this.len());
+
+  as_ptr!(
+    this.rsplitn_mut(
+      saturation_cast(n),
+      |element| call! { f(element) }.is_truthy()
+    ).collect::<Vec<_>>()
+  ) as _
 }
 
 
