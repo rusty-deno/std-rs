@@ -447,11 +447,20 @@ pub unsafe fn vec_swap_with_slice(this: &mut Vec<JsValue>,ptr: *mut JsValue,len:
   this.swap_with_slice(std::slice::from_raw_parts_mut(ptr,len));
 }
 
+#[method]
+pub fn vec_truncate(this: &mut Vec<JsValue>,len: isize) {
+  this.truncate(len.unsigned_abs())
+}
 
+// W
 
-
-
-
+#[method]
+pub fn vec_windows(this: &mut Vec<JsValue>,size: isize)-> Slice {
+  Box::into_raw(
+    this.windows(size.unsigned_abs())
+    .collect::<Box<[_]>>()
+  ) as _
+}
 
 
 #[wasm_bindgen]
