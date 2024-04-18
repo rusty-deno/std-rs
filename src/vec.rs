@@ -5,7 +5,7 @@ use std::cmp::Ordering;
 use wasm_bindgen::prelude::*;
 
 type Vector=*mut Vec<JsValue>;
-
+type Slice=*mut *mut JsValue;
 
 js_enum! {
   OK=0,
@@ -92,24 +92,109 @@ pub fn vec_capacity(this: &Vec<JsValue>)-> usize {
 }
 
 #[method]
-pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> *mut JsValue {
+pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> Slice {
   Box::into_raw(
     this.chunk_by_mut(|x,y| call! { f(x,y) }.is_truthy())
-    .collect()
+    .collect::<Box<[_]>>()
   ) as _
 }
 
+#[method]
+pub fn vec_chunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  Box::into_raw(
+    this.chunks_mut(chunk_size.unsigned_abs())
+    .collect::<Box<[_]>>()
+  ) as _
+}
 
+#[method]
+pub fn vec_chunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  Box::into_raw(
+    this.chunks_exact_mut(chunk_size.unsigned_abs())
+    .collect::<Box<[_]>>()
+  ) as _
+}
 
+#[method]
+pub fn vec_contains(this: &mut Vec<JsValue>,element: &JsValue)-> bool {
+  this.contains(element)
+}
 
 #[method]
 pub fn vec_clear(this: &mut Vec<JsValue>) {
   this.clear();
 }
 
+// D
+
+#[method]
+pub fn vec_dedup(this: &mut Vec<JsValue>,f: Function) {
+  this.dedup_by(|a,b| call! { f(a,b) }.is_truthy())
+}
 
 
+#[method]
+pub fn vec_fill(this: &mut Vec<JsValue>,element: JsValue) {
+  this.fill(element);
+}
 
+#[method]
+pub fn vec_fill_with(this: &mut Vec<JsValue>,f: Function) {
+  this.fill_with(|| call!(f))
+}
+
+#[method]
+pub fn vec_first(this: &mut Vec<JsValue>)-> JsValue {
+  nullable!(this.first_mut().cloned())
+}
+
+// I
+
+#[method]
+pub fn vec_index(this: &Vec<JsValue>,i: isize)-> JsValue {
+  if constraints!(i => this.len()) {
+    wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
+  }
+
+  this.get(i as usize).unwrap_throw().clone()
+}
+
+#[method]
+pub fn vec_insert(this: &mut Vec<JsValue>,mut i: isize,element: JsValue)-> u8 {
+  abs_index!(i;this.len());
+
+  match constraints!(i => this.len()) {
+    true=> {
+      this.insert(i as _,element);
+      OK
+    },
+    _=> {
+      drop(element);
+      INDEX_OUT_OF_BOUNDS
+    }
+  }
+}
+
+
+// L
+
+#[method]
+pub fn vec_last(this: &mut Vec<JsValue>)-> JsValue {
+  nullable!(this.last_mut().cloned())
+}
+
+#[method]
+pub fn vec_len(this: &Vec<JsValue>)-> usize {
+  this.len()
+}
+
+
+// P
+
+#[method]
+pub fn vec_partition_point(this: &mut Vec<JsValue>,f: Function)-> usize {
+  this.partition_point(|element| call! { f(element) }.is_truthy())
+}
 
 #[method]
 pub fn vec_push(this: &mut Vec<JsValue>,element: JsValue)-> u8 {
@@ -152,36 +237,18 @@ pub fn vec_pop_front(this: &mut Vec<JsValue>)-> JsValue {
 }
 
 
-#[method]
-pub fn vec_len(this: &Vec<JsValue>)-> usize {
-  this.len()
-}
-
+// R
 
 #[method]
-pub fn vec_index(this: &Vec<JsValue>,i: isize)-> JsValue {
-  if constraints!(i => this.len()) {
-    wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
-  }
-
-  this.get(i as usize).unwrap_throw().clone()
+pub fn vec_rchunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  as_ptr!(this.rchunks_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
 }
 
 #[method]
-pub fn vec_insert(this: &mut Vec<JsValue>,mut i: isize,element: JsValue)-> u8 {
-  abs_index!(i;this.len());
-
-  match constraints!(i => this.len()) {
-    true=> {
-      this.insert(i as _,element);
-      OK
-    },
-    _=> {
-      drop(element);
-      INDEX_OUT_OF_BOUNDS
-    }
-  }
+pub fn vec_rchunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  as_ptr!(this.rchunks_exact_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
 }
+
 
 #[method]
 pub fn vec_remove(this: &mut Vec<JsValue>,index: isize)-> JsValue {
@@ -238,6 +305,23 @@ pub fn vec_rotate_right(this: &mut Vec<JsValue>,k: isize) {
   this.rotate_right(k)
 }
 
+#[method]
+pub fn vec_rsplit(this: &mut Vec<JsValue>,f: Function)-> Vector {
+  as_ptr!(this.rsplit_mut(|element| call! { f(element) }.is_truthy()).collect::<Vec<_>>()) as _
+}
+
+#[method]
+pub fn vec_rsplitn(this: &mut Vec<JsValue>,mut n: isize,f: Function)-> Vector {
+  abs_index!(n;this.len());
+
+  as_ptr!(
+    this.rsplitn_mut(
+      saturation_cast(n),
+      |element| call! { f(element) }.is_truthy()
+    ).collect::<Vec<_>>()
+  ) as _
+}
+
 
 // S
 
@@ -289,6 +373,55 @@ pub fn vec_shrink_to(this: &mut Vec<JsValue>,min_capacity: isize) {
 }
 
 #[method]
+pub fn vec_shrink_to_fit(this: &mut Vec<JsValue>) {
+  this.shrink_to_fit()
+}
+
+#[method]
+pub fn vec_sort_by(this: &mut Vec<JsValue>,f: Function) {
+  this.sort_by(|a,b| {
+    match call!{ f(a,b) }.unchecked_into_f64() as _ {
+      0=> Ordering::Equal,
+      1=> Ordering::Greater,
+      _=> Ordering::Less
+    }
+  })
+}
+
+#[method]
+pub fn vec_sort_unstable_by(this: &mut Vec<JsValue>,f: Function) {
+  this.sort_unstable_by(|a,b| match call! { f(a,b) }.unchecked_into_f64() as _ {
+    0=> Ordering::Equal,
+    1=> Ordering::Greater,
+    _=> Ordering::Less
+  })
+}
+
+#[method]
+pub fn vec_split(this: &mut Vec<JsValue>,f: Function)-> Slice {
+  Box::into_raw(
+    this.split_mut(|element| call! { f(element) }.is_truthy())
+    .collect::<Box<[_]>>()
+  ) as _
+}
+
+#[method]
+pub fn vec_split_at(this: &mut Vec<JsValue>,mut mid: isize)-> Slice {
+  abs_index!(mid;this.len());
+  let (split0,split1)=this.split_at_mut(mid as _);
+
+  Box::into_raw(Box::new([split0,split1])) as _
+}
+
+#[method]
+pub fn vec_splitn(this: &mut Vec<JsValue>,n: isize,f: Function)-> Slice {
+  Box::into_raw(
+    this.splitn_mut(n.unsigned_abs(),|element| call! { f(element) }.is_truthy())
+    .collect::<Box<[_]>>()
+  ) as _
+}
+
+#[method]
 pub fn vec_swap(this: &mut Vec<JsValue>,a: isize,b: isize)-> u8 {
   let len=this.len();
 
@@ -308,11 +441,26 @@ pub fn vec_swap_remove(this: &mut Vec<JsValue>,index: isize)-> JsValue {
   }
 }
 
+// SAFETY: This function is only used inside the `Vec` class and not exposed to the user.
+#[method]
+pub unsafe fn vec_swap_with_slice(this: &mut Vec<JsValue>,ptr: *mut JsValue,len: usize) {
+  this.swap_with_slice(std::slice::from_raw_parts_mut(ptr,len));
+}
 
+#[method]
+pub fn vec_truncate(this: &mut Vec<JsValue>,len: isize) {
+  this.truncate(len.unsigned_abs())
+}
 
+// W
 
-
-
+#[method]
+pub fn vec_windows(this: &mut Vec<JsValue>,size: isize)-> Slice {
+  Box::into_raw(
+    this.windows(size.unsigned_abs())
+    .collect::<Box<[_]>>()
+  ) as _
+}
 
 
 #[wasm_bindgen]
