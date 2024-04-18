@@ -5,7 +5,7 @@ use std::cmp::Ordering;
 use wasm_bindgen::prelude::*;
 
 type Vector=*mut Vec<JsValue>;
-type Slice=*mut JsValue;
+type Slice=*mut *mut JsValue;
 
 js_enum! {
   OK=0,
@@ -93,20 +93,26 @@ pub fn vec_capacity(this: &Vec<JsValue>)-> usize {
 
 #[method]
 pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> Slice {
-  as_ptr!(
+  Box::into_raw(
     this.chunk_by_mut(|x,y| call! { f(x,y) }.is_truthy())
     .collect::<Box<[_]>>()
-  ) as *mut _
+  ) as _
 }
 
 #[method]
 pub fn vec_chunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
-  as_ptr!(this.chunks_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
+  Box::into_raw(
+    this.chunks_mut(chunk_size.unsigned_abs())
+    .collect::<Box<[_]>>()
+  ) as _
 }
 
 #[method]
 pub fn vec_chunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
-  as_ptr!(this.chunks_exact_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
+  Box::into_raw(
+    this.chunks_exact_mut(chunk_size.unsigned_abs())
+    .collect::<Box<[_]>>()
+  ) as _
 }
 
 #[method]
@@ -391,12 +397,29 @@ pub fn vec_sort_unstable_by(this: &mut Vec<JsValue>,f: Function) {
   })
 }
 
+#[method]
+pub fn vec_split(this: &mut Vec<JsValue>,f: Function)-> Slice {
+  Box::into_raw(
+    this.split_mut(|element| call! { f(element) }.is_truthy())
+    .collect::<Box<[_]>>()
+  ) as _
+}
 
+#[method]
+pub fn vec_split_at(this: &mut Vec<JsValue>,mut mid: isize)-> Slice {
+  abs_index!(mid;this.len());
+  let (split0,split1)=this.split_at_mut(mid as _);
 
+  Box::into_raw(Box::new([split0,split1])) as _
+}
 
-
-
-
+#[method]
+pub fn vec_splitn(this: &mut Vec<JsValue>,n: isize,f: Function)-> Slice {
+  Box::into_raw(
+    this.splitn_mut(n.unsigned_abs(),|element| call! { f(element) }.is_truthy())
+    .collect::<Box<[_]>>()
+  ) as _
+}
 
 #[method]
 pub fn vec_swap(this: &mut Vec<JsValue>,a: isize,b: isize)-> u8 {
@@ -416,6 +439,12 @@ pub fn vec_swap_remove(this: &mut Vec<JsValue>,index: isize)-> JsValue {
   checked_idx! {
     index;this.len() => this.swap_remove(index as _)
   }
+}
+
+// SAFETY: This function is only used inside the `Vec` class and not exposed to the user.
+#[method]
+pub unsafe fn vec_swap_with_slice(this: &mut Vec<JsValue>,ptr: *mut JsValue,len: usize) {
+  this.swap_with_slice(std::slice::from_raw_parts_mut(ptr,len));
 }
 
 
