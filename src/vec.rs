@@ -367,6 +367,38 @@ pub fn vec_shrink_to(this: &mut Vec<JsValue>,min_capacity: isize) {
 }
 
 #[method]
+pub fn vec_shrink_to_fit(this: &mut Vec<JsValue>) {
+  this.shrink_to_fit()
+}
+
+#[method]
+pub fn vec_sort_by(this: &mut Vec<JsValue>,f: Function) {
+  this.sort_by(|a,b| {
+    match call!{ f(a,b) }.unchecked_into_f64() as _ {
+      0=> Ordering::Equal,
+      1=> Ordering::Greater,
+      _=> Ordering::Less
+    }
+  })
+}
+
+#[method]
+pub fn vec_sort_unstable_by(this: &mut Vec<JsValue>,f: Function) {
+  this.sort_unstable_by(|a,b| match call! { f(a,b) }.unchecked_into_f64() as _ {
+    0=> Ordering::Equal,
+    1=> Ordering::Greater,
+    _=> Ordering::Less
+  })
+}
+
+
+
+
+
+
+
+
+#[method]
 pub fn vec_swap(this: &mut Vec<JsValue>,a: isize,b: isize)-> u8 {
   let len=this.len();
 
