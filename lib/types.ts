@@ -12,3 +12,7 @@ export interface AsyncFn<P extends Params,R> {
   (...args: P): Promise<R>;
 }
 
+/** The enum type */
+export type Enum<T>={// This exists cause typescript sucks at compiling enums.
+  readonly [varient: PropertyKey]: T;
+}
