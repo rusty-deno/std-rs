@@ -1,4 +1,5 @@
 import { Enum } from "../types.ts";
+import { Eq,PartailEq } from "./eq.ts";
 
 
 /**
@@ -7,6 +8,7 @@ import { Enum } from "../types.ts";
  * ### Examples
 ```ts
 import { Ordering } from "std/cmp";
+import { Eq, PartailEq } from './eq';
 
 $assertEq($cmp("a","xd"), Ordering.Less);
 
@@ -27,6 +29,15 @@ export const Ordering={
 
 
 
+export interface Ord extends PartialOrd<ThisType<unknown>>,Eq {
+  cmp(other: this): Ordering;
+  partialCmp(other: this): Ordering;
+  eq(rhs: this): boolean;
+}
+
+export interface PartialOrd<Rhs> extends PartailEq<Rhs> {
+  partialCmp(other: Rhs): Ordering;
+}
 
 
 
