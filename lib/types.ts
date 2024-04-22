@@ -12,3 +12,8 @@ export interface AsyncFn<P extends Params,R> {
   (...args: P): Promise<R>;
 }
 
+
+
+/** The enum type */
+export type Enum<E>=E[keyof E];// This exists cause typescript sucks at compiling enums.
+
