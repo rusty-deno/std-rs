@@ -17,7 +17,7 @@ $assertEq($cmp("xd","xd"), Ordering.Equal);
 $assertEq($cmp("xd","a"), Ordering.Greater);
 ```
  */
-export type Ordering=-1|0|1;
+export type Ordering=Enum<typeof Ordering>;
 export const Ordering={
   /** An ordering where a compared value is less than another. */
   Less: -1,
@@ -25,7 +25,7 @@ export const Ordering={
   Equal: 0,
   /** An ordering where a compared value is greater than another. */
   Greater: 1,
-} satisfies Enum<Ordering>;
+} as const;
 
 
 
