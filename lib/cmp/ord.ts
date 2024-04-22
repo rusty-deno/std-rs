@@ -1,4 +1,5 @@
 import { Enum } from "../types.ts";
+import { Option } from "../../mod.ts";
 import { Eq,PartailEq } from "./eq.ts";
 
 
@@ -8,6 +9,7 @@ import { Eq,PartailEq } from "./eq.ts";
  * ### Examples
 ```ts
 import { Ordering } from "std/cmp";
+import { Option } from '../error/option/option';
 import { Eq, PartailEq } from './eq';
 
 $assertEq($cmp("a","xd"), Ordering.Less);
@@ -30,13 +32,44 @@ export const Ordering={
 
 
 export interface Ord extends PartialOrd<ThisType<unknown>>,Eq {
+  /**
+   * This method returns an Ordering between `this` and `other`.
+   * 
+   * By convention, `this.cmp(other)` returns the ordering matching the expression `this <operator> other` if true.
+   * 
+   * ### Examples
+  ```ts
+  import { Ordering } from "std/cmp";
+
+  $assertEq($cmp(5,10), Ordering.Less);
+  $assertEq($cmp(10,5), Ordering.Greater);
+  $assertEq($cmp(5,5), Ordering.Equal);
+  ```
+   */
   cmp(other: this): Ordering;
-  partialCmp(other: this): Ordering;
   eq(rhs: this): boolean;
 }
 
 export interface PartialOrd<Rhs> extends PartailEq<Rhs> {
-  partialCmp(other: Rhs): Ordering;
+  /**
+   * This method returns an ordering between `this` and `other` values if one exists.
+   * 
+   * ### Examples
+  ```ts
+  import { Ordering } from "std/cmp";
+  
+  $assertEq($cmp(1,2), Ordering.Less);
+
+  $assertEq($cmp(1,1), Ordering.Equal);
+  
+  $assertEq($cmp(2,1), Ordering.Greater);
+  ```
+   * When comparison is impossible:
+  ```ts
+  $assertEq($cmp(NaN,1), None());
+  ```
+   */
+  partialCmp(other: Rhs): Option<Ordering>;
 }
 
 
