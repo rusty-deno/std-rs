@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { PartailEq } from './eq.ts';
+import { PartailEq } from '../eq.ts';
 
 
 /**

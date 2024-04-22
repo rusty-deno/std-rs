@@ -4,7 +4,7 @@ import { HashSet, Vec } from '../mod.ts';
 import { HashMap } from './hash_map.ts';
 import { IntoIterator, IteratorTrait } from "../../iter/iter.ts";
 import { PartailEq } from '../../cmp/eq.ts';
-import { $eq } from "../../cmp/macros.ts";
+import { $eq } from "../../cmp/macros/mod.ts";
 import { $todo } from "../../declarative-macros/panics.ts";
 
 export type HasherFn<K>=(obj: K)=> number;
