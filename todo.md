@@ -2,7 +2,6 @@
 # FIX:
   Thread
   Option,Result pretty print
-  Async Eq
   circular import
 
 # Remaster
@@ -22,7 +21,9 @@
       collect
       vec methods and Eq impl
   # trait
-    Joinable
+    Join
+    Debug,
+    Display
   # Arr
 # Docs:
   # thread
