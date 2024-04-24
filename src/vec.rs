@@ -1,24 +1,14 @@
 
+use crate::*;
 use macros::method;
 use js_sys::Function;
 use wasm_bindgen::prelude::*;
-
-use crate::{
-  abs_index,
-  as_ptr,
-  call,
-  checked_idx,
-  constraints,
-  js_enum,
-  nullable,
-  ordering
-};
 
 
 
 
 type Vector=*mut Vec<JsValue>;
-type Slice=*mut *mut JsValue;
+type SlicePtr=*mut *mut JsValue;
 
 js_enum! {
   OK=0,
@@ -27,21 +17,7 @@ js_enum! {
 }
 
 
-const fn saturation_cast(x: isize)-> usize {
-  if x<0 {
-    0usize
-  } else {
-    x as _
-  }
-}
 
-const fn cast_or(int: isize,or: usize)-> usize {
-  if int<0 || int as usize>or {
-    or
-  } else {
-    int as _
-  }
-}
 
 
 
@@ -83,6 +59,13 @@ pub fn vec_at(this: &Vec<JsValue>,mut index: isize)-> JsValue {
   nullable!(this.get(index as usize).cloned())
 }
 
+#[method]
+pub fn vec_as_slice(this: &mut Vec<JsValue>)-> Slice {
+  this.as_slice().into()
+}
+
+
+
 // B
 
 #[method]
@@ -102,7 +85,7 @@ pub fn vec_capacity(this: &Vec<JsValue>)-> usize {
 }
 
 #[method]
-pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> Slice {
+pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> SlicePtr {
   Box::into_raw(
     this.chunk_by_mut(|x,y| call! { f(x,y) }.is_truthy())
     .collect::<Box<[_]>>()
@@ -110,7 +93,7 @@ pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> Slice {
 }
 
 #[method]
-pub fn vec_chunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+pub fn vec_chunks(this: &mut Vec<JsValue>,chunk_size: isize)-> SlicePtr {
   Box::into_raw(
     this.chunks_mut(chunk_size.unsigned_abs())
     .collect::<Box<[_]>>()
@@ -118,7 +101,7 @@ pub fn vec_chunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
 }
 
 #[method]
-pub fn vec_chunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+pub fn vec_chunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> SlicePtr {
   Box::into_raw(
     this.chunks_exact_mut(chunk_size.unsigned_abs())
     .collect::<Box<[_]>>()
@@ -250,12 +233,12 @@ pub fn vec_pop_front(this: &mut Vec<JsValue>)-> JsValue {
 // R
 
 #[method]
-pub fn vec_rchunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+pub fn vec_rchunks(this: &mut Vec<JsValue>,chunk_size: isize)-> SlicePtr {
   as_ptr!(this.rchunks_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
 }
 
 #[method]
-pub fn vec_rchunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+pub fn vec_rchunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> SlicePtr {
   as_ptr!(this.rchunks_exact_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
 }
 
@@ -404,7 +387,7 @@ pub fn vec_sort_unstable_by(this: &mut Vec<JsValue>,f: Function) {
 }
 
 #[method]
-pub fn vec_split(this: &mut Vec<JsValue>,f: Function)-> Slice {
+pub fn vec_split(this: &mut Vec<JsValue>,f: Function)-> SlicePtr {
   Box::into_raw(
     this.split_mut(|element| call! { f(element) }.is_truthy())
     .collect::<Box<[_]>>()
@@ -412,7 +395,7 @@ pub fn vec_split(this: &mut Vec<JsValue>,f: Function)-> Slice {
 }
 
 #[method]
-pub fn vec_split_at(this: &mut Vec<JsValue>,mut mid: isize)-> Slice {
+pub fn vec_split_at(this: &mut Vec<JsValue>,mut mid: isize)-> SlicePtr {
   abs_index!(mid;this.len());
   let (split0,split1)=this.split_at_mut(mid as _);
 
@@ -420,7 +403,7 @@ pub fn vec_split_at(this: &mut Vec<JsValue>,mut mid: isize)-> Slice {
 }
 
 #[method]
-pub fn vec_splitn(this: &mut Vec<JsValue>,n: isize,f: Function)-> Slice {
+pub fn vec_splitn(this: &mut Vec<JsValue>,n: isize,f: Function)-> SlicePtr {
   Box::into_raw(
     this.splitn_mut(n.unsigned_abs(),|element| call! { f(element) }.is_truthy())
     .collect::<Box<[_]>>()
@@ -461,7 +444,7 @@ pub fn vec_truncate(this: &mut Vec<JsValue>,len: isize) {
 // W
 
 #[method]
-pub fn vec_windows(this: &mut Vec<JsValue>,size: isize)-> Slice {
+pub fn vec_windows(this: &mut Vec<JsValue>,size: isize)-> SlicePtr {
   Box::into_raw(
     this.windows(size.unsigned_abs())
     .collect::<Box<[_]>>()

@@ -122,6 +122,15 @@ export function vec_at(_this, index) {
     return takeObject(ret);
 }
 
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function vec_as_slice(_this) {
+    const ret = wasm.vec_as_slice(_this);
+    return Slice.__wrap(ret);
+}
+
 let cachedInt32Memory0 = null;
 
 function getInt32Memory0() {
@@ -172,9 +181,132 @@ export function vec_chunks_by(_this, f) {
 
 /**
 * @param {number} _this
+* @param {number} chunk_size
+* @returns {number}
+*/
+export function vec_chunks(_this, chunk_size) {
+    const ret = wasm.vec_chunks(_this, chunk_size);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {number}
+*/
+export function vec_chunks_exact(_this, chunk_size) {
+    const ret = wasm.vec_chunks_exact(_this, chunk_size);
+    return ret >>> 0;
+}
+
+let stack_pointer = 128;
+
+function addBorrowedObject(obj) {
+    if (stack_pointer == 1) throw new Error('out of js stack');
+    heap[--stack_pointer] = obj;
+    return stack_pointer;
+}
+/**
+* @param {number} _this
+* @param {any} element
+* @returns {boolean}
+*/
+export function vec_contains(_this, element) {
+    try {
+        const ret = wasm.vec_contains(_this, addBorrowedObject(element));
+        return ret !== 0;
+    } finally {
+        heap[stack_pointer++] = undefined;
+    }
+}
+
+/**
+* @param {number} _this
 */
 export function vec_clear(_this) {
     wasm.vec_clear(_this);
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function vec_dedup(_this, f) {
+    wasm.vec_dedup(_this, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+* @param {any} element
+*/
+export function vec_fill(_this, element) {
+    wasm.vec_fill(_this, addHeapObject(element));
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function vec_fill_with(_this, f) {
+    wasm.vec_fill_with(_this, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+* @returns {any}
+*/
+export function vec_first(_this) {
+    const ret = wasm.vec_first(_this);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {any}
+*/
+export function vec_index(_this, i) {
+    const ret = wasm.vec_index(_this, i);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} i
+* @param {any} element
+* @returns {number}
+*/
+export function vec_insert(_this, i, element) {
+    const ret = wasm.vec_insert(_this, i, addHeapObject(element));
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @returns {any}
+*/
+export function vec_last(_this) {
+    const ret = wasm.vec_last(_this);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function vec_len(_this) {
+    const ret = wasm.vec_len(_this);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_partition_point(_this, f) {
+    const ret = wasm.vec_partition_point(_this, addHeapObject(f));
+    return ret >>> 0;
 }
 
 /**
@@ -217,32 +349,22 @@ export function vec_pop_front(_this) {
 
 /**
 * @param {number} _this
+* @param {number} chunk_size
 * @returns {number}
 */
-export function vec_len(_this) {
-    const ret = wasm.vec_len(_this);
+export function vec_rchunks(_this, chunk_size) {
+    const ret = wasm.vec_rchunks(_this, chunk_size);
     return ret >>> 0;
 }
 
 /**
 * @param {number} _this
-* @param {number} i
-* @returns {any}
-*/
-export function vec_index(_this, i) {
-    const ret = wasm.vec_index(_this, i);
-    return takeObject(ret);
-}
-
-/**
-* @param {number} _this
-* @param {number} i
-* @param {any} element
+* @param {number} chunk_size
 * @returns {number}
 */
-export function vec_insert(_this, i, element) {
-    const ret = wasm.vec_insert(_this, i, addHeapObject(element));
-    return ret;
+export function vec_rchunks_exact(_this, chunk_size) {
+    const ret = wasm.vec_rchunks_exact(_this, chunk_size);
+    return ret >>> 0;
 }
 
 /**
@@ -326,6 +448,27 @@ export function vec_rotate_right(_this, k) {
 
 /**
 * @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_rsplit(_this, f) {
+    const ret = wasm.vec_rsplit(_this, addHeapObject(f));
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_rsplitn(_this, n, f) {
+    const ret = wasm.vec_rsplitn(_this, n, addHeapObject(f));
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
 * @param {number} index
 * @param {any} element
 * @returns {number}
@@ -381,6 +524,60 @@ export function vec_shrink_to(_this, min_capacity) {
 
 /**
 * @param {number} _this
+*/
+export function vec_shrink_to_fit(_this) {
+    wasm.vec_shrink_to_fit(_this);
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function vec_sort_by(_this, f) {
+    wasm.vec_sort_by(_this, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function vec_sort_unstable_by(_this, f) {
+    wasm.vec_sort_unstable_by(_this, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_split(_this, f) {
+    const ret = wasm.vec_split(_this, addHeapObject(f));
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {number}
+*/
+export function vec_split_at(_this, mid) {
+    const ret = wasm.vec_split_at(_this, mid);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_splitn(_this, n, f) {
+    const ret = wasm.vec_splitn(_this, n, addHeapObject(f));
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
 * @param {number} a
 * @param {number} b
 * @returns {number}
@@ -398,6 +595,33 @@ export function vec_swap(_this, a, b) {
 export function vec_swap_remove(_this, index) {
     const ret = wasm.vec_swap_remove(_this, index);
     return takeObject(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function vec_swap_with_slice(_this, ptr, len) {
+    wasm.vec_swap_with_slice(_this, ptr, len);
+}
+
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function vec_truncate(_this, len) {
+    wasm.vec_truncate(_this, len);
+}
+
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {number}
+*/
+export function vec_windows(_this, size) {
+    const ret = wasm.vec_windows(_this, size);
+    return ret >>> 0;
 }
 
 /**
@@ -593,10 +817,72 @@ export function drop_join_handle(this_ptr) {
     wasm.drop_join_handle(this_ptr);
 }
 
+const SliceFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_slice_free(ptr >>> 0));
+/**
+*/
+export class Slice {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(Slice.prototype);
+        obj.__wbg_ptr = ptr;
+        SliceFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        SliceFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_slice_free(ptr);
+    }
+    /**
+    * @returns {number}
+    */
+    get ptr() {
+        const ret = wasm.__wbg_get_slice_ptr(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set ptr(arg0) {
+        wasm.__wbg_set_slice_ptr(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {number}
+    */
+    get len() {
+        const ret = wasm.__wbg_get_slice_len(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set len(arg0) {
+        wasm.__wbg_set_slice_len(this.__wbg_ptr, arg0);
+    }
+}
+
 const imports = {
     __wbindgen_placeholder__: {
+        __wbg_call_27c0f87801dedf93: function() { return handleError(function (arg0, arg1) {
+            const ret = getObject(arg0).call(getObject(arg1));
+            return addHeapObject(ret);
+        }, arguments) },
         __wbg_call_b3ca7c6051f9bec1: function() { return handleError(function (arg0, arg1, arg2) {
             const ret = getObject(arg0).call(getObject(arg1), getObject(arg2));
+            return addHeapObject(ret);
+        }, arguments) },
+        __wbg_call_8e7cb608789c2528: function() { return handleError(function (arg0, arg1, arg2, arg3) {
+            const ret = getObject(arg0).call(getObject(arg1), getObject(arg2), getObject(arg3));
             return addHeapObject(ret);
         }, arguments) },
         __wbindgen_object_clone_ref: function(arg0) {
@@ -614,18 +900,14 @@ const imports = {
         __wbindgen_object_drop_ref: function(arg0) {
             takeObject(arg0);
         },
-        __wbg_call_8e7cb608789c2528: function() { return handleError(function (arg0, arg1, arg2, arg3) {
-            const ret = getObject(arg0).call(getObject(arg1), getObject(arg2), getObject(arg3));
-            return addHeapObject(ret);
-        }, arguments) },
         __wbindgen_is_falsy: function(arg0) {
             const ret = !getObject(arg0);
             return ret;
         },
-        __wbg_call_27c0f87801dedf93: function() { return handleError(function (arg0, arg1) {
-            const ret = getObject(arg0).call(getObject(arg1));
-            return addHeapObject(ret);
-        }, arguments) },
+        __wbindgen_jsval_eq: function(arg0, arg1) {
+            const ret = getObject(arg0) === getObject(arg1);
+            return ret;
+        },
         __wbindgen_throw: function(arg0, arg1) {
             throw new Error(getStringFromWasm0(arg0, arg1));
         },

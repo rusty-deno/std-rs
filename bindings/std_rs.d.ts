@@ -28,6 +28,11 @@ export function vec_append(_this: number, other: number): number;
 export function vec_at(_this: number, index: number): any;
 /**
 * @param {number} _this
+* @returns {Slice}
+*/
+export function vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
 * @param {Function} f
 * @returns {number}
 */
@@ -45,8 +50,75 @@ export function vec_capacity(_this: number): number;
 export function vec_chunks_by(_this: number, f: Function): number;
 /**
 * @param {number} _this
+* @param {number} chunk_size
+* @returns {number}
+*/
+export function vec_chunks(_this: number, chunk_size: number): number;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {number}
+*/
+export function vec_chunks_exact(_this: number, chunk_size: number): number;
+/**
+* @param {number} _this
+* @param {any} element
+* @returns {boolean}
+*/
+export function vec_contains(_this: number, element: any): boolean;
+/**
+* @param {number} _this
 */
 export function vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {any} element
+*/
+export function vec_fill(_this: number, element: any): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {any}
+*/
+export function vec_first(_this: number): any;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {any}
+*/
+export function vec_index(_this: number, i: number): any;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {any} element
+* @returns {number}
+*/
+export function vec_insert(_this: number, i: number, element: any): number;
+/**
+* @param {number} _this
+* @returns {any}
+*/
+export function vec_last(_this: number): any;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_partition_point(_this: number, f: Function): number;
 /**
 * @param {number} _this
 * @param {any} element
@@ -71,22 +143,16 @@ export function vec_pop(_this: number): any;
 export function vec_pop_front(_this: number): any;
 /**
 * @param {number} _this
+* @param {number} chunk_size
 * @returns {number}
 */
-export function vec_len(_this: number): number;
+export function vec_rchunks(_this: number, chunk_size: number): number;
 /**
 * @param {number} _this
-* @param {number} i
-* @returns {any}
-*/
-export function vec_index(_this: number, i: number): any;
-/**
-* @param {number} _this
-* @param {number} i
-* @param {any} element
+* @param {number} chunk_size
 * @returns {number}
 */
-export function vec_insert(_this: number, i: number, element: any): number;
+export function vec_rchunks_exact(_this: number, chunk_size: number): number;
 /**
 * @param {number} _this
 * @param {number} index
@@ -138,6 +204,19 @@ export function vec_rotate_left(_this: number, mid: number): void;
 export function vec_rotate_right(_this: number, k: number): void;
 /**
 * @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_rsplit(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
 * @param {number} index
 * @param {any} element
 * @returns {number}
@@ -172,6 +251,39 @@ export function vec_split_off(_this: number, at: number): number;
 export function vec_shrink_to(_this: number, min_capacity: number): void;
 /**
 * @param {number} _this
+*/
+export function vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_split(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {number}
+*/
+export function vec_split_at(_this: number, mid: number): number;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function vec_splitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
 * @param {number} a
 * @param {number} b
 * @returns {number}
@@ -183,6 +295,23 @@ export function vec_swap(_this: number, a: number, b: number): number;
 * @returns {any}
 */
 export function vec_swap_remove(_this: number, index: number): any;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {number}
+*/
+export function vec_windows(_this: number, size: number): number;
 /**
 * @param {number} ptr
 */
@@ -255,3 +384,14 @@ export function drop_thread(this_ptr: number): void;
 * @param {number} this_ptr
 */
 export function drop_join_handle(this_ptr: number): void;
+/**
+*/
+export class Slice {
+  free(): void;
+/**
+*/
+  len: number;
+/**
+*/
+  ptr: number;
+}
