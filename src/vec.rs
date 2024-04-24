@@ -1,17 +1,17 @@
 
 use macros::method;
 use js_sys::Function;
-use std::cmp::Ordering;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-  as_ptr,
-  js_enum,
   abs_index,
-  nullable,
+  as_ptr,
   call,
+  checked_idx,
   constraints,
-  checked_idx
+  js_enum,
+  nullable,
+  ordering
 };
 
 
@@ -87,13 +87,10 @@ pub fn vec_at(this: &Vec<JsValue>,mut index: isize)-> JsValue {
 
 #[method]
 pub fn vec_binary_search_by(this: &Vec<JsValue>,f: Function)-> Result<usize,usize> {
-  this.binary_search_by(|element| {
-    match call!{ f(&element) }.unchecked_into_f64() as _ {
-      0=> Ordering::Equal,
-      1=> Ordering::Greater,
-      _=> Ordering::Less
-    }
-  })
+  this.binary_search_by(|element| ordering!(
+    call!{ f(&element) }
+    .unchecked_into_f64()
+  ))
 }
 
 // C
@@ -392,22 +389,18 @@ pub fn vec_shrink_to_fit(this: &mut Vec<JsValue>) {
 
 #[method]
 pub fn vec_sort_by(this: &mut Vec<JsValue>,f: Function) {
-  this.sort_by(|a,b| {
-    match call!{ f(a,b) }.unchecked_into_f64() as _ {
-      0=> Ordering::Equal,
-      1=> Ordering::Greater,
-      _=> Ordering::Less
-    }
-  })
+  this.sort_by(|a,b| ordering!(
+    call!{ f(a,b) }
+    .unchecked_into_f64()
+  ))
 }
 
 #[method]
 pub fn vec_sort_unstable_by(this: &mut Vec<JsValue>,f: Function) {
-  this.sort_unstable_by(|a,b| match call! { f(a,b) }.unchecked_into_f64() as _ {
-    0=> Ordering::Equal,
-    1=> Ordering::Greater,
-    _=> Ordering::Less
-  })
+  this.sort_unstable_by(|a,b| ordering!(
+    call! { f(a,b) }
+    .unchecked_into_f64()
+  ))
 }
 
 #[method]

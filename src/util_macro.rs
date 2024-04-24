@@ -99,3 +99,15 @@ macro_rules! call {
 }
 
 
+#[macro_export]
+macro_rules! ordering {
+  ($int:expr)=> {
+    match $int as _ {
+      1.. => std::cmp::Ordering::Greater,
+      0=> std::cmp::Ordering::Equal,
+      _ => std::cmp::Ordering::Less,
+    }
+  }
+}
+
+
