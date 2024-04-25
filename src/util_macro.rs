@@ -111,3 +111,18 @@ macro_rules! ordering {
 }
 
 
+#[macro_export]
+macro_rules! chunks_to_slice {
+  ($slice:expr)=> {
+    unsafe {
+      mem::transmute::<_,Slice>(Box::into_raw(
+        $slice
+        .collect::<Box<[_]>>()
+      ))
+    }
+  };
+}
+
+
+
+

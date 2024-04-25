@@ -45,21 +45,21 @@ export function vec_capacity(_this: number): number;
 /**
 * @param {number} _this
 * @param {Function} f
-* @returns {number}
+* @returns {Slice}
 */
-export function vec_chunks_by(_this: number, f: Function): number;
+export function vec_chunks_by(_this: number, f: Function): Slice;
 /**
 * @param {number} _this
 * @param {number} chunk_size
-* @returns {number}
+* @returns {Slice}
 */
-export function vec_chunks(_this: number, chunk_size: number): number;
+export function vec_chunks(_this: number, chunk_size: number): Slice;
 /**
 * @param {number} _this
 * @param {number} chunk_size
-* @returns {number}
+* @returns {Slice}
 */
-export function vec_chunks_exact(_this: number, chunk_size: number): number;
+export function vec_chunks_exact(_this: number, chunk_size: number): Slice;
 /**
 * @param {number} _this
 * @param {any} element
@@ -144,15 +144,15 @@ export function vec_pop_front(_this: number): any;
 /**
 * @param {number} _this
 * @param {number} chunk_size
-* @returns {number}
+* @returns {Slice}
 */
-export function vec_rchunks(_this: number, chunk_size: number): number;
+export function vec_rchunks(_this: number, chunk_size: number): Slice;
 /**
 * @param {number} _this
 * @param {number} chunk_size
-* @returns {number}
+* @returns {Slice}
 */
-export function vec_rchunks_exact(_this: number, chunk_size: number): number;
+export function vec_rchunks_exact(_this: number, chunk_size: number): Slice;
 /**
 * @param {number} _this
 * @param {number} index
@@ -205,9 +205,9 @@ export function vec_rotate_right(_this: number, k: number): void;
 /**
 * @param {number} _this
 * @param {Function} f
-* @returns {number}
+* @returns {Slice}
 */
-export function vec_rsplit(_this: number, f: Function): number;
+export function vec_rsplit(_this: number, f: Function): Slice;
 /**
 * @param {number} _this
 * @param {number} n
@@ -266,22 +266,22 @@ export function vec_sort_unstable_by(_this: number, f: Function): void;
 /**
 * @param {number} _this
 * @param {Function} f
-* @returns {number}
+* @returns {Slice}
 */
-export function vec_split(_this: number, f: Function): number;
+export function vec_split(_this: number, f: Function): Slice;
 /**
 * @param {number} _this
 * @param {number} mid
-* @returns {number}
+* @returns {(Slice)[]}
 */
-export function vec_split_at(_this: number, mid: number): number;
+export function vec_split_at(_this: number, mid: number): (Slice)[];
 /**
 * @param {number} _this
 * @param {number} n
 * @param {Function} f
-* @returns {number}
+* @returns {Slice}
 */
-export function vec_splitn(_this: number, n: number, f: Function): number;
+export function vec_splitn(_this: number, n: number, f: Function): Slice;
 /**
 * @param {number} _this
 * @param {number} a
@@ -309,9 +309,9 @@ export function vec_truncate(_this: number, len: number): void;
 /**
 * @param {number} _this
 * @param {number} size
-* @returns {number}
+* @returns {Slice}
 */
-export function vec_windows(_this: number, size: number): number;
+export function vec_windows(_this: number, size: number): Slice;
 /**
 * @param {number} ptr
 */

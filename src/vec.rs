@@ -1,4 +1,6 @@
 
+use std::mem;
+
 use crate::*;
 use macros::method;
 use js_sys::Function;
@@ -8,16 +10,12 @@ use wasm_bindgen::prelude::*;
 
 
 type Vector=*mut Vec<JsValue>;
-type SlicePtr=*mut *mut JsValue;
 
 js_enum! {
   OK=0,
   INDEX_OUT_OF_BOUNDS=1,
   CAPACITY_OVERFLOW=2
 }
-
-
-
 
 
 
@@ -85,27 +83,24 @@ pub fn vec_capacity(this: &Vec<JsValue>)-> usize {
 }
 
 #[method]
-pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> SlicePtr {
-  Box::into_raw(
+pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> Slice {
+  chunks_to_slice! {
     this.chunk_by_mut(|x,y| call! { f(x,y) }.is_truthy())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
-pub fn vec_chunks(this: &mut Vec<JsValue>,chunk_size: isize)-> SlicePtr {
-  Box::into_raw(
+pub fn vec_chunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  chunks_to_slice!{
     this.chunks_mut(chunk_size.unsigned_abs())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
-pub fn vec_chunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> SlicePtr {
-  Box::into_raw(
+pub fn vec_chunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  chunks_to_slice! {
     this.chunks_exact_mut(chunk_size.unsigned_abs())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
@@ -233,13 +228,17 @@ pub fn vec_pop_front(this: &mut Vec<JsValue>)-> JsValue {
 // R
 
 #[method]
-pub fn vec_rchunks(this: &mut Vec<JsValue>,chunk_size: isize)-> SlicePtr {
-  as_ptr!(this.rchunks_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
+pub fn vec_rchunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  chunks_to_slice! {
+    this.rchunks_mut(chunk_size.unsigned_abs())
+  }
 }
 
 #[method]
-pub fn vec_rchunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> SlicePtr {
-  as_ptr!(this.rchunks_exact_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
+pub fn vec_rchunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
+  chunks_to_slice! {
+    this.rchunks_exact_mut(chunk_size.unsigned_abs())
+  }
 }
 
 
@@ -299,8 +298,10 @@ pub fn vec_rotate_right(this: &mut Vec<JsValue>,k: isize) {
 }
 
 #[method]
-pub fn vec_rsplit(this: &mut Vec<JsValue>,f: Function)-> Vector {
-  as_ptr!(this.rsplit_mut(|element| call! { f(element) }.is_truthy()).collect::<Vec<_>>()) as _
+pub fn vec_rsplit(this: &mut Vec<JsValue>,f: Function)-> Slice {
+  chunks_to_slice! {
+    this.rsplit_mut(|element| call! { f(element) }.is_truthy())
+  }
 }
 
 #[method]
@@ -387,27 +388,25 @@ pub fn vec_sort_unstable_by(this: &mut Vec<JsValue>,f: Function) {
 }
 
 #[method]
-pub fn vec_split(this: &mut Vec<JsValue>,f: Function)-> SlicePtr {
-  Box::into_raw(
+pub fn vec_split(this: &mut Vec<JsValue>,f: Function)-> Slice {
+  chunks_to_slice! {
     this.split_mut(|element| call! { f(element) }.is_truthy())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
-pub fn vec_split_at(this: &mut Vec<JsValue>,mut mid: isize)-> SlicePtr {
+pub fn vec_split_at(this: &mut Vec<JsValue>,mut mid: isize)-> Vec<Slice> {
   abs_index!(mid;this.len());
   let (split0,split1)=this.split_at_mut(mid as _);
-
-  Box::into_raw(Box::new([split0,split1])) as _
+  
+  vec![split0.into(),split1.into()]
 }
 
 #[method]
-pub fn vec_splitn(this: &mut Vec<JsValue>,n: isize,f: Function)-> SlicePtr {
-  Box::into_raw(
+pub fn vec_splitn(this: &mut Vec<JsValue>,n: isize,f: Function)-> Slice {
+  chunks_to_slice! {
     this.splitn_mut(n.unsigned_abs(),|element| call! { f(element) }.is_truthy())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
@@ -444,11 +443,10 @@ pub fn vec_truncate(this: &mut Vec<JsValue>,len: isize) {
 // W
 
 #[method]
-pub fn vec_windows(this: &mut Vec<JsValue>,size: isize)-> SlicePtr {
-  Box::into_raw(
+pub fn vec_windows(this: &mut Vec<JsValue>,size: isize)-> Slice {
+  chunks_to_slice! {
     this.windows(size.unsigned_abs())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 

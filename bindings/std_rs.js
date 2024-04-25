@@ -172,31 +172,31 @@ export function vec_capacity(_this) {
 /**
 * @param {number} _this
 * @param {Function} f
-* @returns {number}
+* @returns {Slice}
 */
 export function vec_chunks_by(_this, f) {
     const ret = wasm.vec_chunks_by(_this, addHeapObject(f));
-    return ret >>> 0;
+    return Slice.__wrap(ret);
 }
 
 /**
 * @param {number} _this
 * @param {number} chunk_size
-* @returns {number}
+* @returns {Slice}
 */
 export function vec_chunks(_this, chunk_size) {
     const ret = wasm.vec_chunks(_this, chunk_size);
-    return ret >>> 0;
+    return Slice.__wrap(ret);
 }
 
 /**
 * @param {number} _this
 * @param {number} chunk_size
-* @returns {number}
+* @returns {Slice}
 */
 export function vec_chunks_exact(_this, chunk_size) {
     const ret = wasm.vec_chunks_exact(_this, chunk_size);
-    return ret >>> 0;
+    return Slice.__wrap(ret);
 }
 
 let stack_pointer = 128;
@@ -350,21 +350,21 @@ export function vec_pop_front(_this) {
 /**
 * @param {number} _this
 * @param {number} chunk_size
-* @returns {number}
+* @returns {Slice}
 */
 export function vec_rchunks(_this, chunk_size) {
     const ret = wasm.vec_rchunks(_this, chunk_size);
-    return ret >>> 0;
+    return Slice.__wrap(ret);
 }
 
 /**
 * @param {number} _this
 * @param {number} chunk_size
-* @returns {number}
+* @returns {Slice}
 */
 export function vec_rchunks_exact(_this, chunk_size) {
     const ret = wasm.vec_rchunks_exact(_this, chunk_size);
-    return ret >>> 0;
+    return Slice.__wrap(ret);
 }
 
 /**
@@ -449,11 +449,11 @@ export function vec_rotate_right(_this, k) {
 /**
 * @param {number} _this
 * @param {Function} f
-* @returns {number}
+* @returns {Slice}
 */
 export function vec_rsplit(_this, f) {
     const ret = wasm.vec_rsplit(_this, addHeapObject(f));
-    return ret >>> 0;
+    return Slice.__wrap(ret);
 }
 
 /**
@@ -548,32 +548,51 @@ export function vec_sort_unstable_by(_this, f) {
 /**
 * @param {number} _this
 * @param {Function} f
-* @returns {number}
+* @returns {Slice}
 */
 export function vec_split(_this, f) {
     const ret = wasm.vec_split(_this, addHeapObject(f));
-    return ret >>> 0;
+    return Slice.__wrap(ret);
 }
 
+function getArrayJsValueFromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    const mem = getUint32Memory0();
+    const slice = mem.subarray(ptr / 4, ptr / 4 + len);
+    const result = [];
+    for (let i = 0; i < slice.length; i++) {
+        result.push(takeObject(slice[i]));
+    }
+    return result;
+}
 /**
 * @param {number} _this
 * @param {number} mid
-* @returns {number}
+* @returns {(Slice)[]}
 */
 export function vec_split_at(_this, mid) {
-    const ret = wasm.vec_split_at(_this, mid);
-    return ret >>> 0;
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        wasm.vec_split_at(retptr, _this, mid);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var v1 = getArrayJsValueFromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 4, 4);
+        return v1;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
 }
 
 /**
 * @param {number} _this
 * @param {number} n
 * @param {Function} f
-* @returns {number}
+* @returns {Slice}
 */
 export function vec_splitn(_this, n, f) {
     const ret = wasm.vec_splitn(_this, n, addHeapObject(f));
-    return ret >>> 0;
+    return Slice.__wrap(ret);
 }
 
 /**
@@ -617,11 +636,11 @@ export function vec_truncate(_this, len) {
 /**
 * @param {number} _this
 * @param {number} size
-* @returns {number}
+* @returns {Slice}
 */
 export function vec_windows(_this, size) {
     const ret = wasm.vec_windows(_this, size);
-    return ret >>> 0;
+    return Slice.__wrap(ret);
 }
 
 /**
@@ -907,6 +926,10 @@ const imports = {
         __wbindgen_jsval_eq: function(arg0, arg1) {
             const ret = getObject(arg0) === getObject(arg1);
             return ret;
+        },
+        __wbg_slice_new: function(arg0) {
+            const ret = Slice.__wrap(arg0);
+            return addHeapObject(ret);
         },
         __wbindgen_throw: function(arg0, arg1) {
             throw new Error(getStringFromWasm0(arg0, arg1));
