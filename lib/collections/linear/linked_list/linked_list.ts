@@ -1,11 +1,16 @@
 import { Node } from "./mod.ts";
-import { IntoIterator, DoubleEndedIterator } from '../../../iter/mod.ts';
+import { $eq } from "../../../cmp/mod.ts";
+import { ArrayLite } from "../../../types.ts";
+import { PartailEq } from '../../../cmp/eq.ts';
 import { Option,None,Some } from "../../../error/mod.ts";
 import { $todo } from "../../../declarative-macros/panics.ts";
+import { IntoIterator, DoubleEndedIterator } from '../../../iter/mod.ts';
+
+type Item<T>=T|PartailEq<T>;
+type Equivalent<T>=ArrayLite<Item<T>>|LinkedList<Item<T>>;
 
 
-
-export class LinkedList<T> extends IntoIterator<T> {
+export class LinkedList<T> extends IntoIterator<T> implements PartailEq<Equivalent<T>> {
   #size: number;
   #head: Option<Node<T>>=None();
   #tail=new WeakRef(this.#head);
@@ -127,6 +132,16 @@ export class LinkedList<T> extends IntoIterator<T> {
   
   public isEmpty() {
     return !this.#size;
+  }
+
+  public eq(rhs: Equivalent<T>): boolean {
+    if(rhs.length!=this.#size) return false;
+
+    for(const [lhsElement,rhsElement] of this.iter().zip(rhs)) {
+      if($eq(lhsElement,rhsElement)) return false;
+    }
+
+    return true;
   }
   
   public iter(): DoubleEndedIterator<T> {
