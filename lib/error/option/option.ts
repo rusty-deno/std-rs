@@ -3,7 +3,7 @@ import { $panic } from '../../../mod.ts';
 import { Fn } from "../../types.ts";
 import { Exception } from '../exception.ts';
 import { PartailEq } from '../../cmp/eq.ts';
-import { $eq } from "../../cmp/macros.ts";
+import { $eq } from "../../cmp/macros/mod.ts";
 
 
 /**

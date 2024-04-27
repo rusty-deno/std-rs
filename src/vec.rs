@@ -1,46 +1,20 @@
 
+use std::mem;
+
+use crate::*;
 use macros::method;
 use js_sys::Function;
-use std::cmp::Ordering;
 use wasm_bindgen::prelude::*;
-
-use crate::{
-  as_ptr,
-  js_enum,
-  abs_index,
-  nullable,
-  call,
-  constraints,
-  checked_idx
-};
 
 
 
 
 type Vector=*mut Vec<JsValue>;
-type Slice=*mut *mut JsValue;
 
 js_enum! {
   OK=0,
   INDEX_OUT_OF_BOUNDS=1,
   CAPACITY_OVERFLOW=2
-}
-
-
-const fn saturation_cast(x: isize)-> usize {
-  if x<0 {
-    0usize
-  } else {
-    x as _
-  }
-}
-
-const fn cast_or(int: isize,or: usize)-> usize {
-  if int<0 || int as usize>or {
-    or
-  } else {
-    int as _
-  }
 }
 
 
@@ -83,17 +57,21 @@ pub fn vec_at(this: &Vec<JsValue>,mut index: isize)-> JsValue {
   nullable!(this.get(index as usize).cloned())
 }
 
+#[method]
+pub fn vec_as_slice(this: &mut Vec<JsValue>)-> Slice {
+  this.as_slice().into()
+}
+
+
+
 // B
 
 #[method]
 pub fn vec_binary_search_by(this: &Vec<JsValue>,f: Function)-> Result<usize,usize> {
-  this.binary_search_by(|element| {
-    match call!{ f(&element) }.unchecked_into_f64() as _ {
-      0=> Ordering::Equal,
-      1=> Ordering::Greater,
-      _=> Ordering::Less
-    }
-  })
+  this.binary_search_by(|element| ordering!(
+    call!{ f(&element) }
+    .unchecked_into_f64()
+  ))
 }
 
 // C
@@ -106,26 +84,23 @@ pub fn vec_capacity(this: &Vec<JsValue>)-> usize {
 
 #[method]
 pub fn vec_chunks_by(this: &mut Vec<JsValue>,f: Function)-> Slice {
-  Box::into_raw(
+  chunks_to_slice! {
     this.chunk_by_mut(|x,y| call! { f(x,y) }.is_truthy())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
 pub fn vec_chunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
-  Box::into_raw(
+  chunks_to_slice!{
     this.chunks_mut(chunk_size.unsigned_abs())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
 pub fn vec_chunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
-  Box::into_raw(
+  chunks_to_slice! {
     this.chunks_exact_mut(chunk_size.unsigned_abs())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
@@ -254,12 +229,16 @@ pub fn vec_pop_front(this: &mut Vec<JsValue>)-> JsValue {
 
 #[method]
 pub fn vec_rchunks(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
-  as_ptr!(this.rchunks_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
+  chunks_to_slice! {
+    this.rchunks_mut(chunk_size.unsigned_abs())
+  }
 }
 
 #[method]
 pub fn vec_rchunks_exact(this: &mut Vec<JsValue>,chunk_size: isize)-> Slice {
-  as_ptr!(this.rchunks_exact_mut(chunk_size.unsigned_abs()).collect::<Box<[_]>>()) as _
+  chunks_to_slice! {
+    this.rchunks_exact_mut(chunk_size.unsigned_abs())
+  }
 }
 
 
@@ -319,8 +298,10 @@ pub fn vec_rotate_right(this: &mut Vec<JsValue>,k: isize) {
 }
 
 #[method]
-pub fn vec_rsplit(this: &mut Vec<JsValue>,f: Function)-> Vector {
-  as_ptr!(this.rsplit_mut(|element| call! { f(element) }.is_truthy()).collect::<Vec<_>>()) as _
+pub fn vec_rsplit(this: &mut Vec<JsValue>,f: Function)-> Slice {
+  chunks_to_slice! {
+    this.rsplit_mut(|element| call! { f(element) }.is_truthy())
+  }
 }
 
 #[method]
@@ -392,46 +373,40 @@ pub fn vec_shrink_to_fit(this: &mut Vec<JsValue>) {
 
 #[method]
 pub fn vec_sort_by(this: &mut Vec<JsValue>,f: Function) {
-  this.sort_by(|a,b| {
-    match call!{ f(a,b) }.unchecked_into_f64() as _ {
-      0=> Ordering::Equal,
-      1=> Ordering::Greater,
-      _=> Ordering::Less
-    }
-  })
+  this.sort_by(|a,b| ordering!(
+    call!{ f(a,b) }
+    .unchecked_into_f64()
+  ))
 }
 
 #[method]
 pub fn vec_sort_unstable_by(this: &mut Vec<JsValue>,f: Function) {
-  this.sort_unstable_by(|a,b| match call! { f(a,b) }.unchecked_into_f64() as _ {
-    0=> Ordering::Equal,
-    1=> Ordering::Greater,
-    _=> Ordering::Less
-  })
+  this.sort_unstable_by(|a,b| ordering!(
+    call! { f(a,b) }
+    .unchecked_into_f64()
+  ))
 }
 
 #[method]
 pub fn vec_split(this: &mut Vec<JsValue>,f: Function)-> Slice {
-  Box::into_raw(
+  chunks_to_slice! {
     this.split_mut(|element| call! { f(element) }.is_truthy())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
-pub fn vec_split_at(this: &mut Vec<JsValue>,mut mid: isize)-> Slice {
+pub fn vec_split_at(this: &mut Vec<JsValue>,mut mid: isize)-> Vec<Slice> {
   abs_index!(mid;this.len());
   let (split0,split1)=this.split_at_mut(mid as _);
-
-  Box::into_raw(Box::new([split0,split1])) as _
+  
+  vec![split0.into(),split1.into()]
 }
 
 #[method]
 pub fn vec_splitn(this: &mut Vec<JsValue>,n: isize,f: Function)-> Slice {
-  Box::into_raw(
+  chunks_to_slice! {
     this.splitn_mut(n.unsigned_abs(),|element| call! { f(element) }.is_truthy())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 #[method]
@@ -469,10 +444,9 @@ pub fn vec_truncate(this: &mut Vec<JsValue>,len: isize) {
 
 #[method]
 pub fn vec_windows(this: &mut Vec<JsValue>,size: isize)-> Slice {
-  Box::into_raw(
+  chunks_to_slice! {
     this.windows(size.unsigned_abs())
-    .collect::<Box<[_]>>()
-  ) as _
+  }
 }
 
 
