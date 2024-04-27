@@ -1,4 +1,4 @@
-import { Fn } from '../../types.ts';
+import { ArrayLite, Fn } from '../../types.ts';
 import { Clone } from '../../clone.ts';
 import { PartailEq,$eq } from '../../cmp/mod.ts';
 import * as lib from "../../../bindings/std_rs.js";
@@ -20,7 +20,7 @@ const EXCEEDED_MAX_CAPACITY="Exceeded max capacity";
 
 
 // TODO(kakashi): implement Drop trait using decorator
-export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalent<T>>,ArrayLike<T>,Extend<T> {
+export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalent<T>>,ArrayLite<T>,Extend<T> {
   #ptr: number;
   [index: number]: T;
 
