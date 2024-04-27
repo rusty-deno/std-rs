@@ -1,11 +1,11 @@
 import { Node } from "./mod.ts";
-import { $eq } from "../../../cmp/mod.ts";
-import { ArrayLite } from "../../../types.ts";
-import { PartailEq } from '../../../cmp/eq.ts';
-import { IteratorTrait } from '../../../iter/iter.ts';
-import { Option,None,Some } from "../../../error/mod.ts";
-import { $todo } from "../../../declarative-macros/panics.ts";
-import { IntoIterator, DoubleEndedIterator } from '../../../iter/mod.ts';
+import { $eq } from "../../cmp/mod.ts";
+import { ArrayLite } from "../../types.ts";
+import { PartailEq } from '../../cmp/eq.ts';
+import { IteratorTrait } from '../../iter/iter.ts';
+import { Option,None,Some } from "../../error/mod.ts";
+import { $todo } from "../../declarative-macros/panics.ts";
+import { IntoIterator, DoubleEndedIterator } from '../../iter/mod.ts';
 
 type Item<T>=T|PartailEq<T>;
 type Equivalent<T>=ArrayLite<Item<T>>|LinkedList<Item<T>>;

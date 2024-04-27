@@ -1,4 +1,4 @@
-import { Option } from "../../../../mod.ts";
+import { Option } from "../../../mod.ts";
 export * from "./linked_list.ts";
 export * from "./macros.ts";
 
