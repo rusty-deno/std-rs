@@ -5,7 +5,7 @@ import { Vec } from '../vec/mod.ts';
 import { $eq } from "../../cmp/macros/mod.ts";
 import { IntoIterator } from "../../iter/iter.ts";
 import { PartailEq } from '../../cmp/eq.ts';
-import type { HashTable } from './hash_table.ts';
+import { HashTable } from './hash_table.ts';
 import { HashSet } from '../hash_set/hash_set.ts';
 import { $todo } from "../../declarative-macros/panics.ts";
 
@@ -38,8 +38,11 @@ export class HashMap<K,V> extends IntoIterator<Entry<K,V>> implements Clone,Part
    * ```
    */
   public static fromIter<K,V>(iter: Iterable<Entry<K,V>>): HashMap<K,V> {
+    if(iter instanceof HashTable) return iter.hashMap();
+
     const map=new HashMap<K,V>();
-    map.#inner=new Map(iter);
+    map.#inner=iter instanceof Map?iter:new Map(iter);
+
     return map;
   }
 
@@ -79,6 +82,7 @@ export class HashMap<K,V> extends IntoIterator<Entry<K,V>> implements Clone,Part
    * ### Examples
   ```ts
   import { HashMap } from "std/collections";
+import { HashTable } from './hash_table';
 
   const a = new HashMap();
   
