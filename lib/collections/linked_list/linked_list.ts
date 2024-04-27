@@ -1,14 +1,20 @@
 import { Node } from "./mod.ts";
-import { IntoIterator, DoubleEndedIterator } from '../../../iter/mod.ts';
-import { Option,None,Some } from "../../../error/mod.ts";
-import { $todo } from "../../../declarative-macros/panics.ts";
+import { $eq } from "../../cmp/mod.ts";
+import { ArrayLite } from "../../types.ts";
+import { PartailEq } from '../../cmp/eq.ts';
+import { IteratorTrait } from '../../iter/iter.ts';
+import { Option,None,Some } from "../../error/mod.ts";
+import { $todo } from "../../declarative-macros/panics.ts";
+import { IntoIterator, DoubleEndedIterator } from '../../iter/mod.ts';
+
+type Item<T>=T|PartailEq<T>;
+type Equivalent<T>=ArrayLite<Item<T>>|LinkedList<Item<T>>;
 
 
-
-export class LinkedList<T> extends IntoIterator<T> {
+export class LinkedList<T> extends IntoIterator<T> implements PartailEq<Equivalent<T>> {
   #size: number;
   #head: Option<Node<T>>=None();
-  #tail=new WeakRef(this.#head);
+  #tail: WeakRef<Option<Node<T>>>=new WeakRef(this.#head);
 
   constructor(...nodes: T[]) {
     super();
@@ -125,19 +131,29 @@ export class LinkedList<T> extends IntoIterator<T> {
     this.#size=0;
   }
   
-  public isEmpty() {
+  public isEmpty(): boolean {
     return !this.#size;
+  }
+
+  public eq(rhs: Equivalent<T>): boolean {
+    if(rhs.length!=this.#size) return false;
+
+    for(const [lhsElement,rhsElement] of this.iter().zip(rhs)) {
+      if($eq(lhsElement,rhsElement)) return false;
+    }
+
+    return true;
   }
   
   public iter(): DoubleEndedIterator<T> {
     return $todo();
   }
   
-  public enumerate() {
+  public enumerate(): IteratorTrait<[index: number,element: T]> {
     return this.iter().enumerate();
   }
   
-  public rev() {
+  public rev(): DoubleEndedIterator<T> {
     return this.iter().rev();
   }
 
@@ -145,7 +161,7 @@ export class LinkedList<T> extends IntoIterator<T> {
     this.#head=LinkedList.fromIterRev<T>(this).#head;
   }
 
-  public at(index: number) {
+  public at(index: number): Option<T> {
     if(index<0) index+=this.#size;
 
     let i=0;

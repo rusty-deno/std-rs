@@ -32,7 +32,7 @@ export * from "./lib/net/server/server.ts";
 export * from "./lib/collections/vec/mod.ts";
 export * from "./lib/collections/hash_map/hash_map.ts";
 export * from "./lib/collections/hash_set/hash_set.ts";
-export * from "./lib/collections/linear/linked_list/linked_list.ts";
+export * from "./lib/collections/linked_list/linked_list.ts";
 
 //macros
 export * from "./lib/proc-macros/mod.ts";
