@@ -1,7 +1,8 @@
-// deno-lint-ignore-file no-explicit-any
 import { Entry,HashMap } from "../hash_map/mod.ts";
+import { HashTable } from '../hash_map/hash_table.ts';
 
-type UnorderedMap<K,V>=(K extends keyof any?Record<K,V>:Iterable<Entry<K,V>>)|Iterable<Entry<K,V>>;
+type MapLike<K,V>=Iterable<Entry<K,V>>;
+type Equivalent<K,V>=K extends PropertyKey?Record<K,V>|MapLike<K,V>:MapLike<K,V>;
 
 /**
  * Constructs a {@linkcode HashMap} from any type of supported object.
@@ -20,9 +21,15 @@ type UnorderedMap<K,V>=(K extends keyof any?Record<K,V>:Iterable<Entry<K,V>>)|It
  * $assertEq(map,map1);
  * ```
  */
-export function $map<K,V>(_map: UnorderedMap<K,V>): HashMap<K,V> {
-  const map=_map as any;
-  return map[Symbol.iterator] instanceof Function?HashMap.fromIter(map):HashMap.formRecord<any,V>(map);
+export function $map<K,V>(map: Equivalent<K,V>): HashMap<K,V> {
+  return map instanceof HashMap?
+    map
+  : map instanceof HashTable?
+    map.hashMap()
+  : typeof (map as Iterable<unknown>)[Symbol.iterator]==="function"?
+    HashMap.fromIter(map as Iterable<Entry<K,V>>)
+  :
+    HashMap.formRecord(map as Record<PropertyKey, V>) as unknown as HashMap<K,V>;
 }
 
 
