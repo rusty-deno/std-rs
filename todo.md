@@ -32,7 +32,6 @@
 # Feature
   # fs
     FsFile
-      writeAll,
-      readToEnd
+      writeAll
   # Exceptions
     impl IteratorTrait for Option and Result
