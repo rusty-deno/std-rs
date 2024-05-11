@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 // deno-lint-ignore no-unused-vars
 import type { Clone } from "../clone.ts";
-import { Class } from "./types.ts";
+import { Class,ClassDecorator } from "./types.ts";
 
 /**
  * A common interface for the ability to explicitly duplicate an object.
@@ -13,6 +13,7 @@ import { Class } from "./types.ts";
 ```ts
 // `derive` implements Clone for Reading<T> when T is Clone.
 import { Clone } from "@std";
+import { ClassDecorator } from './types';
 
 \@derive(Clone) // idk `\@` should be replaced with `@`
 class Reading<T> implements Clone {
@@ -28,7 +29,7 @@ class Reading<T> implements Clone {
  * 
  * Manual implementations should be careful to uphold this invariant; however, unsafe code must not rely on it to ensure memory safety.
  */
-export function Clone<C extends Class>(klass: C,_context: ClassDecoratorContext) {
+export function Clone<C extends Class>(klass: C,_context: ClassDecoratorContext): ClassDecorator<C> {
   return class extends klass implements Clone {
     clone(): this {
       const clone={} as this;
