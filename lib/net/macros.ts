@@ -1,5 +1,5 @@
-import { $result,AsyncResult } from "../../error/result/mod.ts";
-import { HttpError } from "../error.ts";
+import { $result,AsyncResult } from "./../error/result/mod.ts";
+import { HttpError } from "./error.ts";
 
 
 /**
@@ -13,3 +13,9 @@ export function $fetch(inp: string|URL|Request,init?: RequestInit): AsyncResult<
   });
 }
 
+/**
+ * Just a short-cut macro of native {@linkcode URL} constructor
+ */
+export function $url(uri: string|URL,base?: string|URL): URL {
+  return new URL(uri,base);
+}

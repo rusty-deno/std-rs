@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-unused-vars
 import { Server } from "./server.ts";
-import { Handler,Route,Method,Req } from "../types/server.ts";
+import { Handler,Route,Method,Req } from "../types.ts";
 import { Vec,HashMap } from "../../collections/mod.ts";
 
 
