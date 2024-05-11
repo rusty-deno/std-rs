@@ -1,10 +1,12 @@
-import { Class, DerivableMacro } from "./types.ts";
+import { Class,ClassDecorator,DerivableMacro } from "./types.ts";
 
 
-
-export function derive(...macros: readonly DerivableMacro[]) {
-  return function<C extends Class>(klass: C) {
-    for(const macro of macros) klass=macro(klass);
+/**
+ * Attribute decorator used to apply derive macros.
+ */
+export function derive(...macros: readonly DerivableMacro[]): ClassDecorator {
+  return function<C extends Class>(klass: C,context: ClassDecoratorContext) {
+    for(const macro of macros) klass=macro(klass,context);
 
     return klass;
   };
