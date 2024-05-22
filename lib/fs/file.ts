@@ -539,6 +539,74 @@ export class FsFile extends Drop implements Disposable {
     });
   }
 
+  /**
+   * Read all bytes until EOF in this source, placing them into {@linkcode buf}.
+   * 
+   * All bytes read from this source will be appended to the specified buffer {@linkcode buf}.
+   * This function will continuously call {@linkcode read} to append more data to `buf`
+   * until {@linkcode read} returns either `Ok(null)` or an error of non-{@linkcode ErrorKind.Interrupted} kind.
+   * 
+   * If successful, this function will return the total number of bytes read.
+   * 
+   * ### Errors
+   * * If this function encounters an error of the kind {@linkcode ErrorKind.Interrupted} then the error is ignored and the operation will continue.
+   * 
+   * * If any other read error is encountered then this function immediately returns.
+   * Any bytes which have already been read will be appended to `buf`.
+   * 
+   * ### Examples
+   * {@linkcode FsFile}s implement {@linkcode Read}:
+  ```ts
+  import { FsFile } from "std/fs";
+  
+  const file = await FsFile.open("foo.txt").unwrap();
+  const buf = new Uint8Array();
+  
+  // read the whole file
+  await file.readToEnd(buf).unwrap();
+  ```
+   * (See also the {@linkcode std.fs.read} convenience function for reading from a file.)
+   */
+  public readToEnd(buf: Uint8Array) {
+    return $result(async ()=> {
+      while(await this.inner.read(buf)!==null);
+    });
+  }
+
+  /**
+   * Read all bytes until EOF in this source synchronously, placing them into {@linkcode buf}.
+   * 
+   * All bytes read from this source will be appended to the specified buffer {@linkcode buf}.
+   * This function will continuously call {@linkcode read} to append more data to `buf`
+   * until {@linkcode read} returns either `Ok(null)` or an error of non-{@linkcode ErrorKind.Interrupted} kind.
+   * 
+   * If successful, this function will return the total number of bytes read.
+   * 
+   * ### Errors
+   * * If this function encounters an error of the kind {@linkcode ErrorKind.Interrupted} then the error is ignored and the operation will continue.
+   * 
+   * * If any other read error is encountered then this function immediately returns.
+   * Any bytes which have already been read will be appended to `buf`.
+   * 
+   * ### Examples
+   * {@linkcode FsFile}s implement {@linkcode Read}:
+  ```ts
+  import { FsFile } from "std/fs";
+  
+  const file = FsFile.openSync("foo.txt").unwrap();
+  const buf = new Uint8Array();
+  
+  // read the whole file
+  file.readToEndSync(buf).unwrap();
+  ```
+   * (See also the {@linkcode std.fs.read} convenience function for reading from a file.)
+   */
+  public readToEndSync(buf: Uint8Array) {
+    return $resultSync(()=> {
+      while(this.inner.readSync(buf)!==null);
+    });
+  }
+
 
   /**
    * Write the contents of the array buffer {@linkcode buf} to the file.

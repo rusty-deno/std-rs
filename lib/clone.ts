@@ -11,8 +11,12 @@
 import { Clone } from "@std";
 
 \@derive(Clone) // idk `\@` should be replaced with `@`
-class Reading<T> {
+class Reading<T> implements Clone {
       constructor(public frequency: T) {...}
+      
+      public clone(): this {
+        $unimplemented();
+      }
 }
 ```
  * How can I implement Clone?
@@ -24,7 +28,7 @@ export interface Clone {
   /**
    * Returns a clone of the current object
    */
-  clone(): unknown;
+  clone(): this;
 }
 
 

@@ -1,6 +1,6 @@
 import { Application } from './application.ts';
 import { Thread } from "../../thread/thread.ts";
-import { Hostname } from "../types/server.ts";
+import { Hostname } from "../types.ts";
 
 
 /**
