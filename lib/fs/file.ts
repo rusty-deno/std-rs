@@ -1,4 +1,4 @@
-import { $result,$resultSync } from "../error/result/mod.ts";
+import { $result,$resultSync,AsyncResult,Result,Err,Ok } from "../error/result/mod.ts";
 import { SeekFrom,FileTimes } from "./types.ts";
 import { Drop } from "../drop.ts";
 
@@ -18,6 +18,7 @@ import { Drop } from "../drop.ts";
 ```ts
 // example 1
 import { FsFile } from "@std/fs";
+import { Err } from '../error/result/result';
 import { Drop } from '../drop';
 
 using file = await File.create("foo.txt").unwrap();
@@ -634,6 +635,42 @@ export class FsFile extends Drop implements Disposable {
   public write(buf: Uint8Array) {
     return $result(()=> this.inner.write(buf));
   }
+
+  /**
+   * Attempts to write an entire buffer into this writer.
+   * 
+   * This method will continuously call {@linkcode write} until there is no more data to be written
+   * or an error of non-{@linkcod ErrorKind.Interrupted} kind is returned.
+   * This method will not return until the entire buffer has been successfully written or such an error occurs.
+   * The first error that is not of {@linkcode ErrorKind.Interrupted} kind generated from this method will be returned.
+   * 
+   * If the buffer contains no data, this will never call {@linkcode write}.
+   * 
+   * ### Errors
+   * * This function will return the first error of non-{@linkcode ErrorKind.Interrupted} kind that {@linkcode writekk } returns.
+   * 
+   * ### Examples
+  ```ts
+  import { FsFile } from "fs";
+  using buffer = await FsFile.create("foo.txt").unwrap();
+  
+  await buffer.writeAll(b"some bytes").unwrap();
+  ```
+   */
+  //TODO(nate): Handle interrepted case.
+  public writeAll(buf: Uint8Array) {
+    return $result(async ()=> {
+      while(buf.length) {
+        const n=await this.inner.write(buf);
+        if(!n) {
+          return Err(new Error("failed to write the whole buffer.",{ cause: "ErrorKind.WriteZero" }));
+        }
+
+        buf=buf.slice(n);
+      }
+    });
+  }
+
 
   /**
    * Write the contents of the array buffer {@linkcode buf} to the file synchronously.
