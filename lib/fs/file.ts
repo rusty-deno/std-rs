@@ -1,4 +1,4 @@
-import { $result,$resultSync,AsyncResult,Result,Err,Ok } from "../error/result/mod.ts";
+import { $result,$resultSync,Err } from "../error/result/mod.ts";
 import { SeekFrom,FileTimes } from "./types.ts";
 import { Drop } from "../drop.ts";
 
