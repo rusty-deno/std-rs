@@ -654,7 +654,7 @@ export class FsFile extends Drop implements Disposable {
   import { FsFile } from "fs";
   using buffer = await FsFile.create("foo.txt").unwrap();
   
-  await buffer.writeAll(b"some bytes").unwrap();
+  await buffer.writeAll(new TextEncoder().encode("some bytes..xd")).unwrap();
   ```
    */
   //TODO(nate): Handle interrepted case.
@@ -670,7 +670,6 @@ export class FsFile extends Drop implements Disposable {
       }
     });
   }
-
 
   /**
    * Write the contents of the array buffer {@linkcode buf} to the file synchronously.
@@ -697,6 +696,41 @@ export class FsFile extends Drop implements Disposable {
    */
   public writeSync(buf: Uint8Array) {
     return $resultSync(()=> this.inner.writeSync(buf));
+  }
+
+  /**
+   * Attempts to write an entire buffer into this writer.
+   * 
+   * This method will continuously call {@linkcode write} until there is no more data to be written
+   * or an error of non-{@linkcod ErrorKind.Interrupted} kind is returned.
+   * This method will not return until the entire buffer has been successfully written or such an error occurs.
+   * The first error that is not of {@linkcode ErrorKind.Interrupted} kind generated from this method will be returned.
+   * 
+   * If the buffer contains no data, this will never call {@linkcode write}.
+   * 
+   * ### Errors
+   * * This function will return the first error of non-{@linkcode ErrorKind.Interrupted} kind that {@linkcode writekk } returns.
+   * 
+   * ### Examples
+  ```ts
+  import { FsFile } from "fs";
+  using buffer = FsFile.createSync("foo.txt").unwrap();
+  
+  buffer.writeAllSync(new TextEncoder().encode("some bytes..xd")).unwrap();
+  ```
+   */
+  //TODO(nate): Handle interrepted case.
+  public writeAllSync(buf: Uint8Array) {
+    return $resultSync(()=> {
+      while(buf.length) {
+        const n=this.inner.writeSync(buf);
+        if(!n) {
+          return Err(new Error("failed to write the whole buffer.",{ cause: "ErrorKind.WriteZero" }));
+        }
+
+        buf=buf.slice(n);
+      }
+    });
   }
 
   /**
