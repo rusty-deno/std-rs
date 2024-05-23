@@ -1,30 +1,23 @@
-import { Server,GET } from "./std/net.ts";
 
 
-class XD extends Server {
-  @GET("/xd")
-  private xd() {
-    return new Response("xd");
-  }
+const nums=new Array(0x7fffffff);
+const buf=new Uint8Array(nums.length);
+const file=await Deno.open("./temp/cargo.lock.copy",{ read: true,write: true });
+
+
+for(let i=0;i<nums.length;i++) {
+  buf[i]=i;
 }
 
-
-function main() {
-  try {
-    const server=new XD();
-    server.listen();
-  } catch {
-    const port=6969;
-
-    const server=new Server();
-    server.get("/",()=> new Response("Hello, World\n",{ status: 200 }));
-
-    server.listen({ port });
-  }
-}
-
-
-if(import.meta.main) main();
+// console.log(await file.write(buf),0x7fffffff);
+// console.log(buf);
 
 
 
+
+
+
+
+
+
+file.close();

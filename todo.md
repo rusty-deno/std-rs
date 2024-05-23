@@ -32,6 +32,6 @@
 # Feature
   # fs
     FsFile
-      writeAll
+      Write trait
   # Exceptions
     impl IteratorTrait for Option and Result
