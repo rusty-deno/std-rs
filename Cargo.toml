@@ -1,4 +1,6 @@
-workspace = { members = ["macros"] }
+[workspace]
+members = ["macros","rust-test"]
+
 [package]
 name = "std-rs"
 version = "0.1.0"
