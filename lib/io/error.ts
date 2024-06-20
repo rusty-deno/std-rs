@@ -216,6 +216,51 @@ export const ErrorKind={
   Uncategorized: 0x28,
 } as const;
 
+/** String representation of various {@linkcode ErrorKind}s */
+export type ErrorKindStr=
+|"address in use"
+|"address not available"
+|"entity already exists"
+|"argument list too long"
+|"broken pipe"
+|"connection aborted"
+|"connection refused"
+|"connection reset"
+|"cross-device link or rename"
+|"deadlock"
+|"directory not empty"
+|"executable file busy"
+|"file too large"
+|"filesystem loop or indirection limit (e.g. symlink loop)"
+|"filesystem quota exceeded"
+|"host unreachable"
+|"operation interrupted"
+|"invalid data"
+|"invalid filename"
+|"invalid input parameter"
+|"is a directory"
+|"network down"
+|"network unreachable"
+|"not a directory"
+|"not connected"
+|"entity not found"
+|"seek on unseekable file"
+|"other error"
+|"out of memory"
+|"permission denied"
+|"read-only filesystem or storage medium"
+|"resource busy"
+|"stale network file handle"
+|"no storage space"
+|"timed out"
+|"too many links"
+|"uncategorized error"
+|"unexpected end of file"
+|"unsupported"
+|"operation would block"
+|"write zero";
+
+
 
 export class IoError extends ErrorTrait {
   #rawOsErr: number|null=null;
@@ -225,20 +270,19 @@ export class IoError extends ErrorTrait {
 
   public static fromRawOsError(code: number): IoError {
     const kind=encodeErrorKind(code);
-    return new IoError(kind,encodeError(kind));
+    return new IoError(kind,asStr(kind));
   }
 
   public static other(error: Error|string) {
-    return new IoError(ErrorKind.Uncategorized,error);
+    return new IoError(encodeToErrorKind(typeof error==="string"?error:error.message),error);
   }
-
 
   public rawOsError(): Option<number> {
     return None();
   }
 
-  public kind(): number {
-    return 0;
+  public kind(): ErrorKind {
+    return this.__kind as ErrorKind;
   }
 }
 
@@ -247,7 +291,54 @@ function encodeErrorKind(_code: number): ErrorKind {
   return ErrorKind.Uncategorized;
 }
 
-function encodeError(kind: ErrorKind): string {
+function encodeToErrorKind(str: string): ErrorKind {
+  switch(str) {
+    case "address in use": return ErrorKind.AddrInUse;
+    case "address not available": return ErrorKind.AddrNotAvailable;
+    case "entity already exists": return ErrorKind.AlreadyExists;
+    case "argument list too long": return ErrorKind.ArgumentListTooLong;
+    case "broken pipe": return ErrorKind.BrokenPipe;
+    case "connection aborted": return ErrorKind.ConnectionAborted;
+    case "connection refused": return ErrorKind.ConnectionRefused;
+    case "connection reset": return ErrorKind.ConnectionReset;
+    case "cross-device link or rename": return ErrorKind.CrossesDevices;
+    case "deadlock": return ErrorKind.Deadlock;
+    case "directory not empty": return ErrorKind.DirectoryNotEmpty;
+    case "executable file busy": return ErrorKind.ExecutableFileBusy;
+    case "file too large": return ErrorKind.FileTooLarge;
+    case "filesystem loop or indirection limit (e.g. symlink loop)": return ErrorKind.FilesystemLoop;
+    case "filesystem quota exceeded": return ErrorKind.FilesystemQuotaExceeded;
+    case "host unreachable": return ErrorKind.HostUnreachable;
+    case "operation interrupted": return ErrorKind.Interrupted;
+    case "invalid data": return ErrorKind.InvalidData;
+    case "invalid filename": return ErrorKind.InvalidFilename;
+    case "invalid input parameter": return ErrorKind.InvalidInput;
+    case "is a directory": return ErrorKind.IsADirectory;
+    case "network down": return ErrorKind.NetworkDown;
+    case "network unreachable": return ErrorKind.NetworkUnreachable;
+    case "not a directory": return ErrorKind.NotADirectory;
+    case "not connected": return ErrorKind.NotConnected;
+    case "entity not found": return ErrorKind.NotFound;
+    case "seek on unseekable file": return ErrorKind.NotSeekable;
+    case "other error": return ErrorKind.Other;
+    case "out of memory": return ErrorKind.OutOfMemory;
+    case "permission denied": return ErrorKind.PermissionDenied;
+    case "read-only filesystem or storage medium": return ErrorKind.ReadOnlyFilesystem;
+    case "resource busy": return ErrorKind.ResourceBusy;
+    case "stale network file handle": return ErrorKind.StaleNetworkFileHandle;
+    case "no storage space": return ErrorKind.StorageFull;
+    case "timed out": return ErrorKind.TimedOut;
+    case "too many links": return ErrorKind.TooManyLinks;
+    case "uncategorized error": return ErrorKind.Uncategorized;
+    case "unexpected end of file": return ErrorKind.UnexpectedEof;
+    case "unsupported": return ErrorKind.Unsupported;
+    case "operation would block": return ErrorKind.WouldBlock;
+    case "write zero": return ErrorKind.WriteZero;
+    default: return ErrorKind.Other;
+  }
+}
+
+function asStr(kind: ErrorKind): ErrorKindStr {
   switch(kind) {
     case ErrorKind.AddrInUse: return "address in use";
     case ErrorKind.AddrNotAvailable: return "address not available";
