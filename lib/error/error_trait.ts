@@ -15,6 +15,19 @@
  */
 export type ErrorKindLike=number;
 
+/**
+ * Error is a trait representing the basic expectations for error values,
+ * i.e., values of type `E` in {@linkcode Result<T, E>}.
+ * 
+ * Errors must describe themselves through the {@linkcode [Symbol.toStringTag]()} method.
+ * Error messages are typically concise lowercase sentences without trailing punctuation
+ * 
+ * Errors may provide cause information.
+ * {@linkcode ErrorTrait.cause} is generally used when errors cross "abstraction boundaries".
+ * If one module must report an error that is caused by an error from a lower-level module,
+ * it can allow accessing that error via {@linkcode ErrorTraits.cause}.
+ * This makes it possible for the high-level module to provide its own errors while also revealing some of the implementation for debugging.
+ */
 export abstract class ErrorTrait extends Error {
   #kind: ErrorKindLike;
   constructor(kind: ErrorKindLike,error: Error|string,cause?: string) {
