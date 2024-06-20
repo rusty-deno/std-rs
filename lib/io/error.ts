@@ -1,5 +1,5 @@
 import { ErrorTrait } from '../error/error_trait.ts';
-import { Option,None } from "../error/option/option.ts";
+import { Option } from "../error/option/option.ts";
 import { Enum } from "../types.ts";
 
 
@@ -270,7 +270,10 @@ export class IoError extends ErrorTrait {
 
   public static fromRawOsError(code: number): IoError {
     const kind=encodeErrorKind(code);
-    return new IoError(kind,asStr(kind));
+    const self=new IoError(kind,asStr(kind));
+    self.#rawOsErr=code;
+
+    return self;
   }
 
   public static other(error: Error|string) {
@@ -278,7 +281,7 @@ export class IoError extends ErrorTrait {
   }
 
   public rawOsError(): Option<number> {
-    return None();
+    return new Option(this.#rawOsErr);
   }
 
   public kind(): ErrorKind {
