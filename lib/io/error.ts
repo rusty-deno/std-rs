@@ -268,33 +268,82 @@ export class IoError extends ErrorTrait {
     super(kind,error,cause);
   }
 
+  /**
+   * Creates a new instance of an [Error] from a particular OS error code.
+   * 
+   * ## Examples
+   * On Linux:
+  ```ts
+  import { IoError,IoErrorKind } from "std/io";
+  
+  const error = IoError.fromRawOsError(22);
+  $assertEq(error.kind(),IoErrorKind.InvalidInput);
+  ```
+   * On Windows:
+  ```ts
+  import { IoError,IoErrorKind } from "std/io";
+  
+  const error = IoError.fromRawOsError(10022);
+  $assertEq(error.kind(),IoErrorKind.InvalidInput);
+  ```
+   */
   public static fromRawOsError(code: number): IoError {
-    const kind=encodeErrorKind(code);
+    const kind=encodeIoErrorKind(code);
     const self=new IoError(kind,asStr(kind));
     self.#rawOsErr=code;
 
     return self;
   }
 
+  /**
+   * Creates a new I/O error from an arbitrary error payload.
+   * 
+   * This function is used to generically create I/O errors which do not originate from the OS itself.
+   * It is a shortcut for {@linkcode constructor} with {@linkcode IoErrorKind.Other}.
+   * 
+   * ## Examples
+  ```ts
+  import { IoError,IoErrorKind } from "std/io";
+  
+  // errors can be created from strings
+  const customError = IoError.other("oh no!");
+  
+  // errors can also be created from other errors
+  const custom_error2 = IoError.other(customError);
+  ```
+   */
   public static other(error: Error|string) {
-    return new IoError(encodeToErrorKind(typeof error==="string"?error:error.message),error);
+    return new IoError(IoErrorKind.Other,error);
   }
 
+  /**
+   * Returns the OS error that this error represents (if any).
+   * 
+   * If this {@linkcode IoError} was constructed via {@linkcode fromRawOsError},
+   * then this function will return {@linkcode Some}, otherwise it will return {@linkcode None}.
+   */
   public rawOsError(): Option<number> {
     return new Option(this.#rawOsErr);
   }
 
+  /**
+   * Returns the corresponding {@linkcode IoErrorKind} for this error.
+   * 
+   * This may be a value set by Rust code constructing custom {@linkcode IoError}s,
+   * or if this {@linkcode IoError} was sourced from the operating system,
+   * it will be a value inferred from the system's error encoding.
+   */
   public kind(): IoErrorKind {
     return this.__kind as IoErrorKind;
   }
 }
 
 
-function encodeErrorKind(_code: number): IoErrorKind {
+function encodeIoErrorKind(_code: number): IoErrorKind {
   return IoErrorKind.Uncategorized;
 }
 
-function encodeToErrorKind(str: string): IoErrorKind {
+export function encodeToIoErrorKind(str: string): IoErrorKind {
   switch(str) {
     case "address in use": return IoErrorKind.AddrInUse;
     case "address not available": return IoErrorKind.AddrNotAvailable;
