@@ -261,7 +261,13 @@ export type ErrorKindStr=
 |"write zero";
 
 
-
+/**
+ * The error type for I/O operations of the {@linkcode Read}, {@linkcode Write}, {@linkcode Seek},
+ * and associated traits.
+ * 
+ * Errors mostly originate from the underlying OS,
+ * but custom instances of Error can be created with crafted error messages and a particular value of {@linkcode IoErrorKind}.
+ */
 export class IoError extends ErrorTrait {
   #rawOsErr: number|null=null;
   constructor(kind: IoErrorKind,error: Error|string,cause?: string) {
