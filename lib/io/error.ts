@@ -3,7 +3,7 @@ import { Option } from "../error/option/option.ts";
 import { Enum } from "../types.ts";
 
 
-export type ErrorKind=Enum<typeof ErrorKind>;
+export type IoErrorKind=Enum<typeof IoErrorKind>;
 /**
  * A list specifying general categories of I/O error.
  * 
@@ -11,8 +11,8 @@ export type ErrorKind=Enum<typeof ErrorKind>;
  * 
  * It is used with the {@linkcode IoError} type.
  * 
- * Handling errors and matching on {@linkcode ErrorKind}
- * In application code, use match for the {@linkcode ErrorKind} values you are expecting;
+ * Handling errors and matching on {@linkcode IoErrorKind}
+ * In application code, use match for the {@linkcode IoErrorKind} values you are expecting;
  * use `default` to match "all other errors".
  * 
  * In comprehensive and thorough tests that want to verify that a test doesn't return any known incorrect error kind,
@@ -22,7 +22,7 @@ export type ErrorKind=Enum<typeof ErrorKind>;
  * In particular, if you want to verify that your code does produce an unrecognized error kind,
  * the robust solution is to check for all the recognized error kinds and fail in those cases.
  */
-export const ErrorKind={
+export const IoErrorKind={
   /** An entity was not found, often a file. */
   NotFound: 0x0,
   /** The operation lacked the necessary privileges to complete. */
@@ -95,7 +95,7 @@ export const ErrorKind={
    * For example, a function that reads a file into a string will error with
    * `InvalidData` if the file's contents are not valid `UTF-8`.
    * 
-   * `InvalidInput`: {@linkcode ErrorKind.InvalidInput}
+   * `InvalidInput`: {@linkcode IoErrorKind.InvalidInput}
    */
   InvalidData: 0x15,
   /** The I/O operation's timeout expired, causing it to be canceled. */
@@ -181,7 +181,7 @@ export const ErrorKind={
    */
   Unsupported: 0x24,
   /**
-   * ErrorKinds which are primarily categorisations for OS error codes should be added above.
+   * `ErrorKind`s which are primarily categorisations for OS error codes should be added above.
    * 
    * An error returned when an operation could not be completed because an "end of file" was reached prematurely.
    * 
@@ -201,16 +201,16 @@ export const ErrorKind={
    * 
    * This can be used to construct your own `Error`s that do not match any {@linkcode ErrorKind}.
    * 
-   * This `ErrorKind` is not used by the standard library.
+   * This `IoErrorKind` is not used by the standard library.
    * Errors from the standard library that do not fall under any of the I/O
    * 
-   * New `ErrorKind`s might be added in the future.
+   * New `IoErrorKind`s might be added in the future.
    */
   Other: 0x27,
   /**
    * Any I/O error from the standard library that's not part of this list.
    * 
-   * Errors that are `Uncategorized` now may move to a different or a new `ErrorKind` variant in the future.
+   * Errors that are `Uncategorized` now may move to a different or a new `IoErrorKind` variant in the future.
    * It is not recommended to match an error against `Uncategorized`; use a `default` instead.
    */
   Uncategorized: 0x28,
@@ -264,7 +264,7 @@ export type ErrorKindStr=
 
 export class IoError extends ErrorTrait {
   #rawOsErr: number|null=null;
-  constructor(kind: ErrorKind,error: Error|string,cause?: string) {
+  constructor(kind: IoErrorKind,error: Error|string,cause?: string) {
     super(kind,error,cause);
   }
 
@@ -284,106 +284,106 @@ export class IoError extends ErrorTrait {
     return new Option(this.#rawOsErr);
   }
 
-  public kind(): ErrorKind {
-    return this.__kind as ErrorKind;
+  public kind(): IoErrorKind {
+    return this.__kind as IoErrorKind;
   }
 }
 
 
-function encodeErrorKind(_code: number): ErrorKind {
-  return ErrorKind.Uncategorized;
+function encodeErrorKind(_code: number): IoErrorKind {
+  return IoErrorKind.Uncategorized;
 }
 
-function encodeToErrorKind(str: string): ErrorKind {
+function encodeToErrorKind(str: string): IoErrorKind {
   switch(str) {
-    case "address in use": return ErrorKind.AddrInUse;
-    case "address not available": return ErrorKind.AddrNotAvailable;
-    case "entity already exists": return ErrorKind.AlreadyExists;
-    case "argument list too long": return ErrorKind.ArgumentListTooLong;
-    case "broken pipe": return ErrorKind.BrokenPipe;
-    case "connection aborted": return ErrorKind.ConnectionAborted;
-    case "connection refused": return ErrorKind.ConnectionRefused;
-    case "connection reset": return ErrorKind.ConnectionReset;
-    case "cross-device link or rename": return ErrorKind.CrossesDevices;
-    case "deadlock": return ErrorKind.Deadlock;
-    case "directory not empty": return ErrorKind.DirectoryNotEmpty;
-    case "executable file busy": return ErrorKind.ExecutableFileBusy;
-    case "file too large": return ErrorKind.FileTooLarge;
-    case "filesystem loop or indirection limit (e.g. symlink loop)": return ErrorKind.FilesystemLoop;
-    case "filesystem quota exceeded": return ErrorKind.FilesystemQuotaExceeded;
-    case "host unreachable": return ErrorKind.HostUnreachable;
-    case "operation interrupted": return ErrorKind.Interrupted;
-    case "invalid data": return ErrorKind.InvalidData;
-    case "invalid filename": return ErrorKind.InvalidFilename;
-    case "invalid input parameter": return ErrorKind.InvalidInput;
-    case "is a directory": return ErrorKind.IsADirectory;
-    case "network down": return ErrorKind.NetworkDown;
-    case "network unreachable": return ErrorKind.NetworkUnreachable;
-    case "not a directory": return ErrorKind.NotADirectory;
-    case "not connected": return ErrorKind.NotConnected;
-    case "entity not found": return ErrorKind.NotFound;
-    case "seek on unseekable file": return ErrorKind.NotSeekable;
-    case "other error": return ErrorKind.Other;
-    case "out of memory": return ErrorKind.OutOfMemory;
-    case "permission denied": return ErrorKind.PermissionDenied;
-    case "read-only filesystem or storage medium": return ErrorKind.ReadOnlyFilesystem;
-    case "resource busy": return ErrorKind.ResourceBusy;
-    case "stale network file handle": return ErrorKind.StaleNetworkFileHandle;
-    case "no storage space": return ErrorKind.StorageFull;
-    case "timed out": return ErrorKind.TimedOut;
-    case "too many links": return ErrorKind.TooManyLinks;
-    case "uncategorized error": return ErrorKind.Uncategorized;
-    case "unexpected end of file": return ErrorKind.UnexpectedEof;
-    case "unsupported": return ErrorKind.Unsupported;
-    case "operation would block": return ErrorKind.WouldBlock;
-    case "write zero": return ErrorKind.WriteZero;
-    default: return ErrorKind.Other;
+    case "address in use": return IoErrorKind.AddrInUse;
+    case "address not available": return IoErrorKind.AddrNotAvailable;
+    case "entity already exists": return IoErrorKind.AlreadyExists;
+    case "argument list too long": return IoErrorKind.ArgumentListTooLong;
+    case "broken pipe": return IoErrorKind.BrokenPipe;
+    case "connection aborted": return IoErrorKind.ConnectionAborted;
+    case "connection refused": return IoErrorKind.ConnectionRefused;
+    case "connection reset": return IoErrorKind.ConnectionReset;
+    case "cross-device link or rename": return IoErrorKind.CrossesDevices;
+    case "deadlock": return IoErrorKind.Deadlock;
+    case "directory not empty": return IoErrorKind.DirectoryNotEmpty;
+    case "executable file busy": return IoErrorKind.ExecutableFileBusy;
+    case "file too large": return IoErrorKind.FileTooLarge;
+    case "filesystem loop or indirection limit (e.g. symlink loop)": return IoErrorKind.FilesystemLoop;
+    case "filesystem quota exceeded": return IoErrorKind.FilesystemQuotaExceeded;
+    case "host unreachable": return IoErrorKind.HostUnreachable;
+    case "operation interrupted": return IoErrorKind.Interrupted;
+    case "invalid data": return IoErrorKind.InvalidData;
+    case "invalid filename": return IoErrorKind.InvalidFilename;
+    case "invalid input parameter": return IoErrorKind.InvalidInput;
+    case "is a directory": return IoErrorKind.IsADirectory;
+    case "network down": return IoErrorKind.NetworkDown;
+    case "network unreachable": return IoErrorKind.NetworkUnreachable;
+    case "not a directory": return IoErrorKind.NotADirectory;
+    case "not connected": return IoErrorKind.NotConnected;
+    case "entity not found": return IoErrorKind.NotFound;
+    case "seek on unseekable file": return IoErrorKind.NotSeekable;
+    case "other error": return IoErrorKind.Other;
+    case "out of memory": return IoErrorKind.OutOfMemory;
+    case "permission denied": return IoErrorKind.PermissionDenied;
+    case "read-only filesystem or storage medium": return IoErrorKind.ReadOnlyFilesystem;
+    case "resource busy": return IoErrorKind.ResourceBusy;
+    case "stale network file handle": return IoErrorKind.StaleNetworkFileHandle;
+    case "no storage space": return IoErrorKind.StorageFull;
+    case "timed out": return IoErrorKind.TimedOut;
+    case "too many links": return IoErrorKind.TooManyLinks;
+    case "uncategorized error": return IoErrorKind.Uncategorized;
+    case "unexpected end of file": return IoErrorKind.UnexpectedEof;
+    case "unsupported": return IoErrorKind.Unsupported;
+    case "operation would block": return IoErrorKind.WouldBlock;
+    case "write zero": return IoErrorKind.WriteZero;
+    default: return IoErrorKind.Other;
   }
 }
 
-function asStr(kind: ErrorKind): ErrorKindStr {
+function asStr(kind: IoErrorKind): ErrorKindStr {
   switch(kind) {
-    case ErrorKind.AddrInUse: return "address in use";
-    case ErrorKind.AddrNotAvailable: return "address not available";
-    case ErrorKind.AlreadyExists: return "entity already exists";
-    case ErrorKind.ArgumentListTooLong: return "argument list too long";
-    case ErrorKind.BrokenPipe: return "broken pipe";
-    case ErrorKind.ConnectionAborted: return "connection aborted";
-    case ErrorKind.ConnectionRefused: return "connection refused";
-    case ErrorKind.ConnectionReset: return "connection reset";
-    case ErrorKind.CrossesDevices: return "cross-device link or rename";
-    case ErrorKind.Deadlock: return "deadlock";
-    case ErrorKind.DirectoryNotEmpty: return "directory not empty";
-    case ErrorKind.ExecutableFileBusy: return "executable file busy";
-    case ErrorKind.FileTooLarge: return "file too large";
-    case ErrorKind.FilesystemLoop: return "filesystem loop or indirection limit (e.g. symlink loop)";
-    case ErrorKind.FilesystemQuotaExceeded: return "filesystem quota exceeded";
-    case ErrorKind.HostUnreachable: return "host unreachable";
-    case ErrorKind.Interrupted: return "operation interrupted";
-    case ErrorKind.InvalidData: return "invalid data";
-    case ErrorKind.InvalidFilename: return "invalid filename";
-    case ErrorKind.InvalidInput: return "invalid input parameter";
-    case ErrorKind.IsADirectory: return "is a directory";
-    case ErrorKind.NetworkDown: return "network down";
-    case ErrorKind.NetworkUnreachable: return "network unreachable";
-    case ErrorKind.NotADirectory: return "not a directory";
-    case ErrorKind.NotConnected: return "not connected";
-    case ErrorKind.NotFound: return "entity not found";
-    case ErrorKind.NotSeekable: return "seek on unseekable file";
-    case ErrorKind.Other: return "other error";
-    case ErrorKind.OutOfMemory: return "out of memory";
-    case ErrorKind.PermissionDenied: return "permission denied";
-    case ErrorKind.ReadOnlyFilesystem: return "read-only filesystem or storage medium";
-    case ErrorKind.ResourceBusy: return "resource busy";
-    case ErrorKind.StaleNetworkFileHandle: return "stale network file handle";
-    case ErrorKind.StorageFull: return "no storage space";
-    case ErrorKind.TimedOut: return "timed out";
-    case ErrorKind.TooManyLinks: return "too many links";
-    case ErrorKind.Uncategorized: return "uncategorized error";
-    case ErrorKind.UnexpectedEof: return "unexpected end of file";
-    case ErrorKind.Unsupported: return "unsupported";
-    case ErrorKind.WouldBlock: return "operation would block";
-    case ErrorKind.WriteZero: return "write zero";
+    case IoErrorKind.AddrInUse: return "address in use";
+    case IoErrorKind.AddrNotAvailable: return "address not available";
+    case IoErrorKind.AlreadyExists: return "entity already exists";
+    case IoErrorKind.ArgumentListTooLong: return "argument list too long";
+    case IoErrorKind.BrokenPipe: return "broken pipe";
+    case IoErrorKind.ConnectionAborted: return "connection aborted";
+    case IoErrorKind.ConnectionRefused: return "connection refused";
+    case IoErrorKind.ConnectionReset: return "connection reset";
+    case IoErrorKind.CrossesDevices: return "cross-device link or rename";
+    case IoErrorKind.Deadlock: return "deadlock";
+    case IoErrorKind.DirectoryNotEmpty: return "directory not empty";
+    case IoErrorKind.ExecutableFileBusy: return "executable file busy";
+    case IoErrorKind.FileTooLarge: return "file too large";
+    case IoErrorKind.FilesystemLoop: return "filesystem loop or indirection limit (e.g. symlink loop)";
+    case IoErrorKind.FilesystemQuotaExceeded: return "filesystem quota exceeded";
+    case IoErrorKind.HostUnreachable: return "host unreachable";
+    case IoErrorKind.Interrupted: return "operation interrupted";
+    case IoErrorKind.InvalidData: return "invalid data";
+    case IoErrorKind.InvalidFilename: return "invalid filename";
+    case IoErrorKind.InvalidInput: return "invalid input parameter";
+    case IoErrorKind.IsADirectory: return "is a directory";
+    case IoErrorKind.NetworkDown: return "network down";
+    case IoErrorKind.NetworkUnreachable: return "network unreachable";
+    case IoErrorKind.NotADirectory: return "not a directory";
+    case IoErrorKind.NotConnected: return "not connected";
+    case IoErrorKind.NotFound: return "entity not found";
+    case IoErrorKind.NotSeekable: return "seek on unseekable file";
+    case IoErrorKind.Other: return "other error";
+    case IoErrorKind.OutOfMemory: return "out of memory";
+    case IoErrorKind.PermissionDenied: return "permission denied";
+    case IoErrorKind.ReadOnlyFilesystem: return "read-only filesystem or storage medium";
+    case IoErrorKind.ResourceBusy: return "resource busy";
+    case IoErrorKind.StaleNetworkFileHandle: return "stale network file handle";
+    case IoErrorKind.StorageFull: return "no storage space";
+    case IoErrorKind.TimedOut: return "timed out";
+    case IoErrorKind.TooManyLinks: return "too many links";
+    case IoErrorKind.Uncategorized: return "uncategorized error";
+    case IoErrorKind.UnexpectedEof: return "unexpected end of file";
+    case IoErrorKind.Unsupported: return "unsupported";
+    case IoErrorKind.WouldBlock: return "operation would block";
+    case IoErrorKind.WriteZero: return "write zero";
   }
 }
 
