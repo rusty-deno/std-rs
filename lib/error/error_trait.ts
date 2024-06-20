@@ -1,3 +1,5 @@
+// deno-lint-ignore no-unused-vars
+import { Option,Some,None } from './option/option.ts';
 
 /**
  * A abstract enum-like type list specifying general categories of error.
@@ -45,8 +47,22 @@ export abstract class ErrorTrait extends Error {
     this.stack=error.stack;
   }
 
+  /**
+   * Returns the corresponding {@linkcode ErrorKindLike} for this error.
+   * 
+   * This may be a value set by code constructing custom Errors,
+   * or if this Error was sourced from the operating system,
+   * it will be a value inferred from the system's error encoding.
+   */
   public abstract kind(): ErrorKindLike;
-  public abstract rawOsError(): number;
+
+  /**
+   * Returns the OS error that this error represents (if any).
+   * 
+   * If this {@linkcode Error} was constructed via {@linkcode lastOsError} or {@linkcode fromRawOsError},
+   * then this function will return {@linkcode Some}, otherwise it will return {@linkcode None}.
+   */
+  public abstract rawOsError(): Option<number>;
 }
 
 
