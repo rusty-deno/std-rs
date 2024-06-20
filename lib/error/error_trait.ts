@@ -31,16 +31,13 @@ export type ErrorKindLike=number;
  * This makes it possible for the high-level module to provide its own errors while also revealing some of the implementation for debugging.
  */
 export abstract class ErrorTrait extends Error {
-  #kind: ErrorKindLike;
-  constructor(kind: ErrorKindLike,error: Error|string,cause?: string) {
+  constructor(protected __kind: ErrorKindLike,error: Error|string,cause?: string) {
     if(typeof error==="string") {
       super(error,{ cause });
-      this.#kind=kind;
       return;
     }
 
     super();
-    this.#kind=kind;
     this.cause=error.cause;
     this.message=error.message;
     this.name=error.name;
@@ -50,8 +47,7 @@ export abstract class ErrorTrait extends Error {
   /**
    * Returns the corresponding {@linkcode ErrorKindLike} for this error.
    * 
-   * This may be a value set by code constructing custom Errors,
-   * or if this Error was sourced from the operating system,
+   * This may be a value set by code constructing custom Errors, or if this Error was sourced from the operating system,
    * it will be a value inferred from the system's error encoding.
    */
   public abstract kind(): ErrorKindLike;
