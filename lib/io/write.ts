@@ -162,13 +162,15 @@ export abstract class Write {
   await buf.flush().unwrap();
   ```
    */
-  //TODO(nate): Handle interrepted case.
   public writeAll(buf: Uint8Array): IoAsyncResult<void> {
     return $result(async ()=> {
       while(buf.length) {
         const n=(await this.write(buf)).result;
 
-        if(typeof n!=="number") throw n;
+        if(typeof n!=="number") {
+          if(n.kind()===IoErrorKind.Interrupted) continue;
+          throw n;
+        }
         if(!n) throw new IoError(IoErrorKind.WriteZero,"failed to write the whole buffer.");
 
         buf=buf.slice(n);
@@ -199,13 +201,15 @@ export abstract class Write {
   await buf.flush().unwrap();
   ```
    */
-  //TODO(nate): Handle interrepted case.
   public writeAllSync(buf: Uint8Array): IoResult<void> {
     return $resultSync(()=> {
       while(buf.length) {
         const n=this.writeSync(buf).result;
 
-        if(typeof n!=="number") throw n;
+        if(typeof n!=="number") {
+          if(n.kind()===IoErrorKind.Interrupted) continue;
+          throw n;
+        }
         if(!n) throw new IoError(IoErrorKind.WriteZero,"failed to write the whole buffer.");
 
         buf=buf.slice(n);

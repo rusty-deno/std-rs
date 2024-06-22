@@ -9,14 +9,16 @@ export abstract class Read {
   public abstract read(buf: Uint8Array): IoAsyncResult<number>;
   public abstract readSync(buf: Uint8Array): IoResult<number>;
 
-  //TODO(nate): ignore interrupted Err case.
   public readExact(buf: Uint8Array): IoAsyncResult<void> {
     return $result(async ()=> {
       while(!buf.length) {
         const n=(await this.read(buf)).result;
 
-        if(typeof n!=="number") throw n;
         if(!n) break;
+        if(typeof n!=="number") {
+          if(n.kind()===IoErrorKind.Interrupted) continue;
+          throw n;
+        }
 
         buf=buf.slice(n);
       }
@@ -27,14 +29,16 @@ export abstract class Read {
     });
   }
 
-  //TODO(nate): ignore interrupted Err case.
   public readExactSync(buf: Uint8Array): IoResult<void> {
     return $resultSync(()=> {
       while(!buf.length) {
         const n=this.readSync(buf).result;
 
-        if(typeof n!=="number") throw n;
         if(!n) break;
+        if(typeof n!=="number") {
+          if(n.kind()===IoErrorKind.Interrupted) continue;
+          throw n;
+        }
 
         buf=buf.slice(n);
       }
