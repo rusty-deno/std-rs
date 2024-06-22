@@ -1,9 +1,33 @@
-import { ErrorTrait } from '../error/error_trait.ts';
-import { Option } from "../error/option/option.ts";
-import { Enum } from "../types.ts";
 
+import { Enum } from "../types.ts";
+import { Option } from "../error/option/option.ts";
+import { ErrorTrait } from '../error/error_trait.ts';
+import { Result,AsyncResult } from "../error/result/mod.ts";
+
+
+/**
+ * A specialized {@linkcode Result} type for I/O operations.
+ * 
+ * This type is broadly used across `io` for any operation which may produce an error.
+ * 
+ * This typedef is generally used to avoid writing out {@linkcode IoError} directly and is otherwise a direct mapping to {@linkcode Result}.
+ */
+export type IoResult<T>=Result<T,IoError>;
+
+/**
+ * A specialized {@linkcode AsyncResult} type for I/O operations.
+ * 
+ * This type is broadly used across `io` for any operation which may produce an error.
+ * 
+ * This typedef is generally used to avoid writing out {@linkcode IoError} directly and is otherwise a direct mapping to {@linkcode AsyncResult}.
+ */
+export type IoAsyncResult<T>=AsyncResult<T,IoError>;
 
 export type IoErrorKind=Enum<typeof IoErrorKind>;
+
+
+
+
 /**
  * A list specifying general categories of I/O error.
  * 
