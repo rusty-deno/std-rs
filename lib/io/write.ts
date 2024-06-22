@@ -1,4 +1,5 @@
-import { Result,AsyncResult,$result,$resultSync } from "../error/result/mod.ts";
+import { $result,$resultSync } from "../error/result/mod.ts";
+import { IoError,IoErrorKind,IoAsyncResult,IoResult } from "./error.ts";
 
 
 /**
@@ -67,7 +68,7 @@ export abstract class Write {
   await buf.write($encode("some bytes")).unwrap();
   ```
    */
-  public abstract write(buf: Uint8Array): AsyncResult<number,Error>;
+  public abstract write(buf: Uint8Array): IoAsyncResult<number>;
 
   /**
    * Write a buffer into this writer (synchronously), returning how many bytes were written.
@@ -100,7 +101,7 @@ export abstract class Write {
   buf.writeSync($encode("some bytes")).unwrap();
   ```
    */
-  public abstract writeSync(buf: Uint8Array): Result<number,Error>;
+  public abstract writeSync(buf: Uint8Array): IoResult<number>;
 
   /**
    * Flush this output stream, ensuring that all intermediately buffered contents reach their destination.
@@ -118,7 +119,7 @@ export abstract class Write {
   await buf.flush().unwrap();
   ```
    */
-  public abstract flush(): Result<void,Error>;
+  public abstract flush(): IoResult<void>;
 
   /**
    * Flush this output stream (synchronously), ensuring that all intermediately buffered contents reach their destination.
@@ -136,7 +137,7 @@ export abstract class Write {
   buf.flushSync().unwrap();
   ```
    */
-  public abstract flushSync(): Result<void,Error>;
+  public abstract flushSync(): IoResult<void>;
 
   /**
    * Attempts to write an entire buffer into this writer.
@@ -162,13 +163,13 @@ export abstract class Write {
   ```
    */
   //TODO(nate): Handle interrepted case.
-  public writeAll(buf: Uint8Array): AsyncResult<void,Error> {
+  public writeAll(buf: Uint8Array): IoAsyncResult<void> {
     return $result(async ()=> {
       while(buf.length) {
         const n=(await this.write(buf)).result;
 
         if(typeof n!=="number") throw n;
-        if(!n) throw new Error("failed to write the whole buffer.",{ cause: "ErrorKind.WriteZero" });
+        if(!n) throw new IoError(IoErrorKind.WriteZero,"failed to write the whole buffer.");
 
         buf=buf.slice(n);
       }
@@ -199,13 +200,13 @@ export abstract class Write {
   ```
    */
   //TODO(nate): Handle interrepted case.
-  public writeAllSync(buf: Uint8Array): Result<void,Error> {
+  public writeAllSync(buf: Uint8Array): IoResult<void> {
     return $resultSync(()=> {
       while(buf.length) {
         const n=this.writeSync(buf).result;
 
         if(typeof n!=="number") throw n;
-        if(!n) throw new Error("failed to write the whole buffer.",{ cause: "ErrorKind.WriteZero" });
+        if(!n) throw new IoError(IoErrorKind.WriteZero,"failed to write the whole buffer.");
 
         buf=buf.slice(n);
       }

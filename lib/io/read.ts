@@ -1,14 +1,16 @@
-import { Result,AsyncResult,$result,$resultSync } from '../error/result/mod.ts';
+
 import { Vec } from '../collections/vec/mod.ts';
+import { IoAsyncResult,IoResult,IoErrorKind,IoError } from "./error.ts";
+import { $result,$resultSync } from '../error/result/mod.ts';
 
 
 
 export abstract class Read {
-  public abstract read(buf: Uint8Array): AsyncResult<number,Error>;
-  public abstract readSync(buf: Uint8Array): Result<number,Error>;
+  public abstract read(buf: Uint8Array): IoAsyncResult<number>;
+  public abstract readSync(buf: Uint8Array): IoResult<number>;
 
   //TODO(nate): ignore interrupted Err case.
-  public readExact(buf: Uint8Array): AsyncResult<void,Error> {
+  public readExact(buf: Uint8Array): IoAsyncResult<void> {
     return $result(async ()=> {
       while(!buf.length) {
         const n=(await this.read(buf)).result;
@@ -20,13 +22,13 @@ export abstract class Read {
       }
 
       if(buf.length) {
-        throw new Error("failed to fill whole buffer",{ cause: "ErrorKind.UnexpectedEof" });
+        throw new IoError(IoErrorKind.UnexpectedEof,"failed to write the whole buffer.");
       }
     });
   }
 
   //TODO(nate): ignore interrupted Err case.
-  public readExactSync(buf: Uint8Array): Result<void,Error> {
+  public readExactSync(buf: Uint8Array): IoResult<void> {
     return $resultSync(()=> {
       while(!buf.length) {
         const n=this.readSync(buf).result;
@@ -38,15 +40,15 @@ export abstract class Read {
       }
 
       if(buf.length) {
-        throw new Error("failed to fill whole buffer",{ cause: "ErrorKind.UnexpectedEof" });
+        throw new IoError(IoErrorKind.UnexpectedEof,"failed to write the whole buffer.");
       }
     });
   }
 
-  public abstract readToEnd(buf: Uint8Array): AsyncResult<number,Error>;
-  public abstract readToEndSymc(buf: Vec<number>): Result<number,Error>;
+  public abstract readToEnd(buf: Uint8Array): IoAsyncResult<number>;
+  public abstract readToEndSymc(buf: Vec<number>): IoResult<number>;
 
-  public abstract readToString(buf: Vec<number>): AsyncResult<number,Error>;
-  public abstract readToStringSync(buf: Vec<number>): Result<number,Error>;
+  public abstract readToString(buf: Vec<number>): IoAsyncResult<number>;
+  public abstract readToStringSync(buf: Vec<number>): IoResult<number>;
 }
 
