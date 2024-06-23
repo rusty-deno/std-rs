@@ -57,7 +57,7 @@ export abstract class Write {
    * * If an error is returned then no bytes in the buffer were written to this writer.
    * It is not considered an error if the entire buffer could not be written to this writer.
    * 
-   * * An error of the {@linkcode ErrorKind.Interrupted} kind is non-fatal
+   * * An error of the {@linkcode IoErrorKind.Interrupted} kind is non-fatal
    * and the write operation should be retried if there is nothing else to do.
    * 
    * ## Example
@@ -90,7 +90,7 @@ export abstract class Write {
    * * If an error is returned then no bytes in the buffer were written to this writer.
    * It is not considered an error if the entire buffer could not be written to this writer.
    * 
-   * * An error of the {@linkcode ErrorKind.Interrupted} kind is non-fatal
+   * * An error of the {@linkcode IoErrorKind.Interrupted} kind is non-fatal
    * and the write operation should be retried if there is nothing else to do.
    * 
    * ## Example
@@ -143,14 +143,14 @@ export abstract class Write {
    * Attempts to write an entire buffer into this writer.
    * 
    * This method will continuously call write until there is no more data to be written
-   * or an error of non-{@linkcode ErrorKind.Interrupted} kind is returned.
+   * or an error of non-{@linkcode IoErrorKind.Interrupted} kind is returned.
    * This method will not return until the entire buffer has been successfully written or such an error occurs.
-   * The first error that is not of {@linkcode ErrorKind.Interrupted} kind generated from this method will be returned.
+   * The first error that is not of {@linkcode IoErrorKind.Interrupted} kind generated from this method will be returned.
    * 
    * If the buffer contains no data, this will never call write.
    * 
    * ## Errors
-   * * This function will return the first error of non-{@linkcode ErrorKind.Interrupted} kind that write returns.
+   * * This function will return the first error of non-{@linkcode IoErrorKind.Interrupted} kind that write returns.
    * 
    * ## Example
   ```ts
@@ -182,14 +182,14 @@ export abstract class Write {
    * Attempts to synchronously write an entire buffer into this writer.
    * 
    * This method will continuously call write until there is no more data to be written
-   * or an error of non-{@linkcode ErrorKind.Interrupted} kind is returned.
+   * or an error of non-{@linkcode IoErrorKind.Interrupted} kind is returned.
    * This method will not return until the entire buffer has been successfully written or such an error occurs.
-   * The first error that is not of {@linkcode ErrorKind.Interrupted} kind generated from this method will be returned.
+   * The first error that is not of {@linkcode IoErrorKind.Interrupted} kind generated from this method will be returned.
    * 
    * If the buffer contains no data, this will never call write.
    * 
    * ## Errors
-   * * This function will return the first error of non-{@linkcode ErrorKind.Interrupted} kind that write returns.
+   * * This function will return the first error of non-{@linkcode IoErrorKind.Interrupted} kind that write returns.
    * 
    * ## Example
   ```ts
