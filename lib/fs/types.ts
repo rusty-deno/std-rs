@@ -17,10 +17,11 @@ export interface FileTimes {
  */
 export type SeekFrom=typeof SeekFrom[keyof typeof SeekFrom];
 export const SeekFrom={
-  Start: 0 as const,
-  Current: 1 as const,
-  End: 2 as const
-};
+  Start: 0,
+  Current: 1,
+  End: 2
+} as const;
+
 
 /**
  * Representation of the various permissions on a file.
@@ -35,7 +36,8 @@ export const Permission={
   ReadExecule: 5,
   ReadWrite: 6,
   All: 7,
-};
+} as const;
+
 
 /**
  * Metadata information about a file.
