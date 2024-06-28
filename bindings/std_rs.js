@@ -127,7 +127,7 @@ export function vec_at(_this, index) {
 * @returns {Slice}
 */
 export function vec_as_slice(_this) {
-    const ret = wasm.vec_as_slice(_this);
+    const ret = wasm.u8_vec_as_slice(_this);
     return Slice.__wrap(ret);
 }
 
@@ -165,7 +165,7 @@ export function vec_binary_search_by(_this, f) {
 * @returns {number}
 */
 export function vec_capacity(_this) {
-    const ret = wasm.vec_capacity(_this);
+    const ret = wasm.u8_vec_capacity(_this);
     return ret >>> 0;
 }
 
@@ -295,7 +295,7 @@ export function vec_last(_this) {
 * @returns {number}
 */
 export function vec_len(_this) {
-    const ret = wasm.vec_len(_this);
+    const ret = wasm.u8_vec_len(_this);
     return ret >>> 0;
 }
 
@@ -836,6 +836,559 @@ export function drop_join_handle(this_ptr) {
     wasm.drop_join_handle(this_ptr);
 }
 
+/**
+* @returns {number}
+*/
+export function new_u8_vec() {
+    const ret = wasm.new_u8_vec();
+    return ret >>> 0;
+}
+
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function new_u8_vec_with_capacity(capacity) {
+    const ret = wasm.new_u8_vec_with_capacity(capacity);
+    return ret >>> 0;
+}
+
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1, 1) >>> 0;
+    getUint8Memory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
+/**
+* @param {Uint8Array} vec
+* @returns {number}
+*/
+export function u8_vec_from_iter(vec) {
+    const ptr0 = passArray8ToWasm0(vec, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.u8_vec_from_iter(ptr0, len0);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} other
+* @returns {number}
+*/
+export function u8_vec_append(_this, other) {
+    const ret = wasm.u8_vec_append(_this, other);
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function u8_vec_at(_this, index) {
+    const ret = wasm.u8_vec_at(_this, index);
+    return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function u8_vec_as_slice(_this) {
+    const ret = wasm.u8_vec_as_slice(_this);
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function u8_vec_binary_search_by(_this, f) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        wasm.u8_vec_binary_search_by(retptr, _this, addHeapObject(f));
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var r2 = getInt32Memory0()[retptr / 4 + 2];
+        if (r2) {
+            throw takeObject(r1);
+        }
+        return r0 >>> 0;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u8_vec_capacity(_this) {
+    const ret = wasm.u8_vec_capacity(_this);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u8_vec_chunks_by(_this, f) {
+    const ret = wasm.u8_vec_chunks_by(_this, addHeapObject(f));
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u8_vec_chunks(_this, chunk_size) {
+    const ret = wasm.u8_vec_chunks(_this, chunk_size);
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u8_vec_chunks_exact(_this, chunk_size) {
+    const ret = wasm.u8_vec_chunks_exact(_this, chunk_size);
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {boolean}
+*/
+export function u8_vec_contains(_this, element) {
+    const ret = wasm.u8_vec_contains(_this, element);
+    return ret !== 0;
+}
+
+/**
+* @param {number} _this
+*/
+export function u8_vec_clear(_this) {
+    wasm.u8_vec_clear(_this);
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u8_vec_dedup(_this, f) {
+    wasm.u8_vec_dedup(_this, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function u8_vec_fill(_this, element) {
+    wasm.u8_vec_fill(_this, element);
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u8_vec_fill_with(_this, f) {
+    wasm.u8_vec_fill_with(_this, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u8_vec_first(_this) {
+    const ret = wasm.u8_vec_first(_this);
+    return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {number | undefined}
+*/
+export function u8_vec_index(_this, i) {
+    const ret = wasm.u8_vec_index(_this, i);
+    return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} i
+* @param {number} element
+* @returns {number}
+*/
+export function u8_vec_insert(_this, i, element) {
+    const ret = wasm.u8_vec_insert(_this, i, element);
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u8_vec_last(_this) {
+    const ret = wasm.u8_vec_last(_this);
+    return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u8_vec_len(_this) {
+    const ret = wasm.u8_vec_len(_this);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function u8_vec_partition_point(_this, f) {
+    const ret = wasm.u8_vec_partition_point(_this, addHeapObject(f));
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {number}
+*/
+export function u8_vec_push(_this, element) {
+    const ret = wasm.u8_vec_push(_this, element);
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {number}
+*/
+export function u8_vec_push_front(_this, element) {
+    const ret = wasm.u8_vec_push_front(_this, element);
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u8_vec_pop(_this) {
+    const ret = wasm.u8_vec_pop(_this);
+    return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u8_vec_pop_front(_this) {
+    const ret = wasm.u8_vec_pop_front(_this);
+    return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u8_vec_rchunks(_this, chunk_size) {
+    const ret = wasm.u8_vec_rchunks(_this, chunk_size);
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u8_vec_rchunks_exact(_this, chunk_size) {
+    const ret = wasm.u8_vec_rchunks_exact(_this, chunk_size);
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function u8_vec_remove(_this, index) {
+    const ret = wasm.u8_vec_remove(_this, index);
+    return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} additional
+* @returns {number}
+*/
+export function u8_vec_reserve(_this, additional) {
+    const ret = wasm.u8_vec_reserve(_this, additional);
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} additional
+* @returns {number}
+*/
+export function u8_vec_reserve_exact(_this, additional) {
+    const ret = wasm.u8_vec_reserve_exact(_this, additional);
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {number} val
+*/
+export function u8_vec_resize(_this, new_len, val) {
+    wasm.u8_vec_resize(_this, new_len, val);
+}
+
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function u8_vec_resize_with(_this, new_len, f) {
+    wasm.u8_vec_resize_with(_this, new_len, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u8_vec_retain(_this, f) {
+    wasm.u8_vec_retain(_this, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+*/
+export function u8_vec_reverse(_this) {
+    wasm.u8_vec_reverse(_this);
+}
+
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function u8_vec_rotate_left(_this, mid) {
+    wasm.u8_vec_rotate_left(_this, mid);
+}
+
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function u8_vec_rotate_right(_this, k) {
+    wasm.u8_vec_rotate_right(_this, k);
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u8_vec_rsplit(_this, f) {
+    const ret = wasm.u8_vec_rsplit(_this, addHeapObject(f));
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function u8_vec_rsplitn(_this, n, f) {
+    const ret = wasm.u8_vec_rsplitn(_this, n, addHeapObject(f));
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} index
+* @param {number} element
+* @returns {number}
+*/
+export function u8_vec_set(_this, index, element) {
+    const ret = wasm.u8_vec_set(_this, index, element);
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {Uint8Array} replace_with
+* @returns {number}
+*/
+export function u8_vec_splice_arr(_this, start, count, replace_with) {
+    const ptr0 = passArray8ToWasm0(replace_with, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.u8_vec_splice_arr(_this, start, count, ptr0, len0);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function u8_vec_splice_u8_vec(_this, start, count, replace_with) {
+    const ret = wasm.u8_vec_splice_u8_vec(_this, start, count, replace_with);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function u8_vec_split_off(_this, at) {
+    const ret = wasm.u8_vec_split_off(_this, at);
+    return ret >>> 0;
+}
+
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function u8_vec_shrink_to(_this, min_capacity) {
+    wasm.u8_vec_shrink_to(_this, min_capacity);
+}
+
+/**
+* @param {number} _this
+*/
+export function u8_vec_shrink_to_fit(_this) {
+    wasm.u8_vec_shrink_to_fit(_this);
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u8_vec_sort_by(_this, f) {
+    wasm.u8_vec_sort_by(_this, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u8_vec_sort_unstable_by(_this, f) {
+    wasm.u8_vec_sort_unstable_by(_this, addHeapObject(f));
+}
+
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u8_vec_split(_this, f) {
+    const ret = wasm.u8_vec_split(_this, addHeapObject(f));
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function u8_vec_split_at(_this, mid) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        wasm.u8_vec_split_at(retptr, _this, mid);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var v1 = getArrayJsValueFromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 4, 4);
+        return v1;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u8_vec_splitn(_this, n, f) {
+    const ret = wasm.u8_vec_splitn(_this, n, addHeapObject(f));
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+* @returns {number}
+*/
+export function u8_vec_swap(_this, a, b) {
+    const ret = wasm.u8_vec_swap(_this, a, b);
+    return ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function u8_vec_swap_remove(_this, index) {
+    const ret = wasm.u8_vec_swap_remove(_this, index);
+    return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function u8_vec_swap_with_slice(_this, ptr, len) {
+    wasm.u8_vec_swap_with_slice(_this, ptr, len);
+}
+
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function u8_vec_truncate(_this, len) {
+    wasm.u8_vec_truncate(_this, len);
+}
+
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function u8_vec_windows(_this, size) {
+    const ret = wasm.u8_vec_windows(_this, size);
+    return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} ptr
+*/
+export function drop_u8_vec(ptr) {
+    wasm.drop_u8_vec(ptr);
+}
+
 const SliceFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_slice_free(ptr >>> 0));
@@ -912,12 +1465,12 @@ const imports = {
             const ret = +getObject(arg0);
             return ret;
         },
+        __wbindgen_object_drop_ref: function(arg0) {
+            takeObject(arg0);
+        },
         __wbindgen_number_new: function(arg0) {
             const ret = arg0;
             return addHeapObject(ret);
-        },
-        __wbindgen_object_drop_ref: function(arg0) {
-            takeObject(arg0);
         },
         __wbindgen_is_falsy: function(arg0) {
             const ret = !getObject(arg0);
