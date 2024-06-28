@@ -1,5 +1,4 @@
 
-use std::mem;
 use wasm_bindgen::prelude::*;
 
 
@@ -10,17 +9,22 @@ pub struct Slice {
 }
 
 
-
-impl<S: AsRef<[JsValue]>> From<S> for Slice {
-  fn from(slice: S)-> Self {
-    // SAFETY: This operation is safe as Slice and &[JsValue] have the same layout in memory
-    unsafe {
-      mem::transmute(slice.as_ref())
+impl<T> Into<Slice> for &[T] {
+  fn into(self)-> Slice {
+    let slice=self.as_ref();
+    Slice {
+      ptr: slice.as_ptr() as _,
+      len: slice.len()
     }
   }
 }
 
-
-
-
-
+impl<T> Into<Slice> for &mut [T] {
+  fn into(self)-> Slice {
+    let slice=self.as_mut();
+    Slice {
+      ptr: slice.as_ptr() as _,
+      len: slice.len()
+    }
+  }
+}

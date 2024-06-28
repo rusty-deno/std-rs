@@ -4,8 +4,11 @@ mod slice;
 mod thread;
 #[macro_use]
 pub(crate) mod util_macro;
+mod typed_array;
+pub mod error_kind;
 
 
+// pub use typed_array::*;
 pub use vec::*;
 pub use slice::*;
 pub use thread::*;
