@@ -40,8 +40,8 @@ macro_rules! nullable {
 
 #[macro_export]
 macro_rules! constraints {
-  ($i:expr => $gteq:expr)=> {
-    $i<0 || $i>=$gteq as isize
+  ($i:expr => $gt:expr)=> {
+    0<$i || $crate::saturation_cast($i)<$gt
   };
 }
 
@@ -58,8 +58,8 @@ macro_rules! abs_index {
 #[macro_export]
 macro_rules! checked_idx {
   ($index:expr;$len:expr => $f:expr)=> {
-    match $index {
-      i if constraints!(i => $len)=> $f,
+    match $crate::constraints!($index => $len) {
+      true=> $f,
       _=> JsValue::NULL
     }
   };
