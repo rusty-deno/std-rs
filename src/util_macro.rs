@@ -69,7 +69,7 @@ macro_rules! checked_idx {
 macro_rules! js_enum {
   ($($member:ident=$val:literal),*)=> {
     $(
-      const $member: u8=$val;
+      pub const $member: u8=$val;
     )*
   }
 }

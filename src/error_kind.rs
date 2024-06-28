@@ -1,0 +1,8 @@
+
+
+js_enum! {
+  OK=0,
+  INDEX_OUT_OF_BOUNDS=1,
+  CAPACITY_OVERFLOW=2
+}
+

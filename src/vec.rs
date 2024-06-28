@@ -1,23 +1,14 @@
 
-use std::mem;
-
 use crate::*;
+use std::mem;
+use error_kind::*;
 use macros::method;
 use js_sys::Function;
 use wasm_bindgen::prelude::*;
 
 
 
-
 type Vector=*mut Vec<JsValue>;
-
-js_enum! {
-  OK=0,
-  INDEX_OUT_OF_BOUNDS=1,
-  CAPACITY_OVERFLOW=2
-}
-
-
 
 
 #[wasm_bindgen]
