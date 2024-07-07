@@ -17,6 +17,8 @@ export * as linked_list from "./linked_list/mod.ts";
 export * from "./linked_list/linked_list.ts";
 export * from "./linked_list/macros.ts";
 
+// error
+export * from "./error.ts";
 
 
 //macros
