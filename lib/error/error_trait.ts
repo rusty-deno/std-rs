@@ -51,14 +51,6 @@ export abstract class ErrorTrait extends Error {
    * it will be a value inferred from the system's error encoding.
    */
   public abstract kind(): ErrorKindLike;
-
-  /**
-   * Returns the OS error that this error represents (if any).
-   * 
-   * If this {@linkcode Error} was constructed via {@linkcode lastOsError} or {@linkcode fromRawOsError},
-   * then this function will return {@linkcode Some}, otherwise it will return {@linkcode None}.
-   */
-  public abstract rawOsError(): Option<number>;
 }
 
 
