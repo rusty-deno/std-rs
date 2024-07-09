@@ -21,6 +21,14 @@ export const CollectionErrorKind={
   CapacityOverflow: 2
 } as const;
 
+/**  */
+export type CollectionErrorKindStr=
+|"index out of bounds"
+|"exceeded max capacity";
+
+
+
+
 /**
  * The error type for all collections,
  */
