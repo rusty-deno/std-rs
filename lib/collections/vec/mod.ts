@@ -188,14 +188,13 @@ export class Vec<T> extends IntoIterator<T> implements Clone,PartailEq<Equivalen
     return mapped;
   }
 
-  public clone(): Vec<T> {
+  public clone(): this {
     const clone=Vec.withCapacity<T>(this.capacity);
     // SAFETY: This never throws an exception as the loop runs within the bound.
     for(let i=0;i<this.length;i++) this.push(structuredClone(lib.vec_index(this.#ptr,i)));
 
-    return clone;
+    return clone as this;
   }
 }
-
 
 
