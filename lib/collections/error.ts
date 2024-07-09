@@ -37,6 +37,14 @@ export class CollectionError extends ErrorTrait {
     super(kind,error,cause);
   }
 
+  public static indexOutOfBounds(): CollectionError {
+    return new CollectionError(CollectionErrorKind.IndexOutOfBounds,"index out of bounds")
+  }
+
+  public static capacityOverflow(): CollectionError {
+    return new CollectionError(CollectionErrorKind.CapacityOverflow,"Exceeded maximux capacity");
+  }
+
   /**
    * Returns the corresponding {@linkcode CollectionErrorKind} for this error.
    * 
