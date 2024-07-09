@@ -146,7 +146,7 @@ pub fn u8_vec_insert(this: &mut Vec<u8>,mut i: isize,element: u8) {
 
   match constraints!(i => this.len()) {
     true=> this.insert(i as _,element),
-    _=> wasm_bindgen::throw_val(CollectionError::index_out_of_bounds().into())
+    _=> throw!(index_out_of_bounds)
   }
 }
 
@@ -172,24 +172,20 @@ pub fn u8_vec_partition_point(this: &mut Vec<u8>,f: Function)-> usize {
 }
 
 #[method]
-pub fn u8_vec_push(this: &mut Vec<u8>,element: u8)-> u8 {
+pub fn u8_vec_push(this: &mut Vec<u8>,element: u8) {
   match this.capacity()==isize::MAX as _ {
-    true=> CAPACITY_OVERFLOW,
-    _=> {
-      this.push(element);
-      OK
-    }
+    true=> throw!(capacity_overflow),
+    _=> this.push(element)
   }
 }
 
 #[method]
-pub fn u8_vec_push_front(this: &mut Vec<u8>,element: u8)-> u8 {
+pub fn u8_vec_push_front(this: &mut Vec<u8>,element: u8) {
   match (this.len(),this.capacity()) {
-    (_,0x7fffffff)=> return CAPACITY_OVERFLOW,
+    (_,0x7fffffff)=> throw!(capacity_overflow),
     (0,_)=> this.push(element),
     _=> this.insert(0,element)
   }
-  OK
 }
 
 #[method]
@@ -329,7 +325,7 @@ pub fn u8_vec_split_off(this: &mut Vec<u8>,mut at: isize)-> U8Vec {
 
   match constraints!(at => this.len()) {
     true=> as_ptr!(this.split_off(at as _)),
-    _=> wasm_bindgen::throw_val(CollectionError::index_out_of_bounds().into())
+    _=> throw!(index_out_of_bounds)
   }
 }
 
@@ -387,7 +383,7 @@ pub fn u8_vec_swap(this: &mut Vec<u8>,a: isize,b: isize) {
 
   match constraints!(a => len) || constraints!(b => len) {
     true=> this.swap(saturation_cast(a),saturation_cast(b)),
-    _=> wasm_bindgen::throw_val(CollectionError::index_out_of_bounds().into())
+    _=> throw!(capacity_overflow)
   }
 }
 
