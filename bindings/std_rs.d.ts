@@ -505,15 +505,13 @@ export function u8_vec_partition_point(_this: number, f: Function): number;
 /**
 * @param {number} _this
 * @param {number} element
-* @returns {number}
 */
-export function u8_vec_push(_this: number, element: number): number;
+export function u8_vec_push(_this: number, element: number): void;
 /**
 * @param {number} _this
 * @param {number} element
-* @returns {number}
 */
-export function u8_vec_push_front(_this: number, element: number): number;
+export function u8_vec_push_front(_this: number, element: number): void;
 /**
 * @param {number} _this
 * @returns {number | undefined}

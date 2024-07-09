@@ -23,6 +23,10 @@ pub fn new_u8_vec()-> U8Vec {
 
 #[wasm_bindgen]
 pub fn new_u8_vec_with_capacity(capacity: isize)-> U8Vec {
+  if capacity>isize::MAX {
+    throw!(capacity_overflow)
+  }
+
   as_ptr!(Vec::with_capacity(capacity.unsigned_abs()))
 }
 

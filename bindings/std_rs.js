@@ -1059,21 +1059,17 @@ export function u8_vec_partition_point(_this, f) {
 /**
 * @param {number} _this
 * @param {number} element
-* @returns {number}
 */
 export function u8_vec_push(_this, element) {
-    const ret = wasm.u8_vec_push(_this, element);
-    return ret;
+    wasm.u8_vec_push(_this, element);
 }
 
 /**
 * @param {number} _this
 * @param {number} element
-* @returns {number}
 */
 export function u8_vec_push_front(_this, element) {
-    const ret = wasm.u8_vec_push_front(_this, element);
-    return ret;
+    wasm.u8_vec_push_front(_this, element);
 }
 
 /**
