@@ -2,15 +2,16 @@
 use std::mem;
 use macros::method;
 use js_sys::Function;
-use crate::error_kind::*;
 use wasm_bindgen::prelude::*;
 
 use crate::{
   Slice,
   cast_or,
-  saturation_cast
+  Throwable,
+  error_kind::*,
+  saturation_cast,
+  errors::collection_error::*
 };
-
 
 
 type U8Vec=*mut Vec<u8>;
@@ -133,24 +134,19 @@ pub fn u8_vec_first(this: &mut Vec<u8>)-> Option<u8> {
 // I
 
 #[method]
-pub fn u8_vec_index(this: &Vec<u8>,i: isize)-> Option<u8> {
-  if constraints!(i => this.len()) {
-    wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
-  }
-
-  this.get(i as usize).cloned()
+pub fn u8_vec_index(this: &Vec<u8>,i: isize)-> u8 {
+  this.get(i as usize)
+  .cloned()
+  .or_throw(CollectionError::index_out_of_bounds())
 }
 
 #[method]
-pub fn u8_vec_insert(this: &mut Vec<u8>,mut i: isize,element: u8)-> u8 {
+pub fn u8_vec_insert(this: &mut Vec<u8>,mut i: isize,element: u8) {
   abs_index!(i;this.len());
 
   match constraints!(i => this.len()) {
-    true=> {
-      this.insert(i as _,element);
-      OK
-    },
-    _=> INDEX_OUT_OF_BOUNDS
+    true=> this.insert(i as _,element),
+    _=> wasm_bindgen::throw_val(CollectionError::index_out_of_bounds().into())
   }
 }
 
@@ -236,19 +232,15 @@ pub fn u8_vec_remove(this: &mut Vec<u8>,index: isize)-> Option<u8> {
 }
 
 #[method]
-pub fn u8_vec_reserve(this: &mut Vec<u8>,additional: isize)-> u8 {
-  match this.try_reserve(saturation_cast(additional)) {
-    Ok(_)=> OK,
-    _=> CAPACITY_OVERFLOW
-  }
+pub fn u8_vec_reserve(this: &mut Vec<u8>,additional: isize) {
+  this.try_reserve(saturation_cast(additional))
+  .or_throw(CollectionError::capacity_overflow())
 }
 
 #[method]
-pub fn u8_vec_reserve_exact(this: &mut Vec<u8>,additional: isize)-> u8 {
-  match this.try_reserve_exact(saturation_cast(additional)) {
-    Ok(_)=> OK,
-    _=> CAPACITY_OVERFLOW
-  }
+pub fn u8_vec_reserve_exact(this: &mut Vec<u8>,additional: isize) {
+  this.try_reserve_exact(saturation_cast(additional))
+  .or_throw(CollectionError::capacity_overflow())
 }
 
 #[method]
@@ -306,13 +298,10 @@ pub fn u8_vec_rsplitn(this: &mut Vec<u8>,mut n: isize,f: Function)-> U8Vec {
 // S
 
 #[method]
-pub fn u8_vec_set(this: &mut Vec<u8>,index: isize,element: u8)-> u8 {
+pub fn u8_vec_set(this: &mut Vec<u8>,index: isize,element: u8) {
   match constraints!(index => this.len()) {
-    true=> {
-      this[index as usize]=element;
-      OK
-    },
-    _=> INDEX_OUT_OF_BOUNDS
+    true=> this[index as usize]=element,
+    _=> wasm_bindgen::throw_val(CollectionError::index_out_of_bounds().into())
   }
 }
 
@@ -340,7 +329,7 @@ pub fn u8_vec_split_off(this: &mut Vec<u8>,mut at: isize)-> U8Vec {
 
   match constraints!(at => this.len()) {
     true=> as_ptr!(this.split_off(at as _)),
-    _=> wasm_bindgen::throw_val(INDEX_OUT_OF_BOUNDS.into())
+    _=> wasm_bindgen::throw_val(CollectionError::index_out_of_bounds().into())
   }
 }
 
@@ -393,15 +382,12 @@ pub fn u8_vec_splitn(this: &mut Vec<u8>,n: isize,f: Function)-> Slice {
 }
 
 #[method]
-pub fn u8_vec_swap(this: &mut Vec<u8>,a: isize,b: isize)-> u8 {
+pub fn u8_vec_swap(this: &mut Vec<u8>,a: isize,b: isize) {
   let len=this.len();
 
   match constraints!(a => len) || constraints!(b => len) {
-    true=> {
-      this.swap(saturation_cast(a),saturation_cast(b));
-      OK
-    },
-    _=> INDEX_OUT_OF_BOUNDS
+    true=> this.swap(saturation_cast(a),saturation_cast(b)),
+    _=> wasm_bindgen::throw_val(CollectionError::index_out_of_bounds().into())
   }
 }
 

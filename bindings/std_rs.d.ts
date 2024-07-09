@@ -477,16 +477,15 @@ export function u8_vec_first(_this: number): number | undefined;
 /**
 * @param {number} _this
 * @param {number} i
-* @returns {number | undefined}
+* @returns {number}
 */
-export function u8_vec_index(_this: number, i: number): number | undefined;
+export function u8_vec_index(_this: number, i: number): number;
 /**
 * @param {number} _this
 * @param {number} i
 * @param {number} element
-* @returns {number}
 */
-export function u8_vec_insert(_this: number, i: number, element: number): number;
+export function u8_vec_insert(_this: number, i: number, element: number): void;
 /**
 * @param {number} _this
 * @returns {number | undefined}
@@ -546,15 +545,13 @@ export function u8_vec_remove(_this: number, index: number): number | undefined;
 /**
 * @param {number} _this
 * @param {number} additional
-* @returns {number}
 */
-export function u8_vec_reserve(_this: number, additional: number): number;
+export function u8_vec_reserve(_this: number, additional: number): void;
 /**
 * @param {number} _this
 * @param {number} additional
-* @returns {number}
 */
-export function u8_vec_reserve_exact(_this: number, additional: number): number;
+export function u8_vec_reserve_exact(_this: number, additional: number): void;
 /**
 * @param {number} _this
 * @param {number} new_len
@@ -603,9 +600,8 @@ export function u8_vec_rsplitn(_this: number, n: number, f: Function): number;
 * @param {number} _this
 * @param {number} index
 * @param {number} element
-* @returns {number}
 */
-export function u8_vec_set(_this: number, index: number, element: number): number;
+export function u8_vec_set(_this: number, index: number, element: number): void;
 /**
 * @param {number} _this
 * @param {number} start
@@ -670,9 +666,8 @@ export function u8_vec_splitn(_this: number, n: number, f: Function): Slice;
 * @param {number} _this
 * @param {number} a
 * @param {number} b
-* @returns {number}
 */
-export function u8_vec_swap(_this: number, a: number, b: number): number;
+export function u8_vec_swap(_this: number, a: number, b: number): void;
 /**
 * @param {number} _this
 * @param {number} index
