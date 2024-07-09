@@ -123,6 +123,13 @@ macro_rules! chunks_to_slice {
   };
 }
 
-
-
+#[macro_export]
+macro_rules! throw {
+  (index_out_of_bounds)=> {
+    wasm_bindgen::throw_val($crate::errors::collection_error::CollectionError::index_out_of_bounds().into())
+  };
+  (capacity_overflow)=> {
+    wasm_bindgen::throw_val($crate::errors::collection_error::CollectionError::capacity_overflow().into())
+  }
+}
 

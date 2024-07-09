@@ -15,10 +15,12 @@ extern "C" {
 }
 
 impl CollectionError {
+  #[inline(always)]
   pub fn index_out_of_bounds()-> Self {
     Self::new(error_kind::INDEX_OUT_OF_BOUNDS,JsError::new("index out of bounds"),Some("index out of bounds".to_owned()))
   }
 
+  #[inline(always)]
   pub fn capacity_overflow()-> Self {
     Self::new(error_kind::CAPACITY_OVERFLOW,JsError::new("capacity overflow"),Some("maximum capacity overflowed".to_owned()))
   }
