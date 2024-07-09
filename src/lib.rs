@@ -5,7 +5,11 @@ mod thread;
 #[macro_use]
 pub(crate) mod util_macro;
 mod typed_array;
+
+mod throwable;
 pub mod error_kind;
+pub(crate) mod errors;
+pub(crate) use throwable::*;
 
 
 // pub use typed_array::*;

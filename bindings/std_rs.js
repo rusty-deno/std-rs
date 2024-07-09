@@ -1,4 +1,4 @@
-
+import { CollectionError } from './snippets/std-rs-78884bcf1b36fd68/lib/collections/error.ts';
 
 const heap = new Array(128).fill(undefined);
 
@@ -1012,22 +1012,20 @@ export function u8_vec_first(_this) {
 /**
 * @param {number} _this
 * @param {number} i
-* @returns {number | undefined}
+* @returns {number}
 */
 export function u8_vec_index(_this, i) {
     const ret = wasm.u8_vec_index(_this, i);
-    return ret === 0xFFFFFF ? undefined : ret;
+    return ret;
 }
 
 /**
 * @param {number} _this
 * @param {number} i
 * @param {number} element
-* @returns {number}
 */
 export function u8_vec_insert(_this, i, element) {
-    const ret = wasm.u8_vec_insert(_this, i, element);
-    return ret;
+    wasm.u8_vec_insert(_this, i, element);
 }
 
 /**
@@ -1129,21 +1127,17 @@ export function u8_vec_remove(_this, index) {
 /**
 * @param {number} _this
 * @param {number} additional
-* @returns {number}
 */
 export function u8_vec_reserve(_this, additional) {
-    const ret = wasm.u8_vec_reserve(_this, additional);
-    return ret;
+    wasm.u8_vec_reserve(_this, additional);
 }
 
 /**
 * @param {number} _this
 * @param {number} additional
-* @returns {number}
 */
 export function u8_vec_reserve_exact(_this, additional) {
-    const ret = wasm.u8_vec_reserve_exact(_this, additional);
-    return ret;
+    wasm.u8_vec_reserve_exact(_this, additional);
 }
 
 /**
@@ -1220,11 +1214,9 @@ export function u8_vec_rsplitn(_this, n, f) {
 * @param {number} _this
 * @param {number} index
 * @param {number} element
-* @returns {number}
 */
 export function u8_vec_set(_this, index, element) {
-    const ret = wasm.u8_vec_set(_this, index, element);
-    return ret;
+    wasm.u8_vec_set(_this, index, element);
 }
 
 /**
@@ -1338,11 +1330,9 @@ export function u8_vec_splitn(_this, n, f) {
 * @param {number} _this
 * @param {number} a
 * @param {number} b
-* @returns {number}
 */
 export function u8_vec_swap(_this, a, b) {
-    const ret = wasm.u8_vec_swap(_this, a, b);
-    return ret;
+    wasm.u8_vec_swap(_this, a, b);
 }
 
 /**
@@ -1482,6 +1472,19 @@ const imports = {
         },
         __wbg_slice_new: function(arg0) {
             const ret = Slice.__wrap(arg0);
+            return addHeapObject(ret);
+        },
+        __wbindgen_error_new: function(arg0, arg1) {
+            const ret = new Error(getStringFromWasm0(arg0, arg1));
+            return addHeapObject(ret);
+        },
+        __wbg_new_eefa28520849b064: function(arg0, arg1, arg2, arg3) {
+            let v0;
+            if (arg2 !== 0) {
+                v0 = getStringFromWasm0(arg2, arg3).slice();
+                wasm.__wbindgen_free(arg2, arg3 * 1, 1);
+            }
+            const ret = new CollectionError(arg0, takeObject(arg1), v0);
             return addHeapObject(ret);
         },
         __wbindgen_throw: function(arg0, arg1) {

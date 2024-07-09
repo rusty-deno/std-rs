@@ -240,8 +240,8 @@ export const IoErrorKind={
   Uncategorized: 0x28,
 } as const;
 
-/** String representation of various {@linkcode ErrorKind}s */
-export type ErrorKindStr=
+/** String representation of various {@linkcode IoErrorKind}s */
+export type IoErrorKindStr=
 |"address in use"
 |"address not available"
 |"entity already exists"
@@ -420,7 +420,7 @@ export function encodeToIoErrorKind(str: string): IoErrorKind {
   }
 }
 
-function asStr(kind: IoErrorKind): ErrorKindStr {
+function asStr(kind: IoErrorKind): IoErrorKindStr {
   switch(kind) {
     case IoErrorKind.AddrInUse: return "address in use";
     case IoErrorKind.AddrNotAvailable: return "address not available";

@@ -31,7 +31,7 @@ pub fn vec_from_iter(vec: Vec<JsValue>)-> Vector {
 
 #[method]
 pub unsafe fn vec_append(this: &mut Vec<JsValue>,other: *mut Vec<JsValue>)-> u8 {
-  let other=other.as_mut().unwrap();
+  let other=other.as_mut().unwrap_throw();
   if this.capacity()+other.capacity()>isize::MAX as usize {
     CAPACITY_OVERFLOW
   } else {
@@ -338,7 +338,7 @@ pub fn vec_splice_arr(this: &mut Vec<JsValue>,mut start: isize,count: isize,repl
 
 #[wasm_bindgen]
 pub unsafe fn vec_splice_vec(this: *mut Vec<JsValue>,start: isize,count: isize,replace_with: *mut Vec<JsValue>)-> Vector {
-  vec_splice_arr(this,start,count,replace_with.as_mut().unwrap().clone())
+  vec_splice_arr(this,start,count,replace_with.as_mut().unwrap_throw().clone())
 }
 
 
