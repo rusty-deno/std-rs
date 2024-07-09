@@ -35,7 +35,7 @@ pub fn u8_vec_from_iter(vec: Vec<u8>)-> U8Vec {
 
 #[method]
 pub unsafe fn u8_vec_append(this: &mut Vec<u8>,other: *mut Vec<u8>)-> u8 {
-  let other=other.as_mut().unwrap();
+  let other=other.as_mut().unwrap_throw();
   if this.capacity()+other.capacity()>isize::MAX as usize {
     CAPACITY_OVERFLOW
   } else {
@@ -330,7 +330,7 @@ pub fn u8_vec_splice_arr(this: &mut Vec<u8>,mut start: isize,count: isize,replac
 
 #[wasm_bindgen]
 pub unsafe fn u8_vec_splice_u8_vec(this: *mut Vec<u8>,start: isize,count: isize,replace_with: *mut Vec<u8>)-> U8Vec {
-  u8_vec_splice_arr(this,start,count,replace_with.as_mut().unwrap().clone())
+  u8_vec_splice_arr(this,start,count,replace_with.as_mut().unwrap_throw().clone())
 }
 
 
