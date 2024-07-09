@@ -53,7 +53,7 @@ export class FsFile extends Drop implements Disposable {
   }
 
   /**
-   * Opens a file in `read and write` mode.
+   * Opens a file in `read-write` mode.
    * 
    * This function will create a file if it does not exist, and will truncate it if it does.
    * 

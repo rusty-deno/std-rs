@@ -223,7 +223,7 @@ export const IoErrorKind={
    * 
    * A custom error that does not fall under any other I/O error kind.
    * 
-   * This can be used to construct your own `Error`s that do not match any {@linkcode ErrorKind}.
+   * This can be used to construct your own `Error`s that do not match any {@linkcode IoErrorKind}.
    * 
    * This `IoErrorKind` is not used by the standard library.
    * Errors from the standard library that do not fall under any of the I/O
