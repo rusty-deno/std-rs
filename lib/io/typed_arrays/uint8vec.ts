@@ -29,7 +29,7 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
 
   constructor(...elements: number[]) {
     super();
-    this.#ptr=elements.length>0?lib.u8_vec_from_iter(new Uint8Array(elements)):lib.new_u8_vec();
+    this.#ptr=elements.length>0?lib.u8_vec_from_jsarr(elements):lib.new_u8_vec();
 
     return new Proxy<Uint8Vec>(this,Uint8Vec.#handler);
   }
@@ -39,11 +39,11 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
   }
 
   public static fromUint8Array(buf: Uint8Array): Uint8Vec {
-    return Uint8Vec.fromPtr(lib.u8_vec_from_iter(buf));
+    return Uint8Vec.fromPtr(lib.u8_vec_from_uint8array(buf));
   }
 
   public static from(iter: Iterable<number>): Uint8Vec {
-    return iter instanceof Uint8Vec?iter:new Uint8Vec(...iter);
+    return Uint8Vec.fromPtr(lib.u8_vec_from_iter(iter[Symbol.iterator]()));
   }
 
   static #handler: ProxyHandler<Uint8Vec>={

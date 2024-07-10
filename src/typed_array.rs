@@ -1,8 +1,13 @@
 
 use std::mem;
 use macros::method;
-use js_sys::Function;
 use wasm_bindgen::prelude::*;
+
+use js_sys::{
+  Array,
+  Function,
+  Iterator as JsIterator
+};
 
 use crate::{
   Slice,
@@ -31,10 +36,33 @@ pub fn new_u8_vec_with_capacity(capacity: isize)-> U8Vec {
 }
 
 #[wasm_bindgen]
-pub fn u8_vec_from_iter(vec: Vec<u8>)-> U8Vec {
-  as_ptr!(vec)
+pub fn u8_vec_from_iter(iter: JsIterator,size_hint: Option<usize>)-> U8Vec {
+  let mut buf=Vec::with_capacity(size_hint.unwrap_or_default());
+
+  buf.extend(
+    iter.into_iter()
+    .map::<u8,_>(|element| dyn_cast!(element))
+  );
+
+  as_ptr!(buf)
 }
 
+#[wasm_bindgen]
+pub fn u8_vec_from_jsarr(arr: Array)-> U8Vec {
+  let mut buf=Vec::with_capacity(arr.length() as _);
+
+  buf.extend(
+    arr.into_iter()
+    .map::<u8,_>(|element| element.unchecked_into_f64() as _)
+  );
+
+  as_ptr!(buf)
+}
+
+#[wasm_bindgen]
+pub fn u8_vec_from_uint8array(vec: Vec<u8>)-> U8Vec {
+  as_ptr!(vec)
+}
 
 //A
 
