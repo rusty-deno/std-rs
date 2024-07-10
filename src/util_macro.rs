@@ -133,3 +133,10 @@ macro_rules! throw {
   }
 }
 
+
+#[macro_export]
+macro_rules! dyn_cast {
+  ($js_value:expr)=> {
+    $js_value.unwrap_or_default().unchecked_into_f64() as _
+  }
+}

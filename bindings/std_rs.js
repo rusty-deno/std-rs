@@ -853,6 +853,25 @@ export function new_u8_vec_with_capacity(capacity) {
     return ret >>> 0;
 }
 
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function u8_vec_from_iter(iter, size_hint) {
+    const ret = wasm.u8_vec_from_iter(addHeapObject(iter), !isLikeNone(size_hint), isLikeNone(size_hint) ? 0 : size_hint);
+    return ret >>> 0;
+}
+
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function u8_vec_from_jsarr(arr) {
+    const ret = wasm.u8_vec_from_jsarr(addHeapObject(arr));
+    return ret >>> 0;
+}
+
 function passArray8ToWasm0(arg, malloc) {
     const ptr = malloc(arg.length * 1, 1) >>> 0;
     getUint8Memory0().set(arg, ptr / 1);
@@ -863,10 +882,10 @@ function passArray8ToWasm0(arg, malloc) {
 * @param {Uint8Array} vec
 * @returns {number}
 */
-export function u8_vec_from_iter(vec) {
+export function u8_vec_from_uint8array(vec) {
     const ptr0 = passArray8ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.u8_vec_from_iter(ptr0, len0);
+    const ret = wasm.u8_vec_from_uint8array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -1468,6 +1487,26 @@ const imports = {
         },
         __wbg_slice_new: function(arg0) {
             const ret = Slice.__wrap(arg0);
+            return addHeapObject(ret);
+        },
+        __wbg_next_196c84450b364254: function() { return handleError(function (arg0) {
+            const ret = getObject(arg0).next();
+            return addHeapObject(ret);
+        }, arguments) },
+        __wbg_done_298b57d23c0fc80c: function(arg0) {
+            const ret = getObject(arg0).done;
+            return ret;
+        },
+        __wbg_value_d93c65011f51a456: function(arg0) {
+            const ret = getObject(arg0).value;
+            return addHeapObject(ret);
+        },
+        __wbg_length_cd7af8117672b8b8: function(arg0) {
+            const ret = getObject(arg0).length;
+            return ret;
+        },
+        __wbg_get_bd8e338fbd5f5cc8: function(arg0, arg1) {
+            const ret = getObject(arg0)[arg1 >>> 0];
             return addHeapObject(ret);
         },
         __wbindgen_error_new: function(arg0, arg1) {

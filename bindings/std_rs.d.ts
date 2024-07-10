@@ -394,10 +394,21 @@ export function new_u8_vec(): number;
 */
 export function new_u8_vec_with_capacity(capacity: number): number;
 /**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function u8_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function u8_vec_from_jsarr(arr: Array<any>): number;
+/**
 * @param {Uint8Array} vec
 * @returns {number}
 */
-export function u8_vec_from_iter(vec: Uint8Array): number;
+export function u8_vec_from_uint8array(vec: Uint8Array): number;
 /**
 * @param {number} _this
 * @param {number} other
