@@ -454,3 +454,7 @@ pub unsafe fn drop_u8_vec(ptr: U8Vec) {
 }
 
 
+macros::typed_array! {
+  
+}
+
