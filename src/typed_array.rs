@@ -1,6 +1,6 @@
 
 use std::mem;
-use macros::method;
+use macros::{method, typed_array};
 use wasm_bindgen::prelude::*;
 
 use js_sys::{
@@ -454,7 +454,8 @@ pub unsafe fn drop_u8_vec(ptr: U8Vec) {
 }
 
 
-macros::typed_array! {
-  
+typed_array! {
+  Uint8Vec: u8
 }
+
 
