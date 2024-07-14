@@ -29,13 +29,13 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
 
   constructor(...elements: number[]) {
     super();
-    this.#ptr=elements.length>0?lib.u8_vec_from_jsarr(elements):lib.new_u8_vec();
+    this.#ptr=elements.length>0?lib.u8_vec_from_jsarr(elements):lib.u8_new_vec();
 
     return new Proxy<Uint8Vec>(this,Uint8Vec.#handler);
   }
 
   public static withCapacity(capacity: number): Uint8Vec {
-    return Uint8Vec.fromPtr(lib.new_u8_vec_with_capacity(capacity));
+    return Uint8Vec.fromPtr(lib.u8_new_vec_with_capacity(capacity));
   }
 
   public static fromUint8Array(buf: Uint8Array): Uint8Vec {
@@ -61,7 +61,7 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
   private static fromPtr(ptr: number): Uint8Vec {
     const self=new Uint8Vec();
 
-    lib.drop_u8_vec(self.#ptr);
+    lib.u8_drop_vec(self.#ptr);
     self.#ptr=ptr;
 
     return self;
@@ -141,7 +141,7 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
   public splice(start: number,end: number,replaceWith: Equivalent=[]): Uint8Vec {
     return Uint8Vec.fromPtr(
       replaceWith instanceof Uint8Vec?
-        lib.u8_vec_splice_u8_vec(this.#ptr,start,end,replaceWith.#ptr)
+        lib.u8_vec_splice_vec(this.#ptr,start,end,replaceWith.#ptr)
       :
         lib.u8_vec_splice_arr(this.#ptr,start,end,new Uint8Array(replaceWith))
     );
