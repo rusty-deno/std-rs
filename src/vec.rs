@@ -1,6 +1,5 @@
 
 use crate::*;
-use std::mem;
 use error_kind::*;
 use macros::method;
 use js_sys::Function;
