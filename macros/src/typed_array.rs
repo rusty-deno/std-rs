@@ -9,16 +9,13 @@ use syn::{
 
 
 
-pub fn typed_array_impl(item: TokenStream)-> TokenStream {
-  let args=match syn::parse::<FnArg>(item).unwrap() {
+pub fn typed_array_impl(arg: FnArg)-> TokenStream {
+  let arg=match arg {
     FnArg::Typed(args)=> args,
     _=> unreachable!()
   };
-  let ty=args.ty;
-  let name=syn::parse::<Ident>(args.pat.into_token_stream().into()).unwrap();
-
-  // panic!("name: {}\nty: {}\ntype_name: {}",name.to_string(),ty.to_token_stream().to_string(),type_name.to_string());
-
+  let ty=arg.ty;
+  let name=syn::parse::<Ident>(arg.pat.into_token_stream().into()).unwrap();
 
   quote::quote! {
     type #name=*mut Vec<#ty>;

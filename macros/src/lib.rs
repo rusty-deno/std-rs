@@ -2,9 +2,16 @@
 mod method;
 mod typed_array;
 
-use syn::Ident;
 use proc_macro2::Span;
 use proc_macro::TokenStream;
+
+use syn::{
+  FnArg,
+  Ident,
+  Token,
+  parse_macro_input,
+  punctuated::Punctuated
+};
 
 
 
@@ -16,7 +23,10 @@ pub fn method(attr: TokenStream,item: TokenStream)-> TokenStream {
 
 #[proc_macro]
 pub fn typed_array(item: TokenStream)-> TokenStream {
-  typed_array::typed_array_impl(item)
+  parse_macro_input!(item with Punctuated::<FnArg,Token![,]>::parse_terminated)
+  .into_iter()
+  .map(|arg| typed_array::typed_array_impl(arg))
+  .collect::<TokenStream>()
 }
 
 #[proc_macro_attribute]
