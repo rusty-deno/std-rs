@@ -115,7 +115,7 @@ macro_rules! ordering {
 macro_rules! chunks_to_slice {
   ($slice:expr)=> {
     unsafe {
-      mem::transmute::<_,Slice>(Box::into_raw(
+      std::mem::transmute::<_,$crate::Slice>(Box::into_raw(
         $slice
         .collect::<Box<[_]>>()
       ))

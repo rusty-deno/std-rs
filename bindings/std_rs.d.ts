@@ -387,12 +387,12 @@ export function drop_join_handle(this_ptr: number): void;
 /**
 * @returns {number}
 */
-export function new_u8_vec(): number;
+export function u8_new_vec(): number;
 /**
 * @param {number} capacity
 * @returns {number}
 */
-export function new_u8_vec_with_capacity(capacity: number): number;
+export function u8_new_vec_with_capacity(capacity: number): number;
 /**
 * @param {Iterator<any>} iter
 * @param {number | undefined} [size_hint]
@@ -412,9 +412,8 @@ export function u8_vec_from_uint8array(vec: Uint8Array): number;
 /**
 * @param {number} _this
 * @param {number} other
-* @returns {number}
 */
-export function u8_vec_append(_this: number, other: number): number;
+export function u8_vec_append(_this: number, other: number): void;
 /**
 * @param {number} _this
 * @param {number} index
@@ -626,7 +625,7 @@ export function u8_vec_splice_arr(_this: number, start: number, count: number, r
 * @param {number} replace_with
 * @returns {number}
 */
-export function u8_vec_splice_u8_vec(_this: number, start: number, count: number, replace_with: number): number;
+export function u8_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
 /**
 * @param {number} _this
 * @param {number} at
@@ -703,7 +702,2878 @@ export function u8_vec_windows(_this: number, size: number): Slice;
 /**
 * @param {number} ptr
 */
-export function drop_u8_vec(ptr: number): void;
+export function u8_drop_vec(ptr: number): void;
+/**
+* @returns {number}
+*/
+export function u16_new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function u16_new_vec_with_capacity(capacity: number): number;
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function u16_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function u16_vec_from_jsarr(arr: Array<any>): number;
+/**
+* @param {Uint16Array} vec
+* @returns {number}
+*/
+export function u16_vec_from_uint8array(vec: Uint16Array): number;
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function u16_vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function u16_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function u16_vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function u16_vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u16_vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u16_vec_chunks_by(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u16_vec_chunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u16_vec_chunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {boolean}
+*/
+export function u16_vec_contains(_this: number, element: number): boolean;
+/**
+* @param {number} _this
+*/
+export function u16_vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u16_vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function u16_vec_fill(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u16_vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u16_vec_first(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {number}
+*/
+export function u16_vec_index(_this: number, i: number): number;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {number} element
+*/
+export function u16_vec_insert(_this: number, i: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u16_vec_last(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u16_vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function u16_vec_partition_point(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function u16_vec_push(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function u16_vec_push_front(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u16_vec_pop(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u16_vec_pop_front(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u16_vec_rchunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u16_vec_rchunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function u16_vec_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function u16_vec_reserve(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function u16_vec_reserve_exact(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {number} val
+*/
+export function u16_vec_resize(_this: number, new_len: number, val: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function u16_vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u16_vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function u16_vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function u16_vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function u16_vec_rotate_right(_this: number, k: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u16_vec_rsplit(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function u16_vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {number} element
+*/
+export function u16_vec_set(_this: number, index: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {Uint16Array} replace_with
+* @returns {number}
+*/
+export function u16_vec_splice_arr(_this: number, start: number, count: number, replace_with: Uint16Array): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function u16_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function u16_vec_split_off(_this: number, at: number): number;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function u16_vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+*/
+export function u16_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u16_vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u16_vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u16_vec_split(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function u16_vec_split_at(_this: number, mid: number): (Slice)[];
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u16_vec_splitn(_this: number, n: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function u16_vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function u16_vec_swap_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function u16_vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function u16_vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function u16_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} ptr
+*/
+export function u16_drop_vec(ptr: number): void;
+/**
+* @returns {number}
+*/
+export function u32_new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function u32_new_vec_with_capacity(capacity: number): number;
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function u32_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function u32_vec_from_jsarr(arr: Array<any>): number;
+/**
+* @param {Uint32Array} vec
+* @returns {number}
+*/
+export function u32_vec_from_uint8array(vec: Uint32Array): number;
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function u32_vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function u32_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function u32_vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function u32_vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u32_vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u32_vec_chunks_by(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u32_vec_chunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u32_vec_chunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {boolean}
+*/
+export function u32_vec_contains(_this: number, element: number): boolean;
+/**
+* @param {number} _this
+*/
+export function u32_vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u32_vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function u32_vec_fill(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u32_vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u32_vec_first(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {number}
+*/
+export function u32_vec_index(_this: number, i: number): number;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {number} element
+*/
+export function u32_vec_insert(_this: number, i: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u32_vec_last(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u32_vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function u32_vec_partition_point(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function u32_vec_push(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function u32_vec_push_front(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u32_vec_pop(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function u32_vec_pop_front(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u32_vec_rchunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u32_vec_rchunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function u32_vec_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function u32_vec_reserve(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function u32_vec_reserve_exact(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {number} val
+*/
+export function u32_vec_resize(_this: number, new_len: number, val: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function u32_vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u32_vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function u32_vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function u32_vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function u32_vec_rotate_right(_this: number, k: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u32_vec_rsplit(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function u32_vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {number} element
+*/
+export function u32_vec_set(_this: number, index: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {Uint32Array} replace_with
+* @returns {number}
+*/
+export function u32_vec_splice_arr(_this: number, start: number, count: number, replace_with: Uint32Array): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function u32_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function u32_vec_split_off(_this: number, at: number): number;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function u32_vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+*/
+export function u32_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u32_vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u32_vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u32_vec_split(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function u32_vec_split_at(_this: number, mid: number): (Slice)[];
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u32_vec_splitn(_this: number, n: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function u32_vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function u32_vec_swap_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function u32_vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function u32_vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function u32_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} ptr
+*/
+export function u32_drop_vec(ptr: number): void;
+/**
+* @returns {number}
+*/
+export function u64_new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function u64_new_vec_with_capacity(capacity: number): number;
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function u64_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function u64_vec_from_jsarr(arr: Array<any>): number;
+/**
+* @param {BigUint64Array} vec
+* @returns {number}
+*/
+export function u64_vec_from_uint8array(vec: BigUint64Array): number;
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function u64_vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {bigint | undefined}
+*/
+export function u64_vec_at(_this: number, index: number): bigint | undefined;
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function u64_vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function u64_vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u64_vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u64_vec_chunks_by(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u64_vec_chunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u64_vec_chunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {bigint} element
+* @returns {boolean}
+*/
+export function u64_vec_contains(_this: number, element: bigint): boolean;
+/**
+* @param {number} _this
+*/
+export function u64_vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u64_vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {bigint} element
+*/
+export function u64_vec_fill(_this: number, element: bigint): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u64_vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {bigint | undefined}
+*/
+export function u64_vec_first(_this: number): bigint | undefined;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {bigint}
+*/
+export function u64_vec_index(_this: number, i: number): bigint;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {bigint} element
+*/
+export function u64_vec_insert(_this: number, i: number, element: bigint): void;
+/**
+* @param {number} _this
+* @returns {bigint | undefined}
+*/
+export function u64_vec_last(_this: number): bigint | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u64_vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function u64_vec_partition_point(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {bigint} element
+*/
+export function u64_vec_push(_this: number, element: bigint): void;
+/**
+* @param {number} _this
+* @param {bigint} element
+*/
+export function u64_vec_push_front(_this: number, element: bigint): void;
+/**
+* @param {number} _this
+* @returns {bigint | undefined}
+*/
+export function u64_vec_pop(_this: number): bigint | undefined;
+/**
+* @param {number} _this
+* @returns {bigint | undefined}
+*/
+export function u64_vec_pop_front(_this: number): bigint | undefined;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u64_vec_rchunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function u64_vec_rchunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {bigint | undefined}
+*/
+export function u64_vec_remove(_this: number, index: number): bigint | undefined;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function u64_vec_reserve(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function u64_vec_reserve_exact(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {bigint} val
+*/
+export function u64_vec_resize(_this: number, new_len: number, val: bigint): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function u64_vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u64_vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function u64_vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function u64_vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function u64_vec_rotate_right(_this: number, k: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u64_vec_rsplit(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function u64_vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {bigint} element
+*/
+export function u64_vec_set(_this: number, index: number, element: bigint): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {BigUint64Array} replace_with
+* @returns {number}
+*/
+export function u64_vec_splice_arr(_this: number, start: number, count: number, replace_with: BigUint64Array): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function u64_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function u64_vec_split_off(_this: number, at: number): number;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function u64_vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+*/
+export function u64_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u64_vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function u64_vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u64_vec_split(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function u64_vec_split_at(_this: number, mid: number): (Slice)[];
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function u64_vec_splitn(_this: number, n: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function u64_vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {bigint | undefined}
+*/
+export function u64_vec_swap_remove(_this: number, index: number): bigint | undefined;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function u64_vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function u64_vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function u64_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} ptr
+*/
+export function u64_drop_vec(ptr: number): void;
+/**
+* @returns {number}
+*/
+export function i8_new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function i8_new_vec_with_capacity(capacity: number): number;
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function i8_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function i8_vec_from_jsarr(arr: Array<any>): number;
+/**
+* @param {Int8Array} vec
+* @returns {number}
+*/
+export function i8_vec_from_uint8array(vec: Int8Array): number;
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function i8_vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function i8_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function i8_vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function i8_vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i8_vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i8_vec_chunks_by(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i8_vec_chunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i8_vec_chunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {boolean}
+*/
+export function i8_vec_contains(_this: number, element: number): boolean;
+/**
+* @param {number} _this
+*/
+export function i8_vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i8_vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function i8_vec_fill(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i8_vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i8_vec_first(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {number}
+*/
+export function i8_vec_index(_this: number, i: number): number;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {number} element
+*/
+export function i8_vec_insert(_this: number, i: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i8_vec_last(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i8_vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function i8_vec_partition_point(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function i8_vec_push(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function i8_vec_push_front(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i8_vec_pop(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i8_vec_pop_front(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i8_vec_rchunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i8_vec_rchunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function i8_vec_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function i8_vec_reserve(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function i8_vec_reserve_exact(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {number} val
+*/
+export function i8_vec_resize(_this: number, new_len: number, val: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function i8_vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i8_vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function i8_vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function i8_vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function i8_vec_rotate_right(_this: number, k: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i8_vec_rsplit(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function i8_vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {number} element
+*/
+export function i8_vec_set(_this: number, index: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {Int8Array} replace_with
+* @returns {number}
+*/
+export function i8_vec_splice_arr(_this: number, start: number, count: number, replace_with: Int8Array): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function i8_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function i8_vec_split_off(_this: number, at: number): number;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function i8_vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+*/
+export function i8_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i8_vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i8_vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i8_vec_split(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function i8_vec_split_at(_this: number, mid: number): (Slice)[];
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i8_vec_splitn(_this: number, n: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function i8_vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function i8_vec_swap_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function i8_vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function i8_vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function i8_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} ptr
+*/
+export function i8_drop_vec(ptr: number): void;
+/**
+* @returns {number}
+*/
+export function i16_new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function i16_new_vec_with_capacity(capacity: number): number;
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function i16_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function i16_vec_from_jsarr(arr: Array<any>): number;
+/**
+* @param {Int16Array} vec
+* @returns {number}
+*/
+export function i16_vec_from_uint8array(vec: Int16Array): number;
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function i16_vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function i16_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function i16_vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function i16_vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i16_vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i16_vec_chunks_by(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i16_vec_chunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i16_vec_chunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {boolean}
+*/
+export function i16_vec_contains(_this: number, element: number): boolean;
+/**
+* @param {number} _this
+*/
+export function i16_vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i16_vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function i16_vec_fill(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i16_vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i16_vec_first(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {number}
+*/
+export function i16_vec_index(_this: number, i: number): number;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {number} element
+*/
+export function i16_vec_insert(_this: number, i: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i16_vec_last(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i16_vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function i16_vec_partition_point(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function i16_vec_push(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function i16_vec_push_front(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i16_vec_pop(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i16_vec_pop_front(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i16_vec_rchunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i16_vec_rchunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function i16_vec_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function i16_vec_reserve(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function i16_vec_reserve_exact(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {number} val
+*/
+export function i16_vec_resize(_this: number, new_len: number, val: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function i16_vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i16_vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function i16_vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function i16_vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function i16_vec_rotate_right(_this: number, k: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i16_vec_rsplit(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function i16_vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {number} element
+*/
+export function i16_vec_set(_this: number, index: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {Int16Array} replace_with
+* @returns {number}
+*/
+export function i16_vec_splice_arr(_this: number, start: number, count: number, replace_with: Int16Array): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function i16_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function i16_vec_split_off(_this: number, at: number): number;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function i16_vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+*/
+export function i16_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i16_vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i16_vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i16_vec_split(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function i16_vec_split_at(_this: number, mid: number): (Slice)[];
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i16_vec_splitn(_this: number, n: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function i16_vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function i16_vec_swap_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function i16_vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function i16_vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function i16_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} ptr
+*/
+export function i16_drop_vec(ptr: number): void;
+/**
+* @returns {number}
+*/
+export function i32_new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function i32_new_vec_with_capacity(capacity: number): number;
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function i32_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function i32_vec_from_jsarr(arr: Array<any>): number;
+/**
+* @param {Int32Array} vec
+* @returns {number}
+*/
+export function i32_vec_from_uint8array(vec: Int32Array): number;
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function i32_vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function i32_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function i32_vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function i32_vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i32_vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i32_vec_chunks_by(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i32_vec_chunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i32_vec_chunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {boolean}
+*/
+export function i32_vec_contains(_this: number, element: number): boolean;
+/**
+* @param {number} _this
+*/
+export function i32_vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i32_vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function i32_vec_fill(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i32_vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i32_vec_first(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {number}
+*/
+export function i32_vec_index(_this: number, i: number): number;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {number} element
+*/
+export function i32_vec_insert(_this: number, i: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i32_vec_last(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i32_vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function i32_vec_partition_point(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function i32_vec_push(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function i32_vec_push_front(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i32_vec_pop(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function i32_vec_pop_front(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i32_vec_rchunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i32_vec_rchunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function i32_vec_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function i32_vec_reserve(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function i32_vec_reserve_exact(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {number} val
+*/
+export function i32_vec_resize(_this: number, new_len: number, val: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function i32_vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i32_vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function i32_vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function i32_vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function i32_vec_rotate_right(_this: number, k: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i32_vec_rsplit(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function i32_vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {number} element
+*/
+export function i32_vec_set(_this: number, index: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {Int32Array} replace_with
+* @returns {number}
+*/
+export function i32_vec_splice_arr(_this: number, start: number, count: number, replace_with: Int32Array): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function i32_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function i32_vec_split_off(_this: number, at: number): number;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function i32_vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+*/
+export function i32_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i32_vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i32_vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i32_vec_split(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function i32_vec_split_at(_this: number, mid: number): (Slice)[];
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i32_vec_splitn(_this: number, n: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function i32_vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function i32_vec_swap_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function i32_vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function i32_vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function i32_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} ptr
+*/
+export function i32_drop_vec(ptr: number): void;
+/**
+* @returns {number}
+*/
+export function i64_new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function i64_new_vec_with_capacity(capacity: number): number;
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function i64_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function i64_vec_from_jsarr(arr: Array<any>): number;
+/**
+* @param {BigInt64Array} vec
+* @returns {number}
+*/
+export function i64_vec_from_uint8array(vec: BigInt64Array): number;
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function i64_vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {bigint | undefined}
+*/
+export function i64_vec_at(_this: number, index: number): bigint | undefined;
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function i64_vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function i64_vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i64_vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i64_vec_chunks_by(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i64_vec_chunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i64_vec_chunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {bigint} element
+* @returns {boolean}
+*/
+export function i64_vec_contains(_this: number, element: bigint): boolean;
+/**
+* @param {number} _this
+*/
+export function i64_vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i64_vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {bigint} element
+*/
+export function i64_vec_fill(_this: number, element: bigint): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i64_vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {bigint | undefined}
+*/
+export function i64_vec_first(_this: number): bigint | undefined;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {bigint}
+*/
+export function i64_vec_index(_this: number, i: number): bigint;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {bigint} element
+*/
+export function i64_vec_insert(_this: number, i: number, element: bigint): void;
+/**
+* @param {number} _this
+* @returns {bigint | undefined}
+*/
+export function i64_vec_last(_this: number): bigint | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i64_vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function i64_vec_partition_point(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {bigint} element
+*/
+export function i64_vec_push(_this: number, element: bigint): void;
+/**
+* @param {number} _this
+* @param {bigint} element
+*/
+export function i64_vec_push_front(_this: number, element: bigint): void;
+/**
+* @param {number} _this
+* @returns {bigint | undefined}
+*/
+export function i64_vec_pop(_this: number): bigint | undefined;
+/**
+* @param {number} _this
+* @returns {bigint | undefined}
+*/
+export function i64_vec_pop_front(_this: number): bigint | undefined;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i64_vec_rchunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function i64_vec_rchunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {bigint | undefined}
+*/
+export function i64_vec_remove(_this: number, index: number): bigint | undefined;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function i64_vec_reserve(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function i64_vec_reserve_exact(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {bigint} val
+*/
+export function i64_vec_resize(_this: number, new_len: number, val: bigint): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function i64_vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i64_vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function i64_vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function i64_vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function i64_vec_rotate_right(_this: number, k: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i64_vec_rsplit(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function i64_vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {bigint} element
+*/
+export function i64_vec_set(_this: number, index: number, element: bigint): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {BigInt64Array} replace_with
+* @returns {number}
+*/
+export function i64_vec_splice_arr(_this: number, start: number, count: number, replace_with: BigInt64Array): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function i64_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function i64_vec_split_off(_this: number, at: number): number;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function i64_vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+*/
+export function i64_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i64_vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function i64_vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i64_vec_split(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function i64_vec_split_at(_this: number, mid: number): (Slice)[];
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function i64_vec_splitn(_this: number, n: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function i64_vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {bigint | undefined}
+*/
+export function i64_vec_swap_remove(_this: number, index: number): bigint | undefined;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function i64_vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function i64_vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function i64_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} ptr
+*/
+export function i64_drop_vec(ptr: number): void;
+/**
+* @returns {number}
+*/
+export function f32_new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function f32_new_vec_with_capacity(capacity: number): number;
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function f32_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function f32_vec_from_jsarr(arr: Array<any>): number;
+/**
+* @param {Float32Array} vec
+* @returns {number}
+*/
+export function f32_vec_from_uint8array(vec: Float32Array): number;
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function f32_vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function f32_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function f32_vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function f32_vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function f32_vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function f32_vec_chunks_by(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function f32_vec_chunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function f32_vec_chunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {boolean}
+*/
+export function f32_vec_contains(_this: number, element: number): boolean;
+/**
+* @param {number} _this
+*/
+export function f32_vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f32_vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function f32_vec_fill(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f32_vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function f32_vec_first(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {number}
+*/
+export function f32_vec_index(_this: number, i: number): number;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {number} element
+*/
+export function f32_vec_insert(_this: number, i: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function f32_vec_last(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function f32_vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function f32_vec_partition_point(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function f32_vec_push(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function f32_vec_push_front(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function f32_vec_pop(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function f32_vec_pop_front(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function f32_vec_rchunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function f32_vec_rchunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function f32_vec_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function f32_vec_reserve(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function f32_vec_reserve_exact(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {number} val
+*/
+export function f32_vec_resize(_this: number, new_len: number, val: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function f32_vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f32_vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function f32_vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function f32_vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function f32_vec_rotate_right(_this: number, k: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function f32_vec_rsplit(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function f32_vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {number} element
+*/
+export function f32_vec_set(_this: number, index: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {Float32Array} replace_with
+* @returns {number}
+*/
+export function f32_vec_splice_arr(_this: number, start: number, count: number, replace_with: Float32Array): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function f32_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function f32_vec_split_off(_this: number, at: number): number;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function f32_vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+*/
+export function f32_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f32_vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f32_vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function f32_vec_split(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function f32_vec_split_at(_this: number, mid: number): (Slice)[];
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function f32_vec_splitn(_this: number, n: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function f32_vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function f32_vec_swap_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function f32_vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function f32_vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function f32_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} ptr
+*/
+export function f32_drop_vec(ptr: number): void;
+/**
+* @returns {number}
+*/
+export function f64_new_vec(): number;
+/**
+* @param {number} capacity
+* @returns {number}
+*/
+export function f64_new_vec_with_capacity(capacity: number): number;
+/**
+* @param {Iterator<any>} iter
+* @param {number | undefined} [size_hint]
+* @returns {number}
+*/
+export function f64_vec_from_iter(iter: Iterator<any>, size_hint?: number): number;
+/**
+* @param {Array<any>} arr
+* @returns {number}
+*/
+export function f64_vec_from_jsarr(arr: Array<any>): number;
+/**
+* @param {Float64Array} vec
+* @returns {number}
+*/
+export function f64_vec_from_uint8array(vec: Float64Array): number;
+/**
+* @param {number} _this
+* @param {number} other
+*/
+export function f64_vec_append(_this: number, other: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function f64_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {Slice}
+*/
+export function f64_vec_as_slice(_this: number): Slice;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function f64_vec_binary_search_by(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function f64_vec_capacity(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function f64_vec_chunks_by(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function f64_vec_chunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function f64_vec_chunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} element
+* @returns {boolean}
+*/
+export function f64_vec_contains(_this: number, element: number): boolean;
+/**
+* @param {number} _this
+*/
+export function f64_vec_clear(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f64_vec_dedup(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function f64_vec_fill(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f64_vec_fill_with(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function f64_vec_first(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} i
+* @returns {number}
+*/
+export function f64_vec_index(_this: number, i: number): number;
+/**
+* @param {number} _this
+* @param {number} i
+* @param {number} element
+*/
+export function f64_vec_insert(_this: number, i: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function f64_vec_last(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function f64_vec_len(_this: number): number;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {number}
+*/
+export function f64_vec_partition_point(_this: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function f64_vec_push(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} element
+*/
+export function f64_vec_push_front(_this: number, element: number): void;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function f64_vec_pop(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number | undefined}
+*/
+export function f64_vec_pop_front(_this: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function f64_vec_rchunks(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} chunk_size
+* @returns {Slice}
+*/
+export function f64_vec_rchunks_exact(_this: number, chunk_size: number): Slice;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function f64_vec_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function f64_vec_reserve(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} additional
+*/
+export function f64_vec_reserve_exact(_this: number, additional: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {number} val
+*/
+export function f64_vec_resize(_this: number, new_len: number, val: number): void;
+/**
+* @param {number} _this
+* @param {number} new_len
+* @param {Function} f
+*/
+export function f64_vec_resize_with(_this: number, new_len: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f64_vec_retain(_this: number, f: Function): void;
+/**
+* @param {number} _this
+*/
+export function f64_vec_reverse(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} mid
+*/
+export function f64_vec_rotate_left(_this: number, mid: number): void;
+/**
+* @param {number} _this
+* @param {number} k
+*/
+export function f64_vec_rotate_right(_this: number, k: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function f64_vec_rsplit(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {number}
+*/
+export function f64_vec_rsplitn(_this: number, n: number, f: Function): number;
+/**
+* @param {number} _this
+* @param {number} index
+* @param {number} element
+*/
+export function f64_vec_set(_this: number, index: number, element: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {Float64Array} replace_with
+* @returns {number}
+*/
+export function f64_vec_splice_arr(_this: number, start: number, count: number, replace_with: Float64Array): number;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} count
+* @param {number} replace_with
+* @returns {number}
+*/
+export function f64_vec_splice_vec(_this: number, start: number, count: number, replace_with: number): number;
+/**
+* @param {number} _this
+* @param {number} at
+* @returns {number}
+*/
+export function f64_vec_split_off(_this: number, at: number): number;
+/**
+* @param {number} _this
+* @param {number} min_capacity
+*/
+export function f64_vec_shrink_to(_this: number, min_capacity: number): void;
+/**
+* @param {number} _this
+*/
+export function f64_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f64_vec_sort_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+*/
+export function f64_vec_sort_unstable_by(_this: number, f: Function): void;
+/**
+* @param {number} _this
+* @param {Function} f
+* @returns {Slice}
+*/
+export function f64_vec_split(_this: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} mid
+* @returns {(Slice)[]}
+*/
+export function f64_vec_split_at(_this: number, mid: number): (Slice)[];
+/**
+* @param {number} _this
+* @param {number} n
+* @param {Function} f
+* @returns {Slice}
+*/
+export function f64_vec_splitn(_this: number, n: number, f: Function): Slice;
+/**
+* @param {number} _this
+* @param {number} a
+* @param {number} b
+*/
+export function f64_vec_swap(_this: number, a: number, b: number): void;
+/**
+* @param {number} _this
+* @param {number} index
+* @returns {number | undefined}
+*/
+export function f64_vec_swap_remove(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @param {number} ptr
+* @param {number} len
+*/
+export function f64_vec_swap_with_slice(_this: number, ptr: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} len
+*/
+export function f64_vec_truncate(_this: number, len: number): void;
+/**
+* @param {number} _this
+* @param {number} size
+* @returns {Slice}
+*/
+export function f64_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} ptr
+*/
+export function f64_drop_vec(ptr: number): void;
 /**
 */
 export class Slice {
