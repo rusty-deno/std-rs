@@ -454,8 +454,7 @@ pub unsafe fn drop_u8_vec(ptr: U8Vec) {
 }
 
 
-// typed_array! {
-//   Int8Vec: i8
-// }
-
+typed_array! {
+  Int8Vec: i8
+}
 
