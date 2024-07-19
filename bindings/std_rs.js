@@ -4,8 +4,6 @@ const heap = new Array(128).fill(undefined);
 
 heap.push(undefined, null, true, false);
 
-function getObject(idx) { return heap[idx]; }
-
 let heap_next = heap.length;
 
 function addHeapObject(obj) {
@@ -16,6 +14,8 @@ function addHeapObject(obj) {
     heap[idx] = obj;
     return idx;
 }
+
+function getObject(idx) { return heap[idx]; }
 
 function dropObject(idx) {
     if (idx < 132) return;
@@ -1285,6 +1285,17 @@ export function u8_vec_shrink_to_fit(_this) {
 
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Uint8Array}
+*/
+export function u8_vec_slice(_this, start, end) {
+    const ret = wasm.u8_vec_slice(_this, start, end);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function u8_vec_sort_by(_this, f) {
@@ -1855,6 +1866,17 @@ export function u16_vec_shrink_to(_this, min_capacity) {
 */
 export function u16_vec_shrink_to_fit(_this) {
     wasm.i16_vec_shrink_to_fit(_this);
+}
+
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Uint16Array}
+*/
+export function u16_vec_slice(_this, start, end) {
+    const ret = wasm.u16_vec_slice(_this, start, end);
+    return takeObject(ret);
 }
 
 /**
@@ -2462,6 +2484,17 @@ export function u32_vec_shrink_to(_this, min_capacity) {
 */
 export function u32_vec_shrink_to_fit(_this) {
     wasm.f32_vec_shrink_to_fit(_this);
+}
+
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Uint32Array}
+*/
+export function u32_vec_slice(_this, start, end) {
+    const ret = wasm.u32_vec_slice(_this, start, end);
+    return takeObject(ret);
 }
 
 /**
@@ -3097,6 +3130,17 @@ export function u64_vec_shrink_to_fit(_this) {
 
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {BigUint64Array}
+*/
+export function u64_vec_slice(_this, start, end) {
+    const ret = wasm.u64_vec_slice(_this, start, end);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function u64_vec_sort_by(_this, f) {
@@ -3663,6 +3707,17 @@ export function i8_vec_shrink_to_fit(_this) {
 
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Int8Array}
+*/
+export function i8_vec_slice(_this, start, end) {
+    const ret = wasm.i8_vec_slice(_this, start, end);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function i8_vec_sort_by(_this, f) {
@@ -4218,6 +4273,17 @@ export function i16_vec_shrink_to(_this, min_capacity) {
 */
 export function i16_vec_shrink_to_fit(_this) {
     wasm.i16_vec_shrink_to_fit(_this);
+}
+
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Int16Array}
+*/
+export function i16_vec_slice(_this, start, end) {
+    const ret = wasm.i16_vec_slice(_this, start, end);
+    return takeObject(ret);
 }
 
 /**
@@ -4819,6 +4885,17 @@ export function i32_vec_shrink_to(_this, min_capacity) {
 */
 export function i32_vec_shrink_to_fit(_this) {
     wasm.f32_vec_shrink_to_fit(_this);
+}
+
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Int32Array}
+*/
+export function i32_vec_slice(_this, start, end) {
+    const ret = wasm.i32_vec_slice(_this, start, end);
+    return takeObject(ret);
 }
 
 /**
@@ -5427,6 +5504,17 @@ export function i64_vec_shrink_to(_this, min_capacity) {
 */
 export function i64_vec_shrink_to_fit(_this) {
     wasm.f64_vec_shrink_to_fit(_this);
+}
+
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {BigInt64Array}
+*/
+export function i64_vec_slice(_this, start, end) {
+    const ret = wasm.i64_vec_slice(_this, start, end);
+    return takeObject(ret);
 }
 
 /**
@@ -6054,6 +6142,17 @@ export function f32_vec_shrink_to_fit(_this) {
 
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Float32Array}
+*/
+export function f32_vec_slice(_this, start, end) {
+    const ret = wasm.f32_vec_slice(_this, start, end);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function f32_vec_sort_by(_this, f) {
@@ -6677,6 +6776,17 @@ export function f64_vec_shrink_to_fit(_this) {
 
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Float64Array}
+*/
+export function f64_vec_slice(_this, start, end) {
+    const ret = wasm.f64_vec_slice(_this, start, end);
+    return takeObject(ret);
+}
+
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function f64_vec_sort_by(_this, f) {
@@ -6884,6 +6994,54 @@ const imports = {
             const ret = getObject(arg0).call(getObject(arg1), getObject(arg2), getObject(arg3));
             return addHeapObject(ret);
         }, arguments) },
+        __wbindgen_memory: function() {
+            const ret = wasm.memory;
+            return addHeapObject(ret);
+        },
+        __wbg_buffer_12d079cc21e14bdb: function(arg0) {
+            const ret = getObject(arg0).buffer;
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_41559f654c4e743c: function(arg0, arg1, arg2) {
+            const ret = new Int8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_4bea9f904a7e0aef: function(arg0, arg1, arg2) {
+            const ret = new Int16Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_425360430a1c8206: function(arg0, arg1, arg2) {
+            const ret = new Int32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_aa4a17c33a06e5cb: function(arg0, arg1, arg2) {
+            const ret = new Uint8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_9fd64654bc0b0817: function(arg0, arg1, arg2) {
+            const ret = new Uint16Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_3125852e5a7fbcff: function(arg0, arg1, arg2) {
+            const ret = new Uint32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_4a659d079a1650e0: function(arg0, arg1, arg2) {
+            const ret = new Float32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_f884af06774ef276: function(arg0, arg1, arg2) {
+            const ret = new Float64Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_5b893eb727153216: function(arg0, arg1, arg2) {
+            const ret = new BigInt64Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_f3784c11ba58e531: function(arg0, arg1, arg2) {
+            const ret = new BigUint64Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
         __wbindgen_object_clone_ref: function(arg0) {
             const ret = getObject(arg0);
             return addHeapObject(ret);
@@ -6928,60 +7086,12 @@ const imports = {
             const ret = new CollectionError(arg0, takeObject(arg1), v0);
             return addHeapObject(ret);
         },
-        __wbindgen_memory: function() {
-            const ret = wasm.memory;
-            return addHeapObject(ret);
-        },
-        __wbg_buffer_12d079cc21e14bdb: function(arg0) {
-            const ret = getObject(arg0).buffer;
-            return addHeapObject(ret);
-        },
-        __wbg_newwithbyteoffsetandlength_aa4a17c33a06e5cb: function(arg0, arg1, arg2) {
-            const ret = new Uint8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
-            return addHeapObject(ret);
-        },
-        __wbg_newwithbyteoffsetandlength_9fd64654bc0b0817: function(arg0, arg1, arg2) {
-            const ret = new Uint16Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
-            return addHeapObject(ret);
-        },
-        __wbg_newwithbyteoffsetandlength_3125852e5a7fbcff: function(arg0, arg1, arg2) {
-            const ret = new Uint32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
-            return addHeapObject(ret);
-        },
         __wbindgen_bigint_from_u64: function(arg0) {
             const ret = BigInt.asUintN(64, arg0);
             return addHeapObject(ret);
         },
-        __wbg_newwithbyteoffsetandlength_f3784c11ba58e531: function(arg0, arg1, arg2) {
-            const ret = new BigUint64Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
-            return addHeapObject(ret);
-        },
-        __wbg_newwithbyteoffsetandlength_41559f654c4e743c: function(arg0, arg1, arg2) {
-            const ret = new Int8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
-            return addHeapObject(ret);
-        },
-        __wbg_newwithbyteoffsetandlength_4bea9f904a7e0aef: function(arg0, arg1, arg2) {
-            const ret = new Int16Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
-            return addHeapObject(ret);
-        },
-        __wbg_newwithbyteoffsetandlength_425360430a1c8206: function(arg0, arg1, arg2) {
-            const ret = new Int32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
-            return addHeapObject(ret);
-        },
         __wbindgen_bigint_from_i64: function(arg0) {
             const ret = arg0;
-            return addHeapObject(ret);
-        },
-        __wbg_newwithbyteoffsetandlength_5b893eb727153216: function(arg0, arg1, arg2) {
-            const ret = new BigInt64Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
-            return addHeapObject(ret);
-        },
-        __wbg_newwithbyteoffsetandlength_4a659d079a1650e0: function(arg0, arg1, arg2) {
-            const ret = new Float32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
-            return addHeapObject(ret);
-        },
-        __wbg_newwithbyteoffsetandlength_f884af06774ef276: function(arg0, arg1, arg2) {
-            const ret = new Float64Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
             return addHeapObject(ret);
         },
         __wbindgen_throw: function(arg0, arg1) {

@@ -48,9 +48,9 @@ macro_rules! constraints {
 
 #[macro_export]
 macro_rules! abs_index {
-  ($i:expr ; $cap:expr)=> {
+  ($i:expr ; $len:expr)=> {
     if $i<0 {
-      $i+=$cap as isize;
+      $i=$len.saturating_add_signed($i) as _
     }
   };
 }

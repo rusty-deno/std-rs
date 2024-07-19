@@ -643,6 +643,13 @@ export function u8_vec_shrink_to(_this: number, min_capacity: number): void;
 export function u8_vec_shrink_to_fit(_this: number): void;
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Uint8Array}
+*/
+export function u8_vec_slice(_this: number, start: number, end: number): Uint8Array;
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function u8_vec_sort_by(_this: number, f: Function): void;
@@ -965,6 +972,13 @@ export function u16_vec_shrink_to(_this: number, min_capacity: number): void;
 * @param {number} _this
 */
 export function u16_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Uint16Array}
+*/
+export function u16_vec_slice(_this: number, start: number, end: number): Uint16Array;
 /**
 * @param {number} _this
 * @param {Function} f
@@ -1291,6 +1305,13 @@ export function u32_vec_shrink_to(_this: number, min_capacity: number): void;
 export function u32_vec_shrink_to_fit(_this: number): void;
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Uint32Array}
+*/
+export function u32_vec_slice(_this: number, start: number, end: number): Uint32Array;
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function u32_vec_sort_by(_this: number, f: Function): void;
@@ -1613,6 +1634,13 @@ export function u64_vec_shrink_to(_this: number, min_capacity: number): void;
 * @param {number} _this
 */
 export function u64_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {BigUint64Array}
+*/
+export function u64_vec_slice(_this: number, start: number, end: number): BigUint64Array;
 /**
 * @param {number} _this
 * @param {Function} f
@@ -1939,6 +1967,13 @@ export function i8_vec_shrink_to(_this: number, min_capacity: number): void;
 export function i8_vec_shrink_to_fit(_this: number): void;
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Int8Array}
+*/
+export function i8_vec_slice(_this: number, start: number, end: number): Int8Array;
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function i8_vec_sort_by(_this: number, f: Function): void;
@@ -2261,6 +2296,13 @@ export function i16_vec_shrink_to(_this: number, min_capacity: number): void;
 * @param {number} _this
 */
 export function i16_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Int16Array}
+*/
+export function i16_vec_slice(_this: number, start: number, end: number): Int16Array;
 /**
 * @param {number} _this
 * @param {Function} f
@@ -2587,6 +2629,13 @@ export function i32_vec_shrink_to(_this: number, min_capacity: number): void;
 export function i32_vec_shrink_to_fit(_this: number): void;
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Int32Array}
+*/
+export function i32_vec_slice(_this: number, start: number, end: number): Int32Array;
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function i32_vec_sort_by(_this: number, f: Function): void;
@@ -2909,6 +2958,13 @@ export function i64_vec_shrink_to(_this: number, min_capacity: number): void;
 * @param {number} _this
 */
 export function i64_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {BigInt64Array}
+*/
+export function i64_vec_slice(_this: number, start: number, end: number): BigInt64Array;
 /**
 * @param {number} _this
 * @param {Function} f
@@ -3235,6 +3291,13 @@ export function f32_vec_shrink_to(_this: number, min_capacity: number): void;
 export function f32_vec_shrink_to_fit(_this: number): void;
 /**
 * @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Float32Array}
+*/
+export function f32_vec_slice(_this: number, start: number, end: number): Float32Array;
+/**
+* @param {number} _this
 * @param {Function} f
 */
 export function f32_vec_sort_by(_this: number, f: Function): void;
@@ -3557,6 +3620,13 @@ export function f64_vec_shrink_to(_this: number, min_capacity: number): void;
 * @param {number} _this
 */
 export function f64_vec_shrink_to_fit(_this: number): void;
+/**
+* @param {number} _this
+* @param {number} start
+* @param {number} end
+* @returns {Float64Array}
+*/
+export function f64_vec_slice(_this: number, start: number, end: number): Float64Array;
 /**
 * @param {number} _this
 * @param {Function} f

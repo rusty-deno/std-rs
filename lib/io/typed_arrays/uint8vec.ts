@@ -141,6 +141,10 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
     return new Option(lib.u8_vec_pop_front(this.#ptr));
   }
 
+  public slice(start: number,end: number=this.length): Uint8Array {
+    return lib.u8_vec_slice(this.#ptr,start,end);
+  }
+
   public splice(start: number,end: number,replaceWith: Equivalent=[]): Uint8Vec {
     return Uint8Vec.fromPtr(
       replaceWith instanceof Uint8Vec?

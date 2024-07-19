@@ -438,6 +438,16 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
     pub fn vec_shrink_to_fit(this: &mut Vec<#ty>) {
       this.shrink_to_fit()
     }
+
+    #[macros::mangle_name(#ty)]
+    #[macros::method]
+    pub unsafe fn vec_slice(this: &Vec<#ty>,mut start: isize,mut end: isize)-> js_sys::#js_name {
+      let len=this.len();
+      abs_index!(start;len);
+      abs_index!(end;len);
+
+      js_sys::#js_name::view(&this[start as _..end as _])
+    }
     
     #[macros::mangle_name(#ty)]
     #[macros::method]
