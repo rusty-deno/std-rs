@@ -8,6 +8,15 @@ function getObject(idx) { return heap[idx]; }
 
 let heap_next = heap.length;
 
+function addHeapObject(obj) {
+    if (heap_next === heap.length) heap.push(heap.length + 1);
+    const idx = heap_next;
+    heap_next = heap[idx];
+
+    heap[idx] = obj;
+    return idx;
+}
+
 function dropObject(idx) {
     if (idx < 132) return;
     heap[idx] = heap_next;
@@ -18,15 +27,6 @@ function takeObject(idx) {
     const ret = getObject(idx);
     dropObject(idx);
     return ret;
-}
-
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
-
-    heap[idx] = obj;
-    return idx;
 }
 
 const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
@@ -1386,6 +1386,15 @@ export function u8_vec_windows(_this, size) {
 }
 
 /**
+* @param {number} _this
+* @returns {Uint8Array}
+*/
+export function u8_view(_this) {
+    const ret = wasm.u8_view(_this);
+    return takeObject(ret);
+}
+
+/**
 * @param {number} ptr
 */
 export function u8_drop_vec(ptr) {
@@ -1948,6 +1957,15 @@ export function u16_vec_truncate(_this, len) {
 export function u16_vec_windows(_this, size) {
     const ret = wasm.i16_vec_windows(_this, size);
     return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @returns {Uint16Array}
+*/
+export function u16_view(_this) {
+    const ret = wasm.u16_view(_this);
+    return takeObject(ret);
 }
 
 /**
@@ -2553,6 +2571,15 @@ export function u32_vec_truncate(_this, len) {
 export function u32_vec_windows(_this, size) {
     const ret = wasm.i32_vec_windows(_this, size);
     return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @returns {Uint32Array}
+*/
+export function u32_view(_this) {
+    const ret = wasm.u32_view(_this);
+    return takeObject(ret);
 }
 
 /**
@@ -3178,6 +3205,15 @@ export function u64_vec_windows(_this, size) {
 }
 
 /**
+* @param {number} _this
+* @returns {BigUint64Array}
+*/
+export function u64_view(_this) {
+    const ret = wasm.u64_view(_this);
+    return takeObject(ret);
+}
+
+/**
 * @param {number} ptr
 */
 export function u64_drop_vec(ptr) {
@@ -3728,6 +3764,15 @@ export function i8_vec_windows(_this, size) {
 }
 
 /**
+* @param {number} _this
+* @returns {Int8Array}
+*/
+export function i8_view(_this) {
+    const ret = wasm.i8_view(_this);
+    return takeObject(ret);
+}
+
+/**
 * @param {number} ptr
 */
 export function i8_drop_vec(ptr) {
@@ -4275,6 +4320,15 @@ export function i16_vec_truncate(_this, len) {
 export function i16_vec_windows(_this, size) {
     const ret = wasm.i16_vec_windows(_this, size);
     return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @returns {Int16Array}
+*/
+export function i16_view(_this) {
+    const ret = wasm.i16_view(_this);
+    return takeObject(ret);
 }
 
 /**
@@ -4877,6 +4931,15 @@ export function i32_vec_windows(_this, size) {
 }
 
 /**
+* @param {number} _this
+* @returns {Int32Array}
+*/
+export function i32_view(_this) {
+    const ret = wasm.i32_view(_this);
+    return takeObject(ret);
+}
+
+/**
 * @param {number} ptr
 */
 export function i32_drop_vec(ptr) {
@@ -5473,6 +5536,15 @@ export function i64_vec_truncate(_this, len) {
 export function i64_vec_windows(_this, size) {
     const ret = wasm.i64_vec_windows(_this, size);
     return Slice.__wrap(ret);
+}
+
+/**
+* @param {number} _this
+* @returns {BigInt64Array}
+*/
+export function i64_view(_this) {
+    const ret = wasm.i64_view(_this);
+    return takeObject(ret);
 }
 
 /**
@@ -6090,6 +6162,15 @@ export function f32_vec_windows(_this, size) {
 }
 
 /**
+* @param {number} _this
+* @returns {Float32Array}
+*/
+export function f32_view(_this) {
+    const ret = wasm.f32_view(_this);
+    return takeObject(ret);
+}
+
+/**
 * @param {number} ptr
 */
 export function f32_drop_vec(ptr) {
@@ -6704,6 +6785,15 @@ export function f64_vec_windows(_this, size) {
 }
 
 /**
+* @param {number} _this
+* @returns {Float64Array}
+*/
+export function f64_view(_this) {
+    const ret = wasm.f64_view(_this);
+    return takeObject(ret);
+}
+
+/**
 * @param {number} ptr
 */
 export function f64_drop_vec(ptr) {
@@ -6782,9 +6872,6 @@ const imports = {
             const ret = getObject(arg0).value;
             return addHeapObject(ret);
         },
-        __wbindgen_object_drop_ref: function(arg0) {
-            takeObject(arg0);
-        },
         __wbg_call_27c0f87801dedf93: function() { return handleError(function (arg0, arg1) {
             const ret = getObject(arg0).call(getObject(arg1));
             return addHeapObject(ret);
@@ -6804,6 +6891,9 @@ const imports = {
         __wbindgen_as_number: function(arg0) {
             const ret = +getObject(arg0);
             return ret;
+        },
+        __wbindgen_object_drop_ref: function(arg0) {
+            takeObject(arg0);
         },
         __wbindgen_number_new: function(arg0) {
             const ret = arg0;
@@ -6838,12 +6928,60 @@ const imports = {
             const ret = new CollectionError(arg0, takeObject(arg1), v0);
             return addHeapObject(ret);
         },
+        __wbindgen_memory: function() {
+            const ret = wasm.memory;
+            return addHeapObject(ret);
+        },
+        __wbg_buffer_12d079cc21e14bdb: function(arg0) {
+            const ret = getObject(arg0).buffer;
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_aa4a17c33a06e5cb: function(arg0, arg1, arg2) {
+            const ret = new Uint8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_9fd64654bc0b0817: function(arg0, arg1, arg2) {
+            const ret = new Uint16Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_3125852e5a7fbcff: function(arg0, arg1, arg2) {
+            const ret = new Uint32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
         __wbindgen_bigint_from_u64: function(arg0) {
             const ret = BigInt.asUintN(64, arg0);
             return addHeapObject(ret);
         },
+        __wbg_newwithbyteoffsetandlength_f3784c11ba58e531: function(arg0, arg1, arg2) {
+            const ret = new BigUint64Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_41559f654c4e743c: function(arg0, arg1, arg2) {
+            const ret = new Int8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_4bea9f904a7e0aef: function(arg0, arg1, arg2) {
+            const ret = new Int16Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_425360430a1c8206: function(arg0, arg1, arg2) {
+            const ret = new Int32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
         __wbindgen_bigint_from_i64: function(arg0) {
             const ret = arg0;
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_5b893eb727153216: function(arg0, arg1, arg2) {
+            const ret = new BigInt64Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_4a659d079a1650e0: function(arg0, arg1, arg2) {
+            const ret = new Float32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
+            return addHeapObject(ret);
+        },
+        __wbg_newwithbyteoffsetandlength_f884af06774ef276: function(arg0, arg1, arg2) {
+            const ret = new Float64Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
             return addHeapObject(ret);
         },
         __wbindgen_throw: function(arg0, arg1) {

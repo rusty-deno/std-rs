@@ -1,12 +1,31 @@
 
 use quote::ToTokens;
+use proc_macro2::Span;
 use proc_macro::TokenStream;
 
 use syn::{
+  Type,
   FnArg,
   Ident
 };
 
+
+#[inline]
+fn js_arr_name(ty: &Type)-> &'static str {
+  match ty.to_token_stream().to_string().as_str() {
+    "u8"=> "Uint8Array",
+    "u16"=> "Uint16Array",
+    "u32"=> "Uint32Array",
+    "u64"=> "BigUint64Array",
+    "i8"=> "Int8Array",
+    "i16"=> "Int16Array",
+    "i32"=> "Int32Array",
+    "i64"=> "BigInt64Array",
+    "f32"=> "Float32Array",
+    "f64"=> "Float64Array",
+    _=> unreachable!()
+  }
+}
 
 
 pub fn typed_array_impl(arg: FnArg)-> TokenStream {
@@ -16,6 +35,7 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
   };
   let ty=arg.ty;
   let name=syn::parse::<Ident>(arg.pat.into_token_stream().into()).unwrap();
+  let js_name=Ident::new(js_arr_name(&ty),Span::call_site());
 
   quote::quote! {
     type #name=*mut Vec<#ty>;
@@ -504,7 +524,12 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
         this.windows(size.unsigned_abs())
       }
     }
-    
+
+    #[macros::mangle_name(#ty)]
+    #[macros::method]
+    pub unsafe fn view(this: &Vec<#ty>)-> js_sys::#js_name {
+      js_sys::#js_name::view(this)
+    }
     
     #[macros::mangle_name(#ty)]
     #[wasm_bindgen::prelude::wasm_bindgen]
@@ -514,6 +539,5 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
 
   }.into()
 }
-
 
 

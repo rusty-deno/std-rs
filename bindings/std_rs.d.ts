@@ -700,6 +700,11 @@ export function u8_vec_truncate(_this: number, len: number): void;
 */
 export function u8_vec_windows(_this: number, size: number): Slice;
 /**
+* @param {number} _this
+* @returns {Uint8Array}
+*/
+export function u8_view(_this: number): Uint8Array;
+/**
 * @param {number} ptr
 */
 export function u8_drop_vec(ptr: number): void;
@@ -1018,6 +1023,11 @@ export function u16_vec_truncate(_this: number, len: number): void;
 * @returns {Slice}
 */
 export function u16_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} _this
+* @returns {Uint16Array}
+*/
+export function u16_view(_this: number): Uint16Array;
 /**
 * @param {number} ptr
 */
@@ -1338,6 +1348,11 @@ export function u32_vec_truncate(_this: number, len: number): void;
 */
 export function u32_vec_windows(_this: number, size: number): Slice;
 /**
+* @param {number} _this
+* @returns {Uint32Array}
+*/
+export function u32_view(_this: number): Uint32Array;
+/**
 * @param {number} ptr
 */
 export function u32_drop_vec(ptr: number): void;
@@ -1656,6 +1671,11 @@ export function u64_vec_truncate(_this: number, len: number): void;
 * @returns {Slice}
 */
 export function u64_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} _this
+* @returns {BigUint64Array}
+*/
+export function u64_view(_this: number): BigUint64Array;
 /**
 * @param {number} ptr
 */
@@ -1976,6 +1996,11 @@ export function i8_vec_truncate(_this: number, len: number): void;
 */
 export function i8_vec_windows(_this: number, size: number): Slice;
 /**
+* @param {number} _this
+* @returns {Int8Array}
+*/
+export function i8_view(_this: number): Int8Array;
+/**
 * @param {number} ptr
 */
 export function i8_drop_vec(ptr: number): void;
@@ -2294,6 +2319,11 @@ export function i16_vec_truncate(_this: number, len: number): void;
 * @returns {Slice}
 */
 export function i16_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} _this
+* @returns {Int16Array}
+*/
+export function i16_view(_this: number): Int16Array;
 /**
 * @param {number} ptr
 */
@@ -2614,6 +2644,11 @@ export function i32_vec_truncate(_this: number, len: number): void;
 */
 export function i32_vec_windows(_this: number, size: number): Slice;
 /**
+* @param {number} _this
+* @returns {Int32Array}
+*/
+export function i32_view(_this: number): Int32Array;
+/**
 * @param {number} ptr
 */
 export function i32_drop_vec(ptr: number): void;
@@ -2932,6 +2967,11 @@ export function i64_vec_truncate(_this: number, len: number): void;
 * @returns {Slice}
 */
 export function i64_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} _this
+* @returns {BigInt64Array}
+*/
+export function i64_view(_this: number): BigInt64Array;
 /**
 * @param {number} ptr
 */
@@ -3252,6 +3292,11 @@ export function f32_vec_truncate(_this: number, len: number): void;
 */
 export function f32_vec_windows(_this: number, size: number): Slice;
 /**
+* @param {number} _this
+* @returns {Float32Array}
+*/
+export function f32_view(_this: number): Float32Array;
+/**
 * @param {number} ptr
 */
 export function f32_drop_vec(ptr: number): void;
@@ -3570,6 +3615,11 @@ export function f64_vec_truncate(_this: number, len: number): void;
 * @returns {Slice}
 */
 export function f64_vec_windows(_this: number, size: number): Slice;
+/**
+* @param {number} _this
+* @returns {Float64Array}
+*/
+export function f64_view(_this: number): Float64Array;
 /**
 * @param {number} ptr
 */
