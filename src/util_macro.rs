@@ -41,16 +41,16 @@ macro_rules! nullable {
 #[macro_export]
 macro_rules! constraints {
   ($i:expr => $gt:expr)=> {
-    0<$i || $crate::saturation_cast($i)<$gt
+    0<$i || $crate::saturating_cast($i)<$gt
   };
 }
 
 
 #[macro_export]
 macro_rules! abs_index {
-  ($i:expr ; $cap:expr)=> {
+  ($i:expr ; $len:expr)=> {
     if $i<0 {
-      $i+=$cap as isize;
+      $i=$len.saturating_add_signed($i) as _
     }
   };
 }

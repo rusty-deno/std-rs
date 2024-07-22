@@ -19,7 +19,7 @@ pub use thread::*;
 
 
 
-pub(crate) const fn saturation_cast(x: isize)-> usize {
+pub(crate) const fn saturating_cast(x: isize)-> usize {
   if x<0 {
     0usize
   } else {
