@@ -1,9 +1,10 @@
 
-import { Vec } from '../collections/vec/mod.ts';
-import { IoAsyncResult,IoResult,IoErrorKind,IoError } from "./error.ts";
+import { Uint8Vec } from './typed_arrays/uint8vec.ts';
 import { $result,$resultSync } from '../error/result/mod.ts';
+import { IoAsyncResult,IoResult,IoErrorKind,IoError } from "./error.ts";
 
 
+const PROBE_SIZE=32;
 
 export abstract class Read {
   public abstract read(buf: Uint8Array): IoAsyncResult<number>;
@@ -19,6 +20,7 @@ export abstract class Read {
           if(n.kind()===IoErrorKind.Interrupted) continue;
           throw n;
         }
+        new Uint8Array().slice;
 
         buf=buf.slice(n);
       }
@@ -49,10 +51,51 @@ export abstract class Read {
     });
   }
 
-  public abstract readToEnd(buf: Uint8Array): IoAsyncResult<number>;
-  public abstract readToEndSymc(buf: Vec<number>): IoResult<number>;
+  public readToEnd(buf: Uint8Vec): IoAsyncResult<number> {
+    return $result(async ()=> {
+      let startLen=buf.length;
+      let startCap=buf.capacity;
+      let initialized=0;
+      
+      if(buf.capacity-buf.length < PROBE_SIZE) {
+        const read=(await smallProbeRead(this,buf)).result;
 
-  public abstract readToString(buf: Vec<number>): IoAsyncResult<number>;
-  public abstract readToStringSync(buf: Vec<number>): IoResult<number>;
+        if(read===0) {
+          return 0;
+        }
+      }
+
+
+
+
+
+
+
+      return 0;
+    });
+  }
+
+  // public readToEndSync(buf: Uint8Vec): IoResult<number>;
+
+  // public readToString(): IoAsyncResult<string>;
+  // public readToStringSync(): IoResult<string>;
+}
+
+function smallProbeRead<R extends Read>(r: R,buf: Uint8Vec): IoAsyncResult<number> {
+  return $result(async ()=> {
+    const probe=Uint8Vec.withCapacity(PROBE_SIZE);
+
+    while(true) {
+      const n=(await r.read(probe.view())).result;
+  
+      if(typeof n==="number") {
+        buf.extend(probe);
+        return n;
+      }
+      if(n.kind()===IoErrorKind.Interrupted) continue;
+
+      throw n;
+    }
+  });
 }
 
