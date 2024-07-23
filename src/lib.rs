@@ -1,9 +1,11 @@
 
+#[macro_use]
+pub(crate) mod util_macro;
+
+mod io;
 mod vec;
 mod slice;
 mod thread;
-#[macro_use]
-pub(crate) mod util_macro;
 mod typed_array;
 
 mod throwable;
@@ -12,10 +14,11 @@ pub(crate) mod errors;
 pub(crate) use throwable::*;
 
 
-// pub use typed_array::*;
+pub use io::*;
 pub use vec::*;
 pub use slice::*;
 pub use thread::*;
+pub use typed_array::*;
 
 
 
