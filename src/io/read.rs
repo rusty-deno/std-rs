@@ -1,6 +1,6 @@
 
 use macros::method;
-use wasm_bindgen_futures::future_to_promise;
+use wasm_bindgen_futures::{future_to_promise, JsFuture};
 
 
 use js_sys::{
@@ -16,19 +16,16 @@ use js_sys::{
 
 use tokio::io::{
   ReadBuf,
-  AsyncRead
+  AsyncRead,
+  AsyncReadExt
 };
 
 use std::{
-  mem,
-  pin::Pin,
-  task::{
-    Poll,
-    Context
-  },
-  io::{
+  future::Future, io::{
     self,
     Read
+  }, mem, pin::Pin, task::{
+    Context, Poll
   }
 };
 
@@ -44,7 +41,15 @@ pub struct AsyncReader {
 
 impl AsyncRead for AsyncReader {
   fn poll_read(self: Pin<&mut Self>,cx: &mut Context<'_>,buf: &mut ReadBuf<'_>,)-> Poll<io::Result<()>> {
-    todo!()
+    let buf=unsafe { Uint8Array::view(std::mem::transmute(buf.inner_mut())) };
+    let res=self.read.call1(&self.this,&buf).unwrap_or_throw();
+    let mut future=JsFuture::from(Promise::from(res));
+    let poll=JsFuture::poll(Pin::new(&mut future),cx);
+
+    poll.map(|res| {
+      res.unwrap_or_throw();
+      Ok(())
+    })
   }
 }
 
@@ -55,10 +60,6 @@ impl AsyncReader {
       read,
       this
     }
-  }
-
-  async fn read_to_end(self,buf: &mut Vec<u8>)-> io::Result<usize> {
-    todo!()
   }
 }
 
