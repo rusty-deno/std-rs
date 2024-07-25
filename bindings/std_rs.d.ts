@@ -1,6 +1,20 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
+* @param {number} _this
+* @param {any} reader
+* @param {Function} read
+* @returns {Promise<any>}
+*/
+export function read_to_end(_this: number, reader: any, read: Function): Promise<any>;
+/**
+* @param {number} _this
+* @param {any} reader
+* @param {Function} read
+* @returns {number}
+*/
+export function read_to_end_sync(_this: number, reader: any, read: Function): number;
+/**
 * @returns {number}
 */
 export function new_vec(): number;
