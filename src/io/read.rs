@@ -1,5 +1,7 @@
 
 use macros::method;
+use crate::UnwrapExt;
+use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen_futures::{future_to_promise, JsFuture};
 
 
@@ -29,7 +31,6 @@ use std::{
   }
 };
 
-use crate::UnwrapExt;
 
 
 
@@ -102,6 +103,15 @@ pub unsafe fn read_to_end(this: &mut Vec<u8>,reader: JsValue,read: Function)-> P
     }
   })
 }
+
+#[wasm_bindgen]
+pub fn read_exact_sync(reader: JsValue,read: Function,buf: &mut [u8]) {
+  Reader::new(reader,read)
+  .read_exact(buf)
+  .unwrap_throw()
+}
+
+
 
 #[method]
 pub fn read_to_end_sync(this: &mut Vec<u8>,reader: JsValue,read: Function)-> usize {
