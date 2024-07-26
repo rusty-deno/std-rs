@@ -82,41 +82,41 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     CLOSURE_DTORS.register(real, state, state);
     return real;
 }
-function __wbg_adapter_34(arg0, arg1, arg2) {
+function __wbg_adapter_36(arg0, arg1, arg2) {
     wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hf2b3567ed2d6892c(arg0, arg1, addHeapObject(arg2));
 }
 
 /**
-* @param {number} _this
-* @param {any} reader
+* @param {number} buf
+* @param {any} _this
 * @param {Function} read
 * @returns {Promise<any>}
 */
-export function read_to_end(_this, reader, read) {
-    const ret = wasm.read_to_end(_this, addHeapObject(reader), addHeapObject(read));
+export function read_to_end(buf, _this, read) {
+    const ret = wasm.read_to_end(buf, addHeapObject(_this), addHeapObject(read));
     return takeObject(ret);
 }
 
 /**
-* @param {any} reader
+* @param {any} _this
 * @param {Function} read
 * @param {number} ptr
 * @param {number} len
 * @returns {Promise<any>}
 */
-export function read_exact(reader, read, ptr, len) {
-    const ret = wasm.read_exact(addHeapObject(reader), addHeapObject(read), ptr, len);
+export function read_exact(_this, read, ptr, len) {
+    const ret = wasm.read_exact(addHeapObject(_this), addHeapObject(read), ptr, len);
     return takeObject(ret);
 }
 
 /**
-* @param {number} _this
-* @param {any} reader
+* @param {number} buf
+* @param {any} _this
 * @param {Function} read
 * @returns {number}
 */
-export function read_to_end_sync(_this, reader, read) {
-    const ret = wasm.read_to_end_sync(_this, addHeapObject(reader), addHeapObject(read));
+export function read_to_end_sync(buf, _this, read) {
+    const ret = wasm.read_to_end_sync(buf, addHeapObject(_this), addHeapObject(read));
     return ret >>> 0;
 }
 
@@ -129,14 +129,54 @@ function passArray8ToWasm0(arg, malloc) {
     return ptr;
 }
 /**
-* @param {any} reader
+* @param {any} _this
 * @param {Function} read
 * @param {Uint8Array} buf
 */
-export function read_exact_sync(reader, read, buf) {
+export function read_exact_sync(_this, read, buf) {
     var ptr0 = passArray8ToWasm0(buf, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.read_exact_sync(addHeapObject(reader), addHeapObject(read), ptr0, len0, addHeapObject(buf));
+    wasm.read_exact_sync(addHeapObject(_this), addHeapObject(read), ptr0, len0, addHeapObject(buf));
+}
+
+/**
+* @param {any} _this
+* @param {Function} read
+* @returns {Promise<any>}
+*/
+export function read_to_string(_this, read) {
+    const ret = wasm.read_to_string(addHeapObject(_this), addHeapObject(read));
+    return takeObject(ret);
+}
+
+let cachedInt32Memory0 = null;
+
+function getInt32Memory0() {
+    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
+        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
+    }
+    return cachedInt32Memory0;
+}
+/**
+* @param {any} _this
+* @param {Function} read
+* @returns {string}
+*/
+export function read_to_string_sync(_this, read) {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        wasm.read_to_string_sync(retptr, addHeapObject(_this), addHeapObject(read));
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        deferred1_0 = r0;
+        deferred1_1 = r1;
+        return getStringFromWasm0(r0, r1);
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
 }
 
 /**
@@ -214,14 +254,6 @@ export function vec_as_slice(_this) {
     return Slice.__wrap(ret);
 }
 
-let cachedInt32Memory0 = null;
-
-function getInt32Memory0() {
-    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
-        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
-    }
-    return cachedInt32Memory0;
-}
 /**
 * @param {number} _this
 * @param {Function} f
@@ -6994,7 +7026,7 @@ function handleError(f, args) {
         wasm.__wbindgen_exn_store(addHeapObject(e));
     }
 }
-function __wbg_adapter_739(arg0, arg1, arg2, arg3) {
+function __wbg_adapter_743(arg0, arg1, arg2, arg3) {
     wasm.wasm_bindgen__convert__closures__invoke2_mut__h0b2ac5c0b2d583fc(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
 
@@ -7061,7 +7093,7 @@ const imports = {
                     const a = state0.a;
                     state0.a = 0;
                     try {
-                        return __wbg_adapter_739(a, state0.b, arg0, arg1);
+                        return __wbg_adapter_743(a, state0.b, arg0, arg1);
                     } finally {
                         state0.a = a;
                     }
@@ -7089,6 +7121,10 @@ const imports = {
         },
         __wbindgen_copy_to_typed_array: function(arg0, arg1, arg2) {
             new Uint8Array(getObject(arg2).buffer, getObject(arg2).byteOffset, getObject(arg2).byteLength).set(getArrayU8FromWasm0(arg0, arg1));
+        },
+        __wbindgen_string_new: function(arg0, arg1) {
+            const ret = getStringFromWasm0(arg0, arg1);
+            return addHeapObject(ret);
         },
         __wbindgen_object_clone_ref: function(arg0) {
             const ret = getObject(arg0);
@@ -7265,8 +7301,8 @@ const imports = {
             const ret = Promise.resolve(getObject(arg0));
             return addHeapObject(ret);
         },
-        __wbindgen_closure_wrapper111: function(arg0, arg1, arg2) {
-            const ret = makeMutClosure(arg0, arg1, 26, __wbg_adapter_34);
+        __wbindgen_closure_wrapper127: function(arg0, arg1, arg2) {
+            const ret = makeMutClosure(arg0, arg1, 27, __wbg_adapter_36);
             return addHeapObject(ret);
         },
     },

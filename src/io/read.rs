@@ -151,3 +151,25 @@ pub fn read_exact_sync(this: JsValue,read: Function,buf: &mut [u8]) {
   .unwrap_throw()
 }
 
+#[wasm_bindgen]
+pub fn read_to_string(this: JsValue,read: Function)-> Promise {
+  promise(async {
+    let mut str=String::new();
+    AsyncReader::new(this,read)
+    .read_to_string(&mut str).await
+    .unwrap_throw();
+    
+    Ok(str.into())
+  })
+}
+
+
+#[wasm_bindgen]
+pub fn read_to_string_sync(this: JsValue,read: Function)-> String {
+  let mut str=String::new();
+  Reader::new(this,read)
+  .read_to_string(&mut str)
+  .unwrap_throw();
+
+  str
+}

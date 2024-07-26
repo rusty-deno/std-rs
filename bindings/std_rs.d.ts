@@ -1,33 +1,45 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @param {number} _this
-* @param {any} reader
+* @param {number} buf
+* @param {any} _this
 * @param {Function} read
 * @returns {Promise<any>}
 */
-export function read_to_end(_this: number, reader: any, read: Function): Promise<any>;
+export function read_to_end(buf: number, _this: any, read: Function): Promise<any>;
 /**
-* @param {any} reader
+* @param {any} _this
 * @param {Function} read
 * @param {number} ptr
 * @param {number} len
 * @returns {Promise<any>}
 */
-export function read_exact(reader: any, read: Function, ptr: number, len: number): Promise<any>;
+export function read_exact(_this: any, read: Function, ptr: number, len: number): Promise<any>;
 /**
-* @param {number} _this
-* @param {any} reader
+* @param {number} buf
+* @param {any} _this
 * @param {Function} read
 * @returns {number}
 */
-export function read_to_end_sync(_this: number, reader: any, read: Function): number;
+export function read_to_end_sync(buf: number, _this: any, read: Function): number;
 /**
-* @param {any} reader
+* @param {any} _this
 * @param {Function} read
 * @param {Uint8Array} buf
 */
-export function read_exact_sync(reader: any, read: Function, buf: Uint8Array): void;
+export function read_exact_sync(_this: any, read: Function, buf: Uint8Array): void;
+/**
+* @param {any} _this
+* @param {Function} read
+* @returns {Promise<any>}
+*/
+export function read_to_string(_this: any, read: Function): Promise<any>;
+/**
+* @param {any} _this
+* @param {Function} read
+* @returns {string}
+*/
+export function read_to_string_sync(_this: any, read: Function): string;
 /**
 * @returns {number}
 */
