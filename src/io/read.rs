@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 use wasm_bindgen_futures::{
   JsFuture,
-  future_to_promise
+  future_to_promise as promise
 };
 
 use tokio::io::{
@@ -100,22 +100,37 @@ impl Read for Reader {
 }
 
 
-#[method]
-pub unsafe fn read_to_end(this: &mut Vec<u8>,reader: JsValue,read: Function)-> Promise {
-  future_to_promise(async {
-    match AsyncReader::new(reader,read).read_to_end(this).await {
+macro_rules! handle_future {
+  ($promise:expr)=> {
+    match $promise.await {
       Ok(res)=> Ok(JsValue::from(res as u32)),
       Err(err)=> Err(mem::transmute::<_,u8>(err.kind()).into())
     }
+  }
+}
+
+
+#[method]
+pub unsafe fn read_to_end(buf: &mut Vec<u8>,this: JsValue,read: Function)-> Promise {
+  promise(async {
+    handle_future!(AsyncReader::new(this,read).read_to_end(buf))
   })
 }
 
 <<<<<<< HEAD
 #[wasm_bindgen]
+<<<<<<< HEAD
 pub fn read_exact_sync(reader: JsValue,read: Function,buf: &mut [u8]) {
   Reader::new(reader,read)
   .read_exact(buf)
   .unwrap_throw()
+=======
+pub unsafe fn read_exact(this: JsValue,read: Function,ptr: *mut u8,len: usize)-> Promise {
+  promise(async move {
+    let buf=std::slice::from_raw_parts_mut(ptr,len);
+    handle_future!(AsyncReader::new(this,read).read_exact(buf))
+  })
+>>>>>>> 82fa756 (improved code (read low-level-impl))
 }
 
 =======
@@ -123,15 +138,15 @@ pub fn read_exact_sync(reader: JsValue,read: Function,buf: &mut [u8]) {
 
 
 #[method]
-pub fn read_to_end_sync(this: &mut Vec<u8>,reader: JsValue,read: Function)-> usize {
-  Reader::new(reader,read)
-  .read_to_end(this)
+pub fn read_to_end_sync(buf: &mut Vec<u8>,this: JsValue,read: Function)-> usize {
+  Reader::new(this,read)
+  .read_to_end(buf)
   .unwrap_throw()
 }
 
 #[wasm_bindgen]
-pub fn read_exact_sync(reader: JsValue,read: Function,buf: &mut [u8]) {
-  Reader::new(reader,read)
+pub fn read_exact_sync(this: JsValue,read: Function,buf: &mut [u8]) {
+  Reader::new(this,read)
   .read_exact(buf)
   .unwrap_throw()
 }
