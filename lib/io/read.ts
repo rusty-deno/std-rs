@@ -30,6 +30,11 @@ export abstract class Read {
     return $resultSync(lib.read_to_end_sync,buf.thisPtr(),this,this.#readSync);
   }
 
-  // public readToString(): IoAsyncResult<string>;
-  // public readToStringSync(): IoResult<string>;
+  public readToString(): IoAsyncResult<string> {
+    return $result(lib.read_to_string,this,this.#read);
+  }
+
+  public readToStringSync(): IoResult<string> {
+    return $resultSync(lib.read_to_string_sync,this,this.#readSync);
+  }
 }
