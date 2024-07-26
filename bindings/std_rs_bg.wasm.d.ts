@@ -2,7 +2,9 @@
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
 export function read_to_end(a: number, b: number, c: number): number;
+export function read_exact(a: number, b: number, c: number, d: number): number;
 export function read_to_end_sync(a: number, b: number, c: number): number;
+export function read_exact_sync(a: number, b: number, c: number, d: number, e: number): void;
 export function new_vec_with_capacity(a: number): number;
 export function vec_from_iter(a: number, b: number): number;
 export function vec_append(a: number, b: number): number;
