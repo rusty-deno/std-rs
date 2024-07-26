@@ -2,8 +2,17 @@
 use macros::method;
 use crate::UnwrapExt;
 use wasm_bindgen::prelude::wasm_bindgen;
-use wasm_bindgen_futures::{future_to_promise, JsFuture};
 
+use wasm_bindgen_futures::{
+  JsFuture,
+  future_to_promise
+};
+
+use tokio::io::{
+  ReadBuf,
+  AsyncRead,
+  AsyncReadExt
+};
 
 use js_sys::{
   Promise,
@@ -16,22 +25,19 @@ use js_sys::{
 };
 
 
-use tokio::io::{
-  ReadBuf,
-  AsyncRead,
-  AsyncReadExt
-};
-
 use std::{
-  future::Future, io::{
+  mem,
+  pin::Pin,
+  future::Future,
+  io::{
     self,
     Read
-  }, mem, pin::Pin, task::{
-    Context, Poll
+  },
+  task::{
+    Poll,
+    Context
   }
 };
-
-
 
 
 
