@@ -75,6 +75,11 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
     return lib.u8_vec_capacity(this.#ptr);
   }
 
+  public thisPtr(): number {
+    return this.#ptr;
+  }
+
+
   *[Symbol.iterator](): Iterator<number> {
     // SAFETY: This never throws an exception as the loop runs within the bounds.
     for(let i=0;i<this.length;i++) yield lib.u8_vec_index(this.#ptr,i);
@@ -174,8 +179,17 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
     return new Option(lib.u8_vec_remove(this.#ptr,index));
   }
 
+  public reserve(additional: number) {
+    lib.u8_vec_reserve(this.#ptr,additional);
+  }
+
   public shrinkTo(minCapacity: number) {
     lib.u8_vec_shrink_to(this.#ptr,minCapacity);
+  }
+
+  public spareCapacity(): Uint8Array {
+    const len=this.length;
+    return lib.u8_vec_slice(this.#ptr,len,this.capacity-len);
   }
 
   public swap(start: number,end: number) {

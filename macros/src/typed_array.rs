@@ -111,6 +111,12 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
     
     #[macros::mangle_name(#ty)]
     #[macros::method]
+    pub fn vec_as_ptr(this: &mut Vec<#ty>)-> *mut #ty {
+      this.as_mut_ptr()
+    }
+
+    #[macros::mangle_name(#ty)]
+    #[macros::method]
     pub fn vec_as_slice(this: &mut Vec<#ty>)-> crate::Slice {
       this.as_slice().into()
     }

@@ -42,7 +42,7 @@ export function $cmp<Lhs extends Rhs|PartialOrd<Rhs>|(Ord&Rhs),Rhs,Ordering exte
   }
 }
 
-
+/** Checks whether an object implements {@linkcode Ord} */
 // deno-lint-ignore no-explicit-any
 export function $isOrd(x: any): x is Ord {
   return typeof x.cmp!=="undefined";
