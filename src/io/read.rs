@@ -1,11 +1,16 @@
 
 use macros::method;
-use crate::UnwrapExt;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use wasm_bindgen_futures::{
   JsFuture,
   wasm_bindgen::prelude::wasm_bindgen as async_wasm_bindgen
+};
+
+
+use crate::{
+  UnwrapExt,
+  errors::io_error::IoError
 };
 
 use tokio::io::{
@@ -18,10 +23,7 @@ use js_sys::{
   Promise,
   Function,
   Uint8Array,
-  wasm_bindgen::{
-    JsValue,
-    UnwrapThrowExt
-  }
+  wasm_bindgen::JsValue
 };
 
 
@@ -99,12 +101,20 @@ impl Read for Reader {
   }
 }
 
+macro_rules! reflect_err {
+  ($res:expr)=> {
+    $res.map_err(|err| IoError::from(err))
+    .unwrap_or_throw()
+  };
+}
+
 
 #[method(async)]
 pub async unsafe fn read_to_end(buf: &mut Vec<u8>,this: JsValue,read: Function)-> usize {
-  AsyncReader::new(this,read)
-  .read_to_end(buf).await
-  .unwrap_throw()
+  reflect_err! {
+    AsyncReader::new(this,read)
+    .read_to_end(buf).await
+  }
 }
 
 
@@ -133,10 +143,17 @@ pub unsafe fn read_exact(this: JsValue,read: Function,ptr: *mut u8,len: usize)->
 =======
 #[async_wasm_bindgen]
 pub async unsafe fn read_exact(this: JsValue,read: Function,buf: &mut [u8])-> usize {
+<<<<<<< HEAD
   AsyncReader::new(this,read)
   .read_exact(buf).await
   .unwrap_throw()
 >>>>>>> da16177 (fixed dangling pointer bug)
+=======
+  reflect_err! {
+    AsyncReader::new(this,read)
+    .read_exact(buf).await
+  }
+>>>>>>> e668534 (improved error handelling for Read low-level impl)
 }
 
 =======
@@ -145,24 +162,27 @@ pub async unsafe fn read_exact(this: JsValue,read: Function,buf: &mut [u8])-> us
 
 #[method]
 pub fn read_to_end_sync(buf: &mut Vec<u8>,this: JsValue,read: Function)-> usize {
-  Reader::new(this,read)
-  .read_to_end(buf)
-  .unwrap_throw()
+  reflect_err! {
+    Reader::new(this,read)
+    .read_to_end(buf)
+  }
 }
 
 #[wasm_bindgen]
 pub fn read_exact_sync(this: JsValue,read: Function,buf: &mut [u8]) {
-  Reader::new(this,read)
-  .read_exact(buf)
-  .unwrap_throw()
+  reflect_err! {
+    Reader::new(this,read)
+    .read_exact(buf)
+  }
 }
 
 #[async_wasm_bindgen]
 pub async fn read_to_string(this: JsValue,read: Function)-> String {
   let mut str=String::new();
-  AsyncReader::new(this,read)
-  .read_to_string(&mut str).await
-  .unwrap_throw();
+  reflect_err! {
+    AsyncReader::new(this,read)
+    .read_to_string(&mut str).await
+  };
 
   str
 }
@@ -171,9 +191,10 @@ pub async fn read_to_string(this: JsValue,read: Function)-> String {
 #[wasm_bindgen]
 pub fn read_to_string_sync(this: JsValue,read: Function)-> String {
   let mut str=String::new();
-  Reader::new(this,read)
-  .read_to_string(&mut str)
-  .unwrap_throw();
+  reflect_err! {
+    Reader::new(this,read)
+    .read_to_string(&mut str)
+  };
 
   str
 }
