@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 use wasm_bindgen_futures::{
   JsFuture,
-  future_to_promise as promise
+  wasm_bindgen::prelude::wasm_bindgen as async_wasm_bindgen
 };
 
 use tokio::io::{
@@ -48,7 +48,7 @@ pub struct AsyncReader {
 
 impl AsyncRead for AsyncReader {
   fn poll_read(self: Pin<&mut Self>,cx: &mut Context<'_>,buf: &mut ReadBuf<'_>,)-> Poll<io::Result<()>> {
-    let buf=unsafe { Uint8Array::view(std::mem::transmute(buf.inner_mut())) };
+    let buf=unsafe { Uint8Array::view(mem::transmute(buf.inner_mut())) };
     let res=self.read.call1(&self.this,&buf).unwrap_or_throw();
     let mut future=JsFuture::from(Promise::from(res));
     let poll=JsFuture::poll(Pin::new(&mut future),cx);
@@ -100,16 +100,15 @@ impl Read for Reader {
 }
 
 
-macro_rules! handle_future {
-  ($promise:expr)=> {
-    match $promise.await {
-      Ok(res)=> Ok(JsValue::from(res as u32)),
-      Err(err)=> Err(mem::transmute::<_,u8>(err.kind()).into())
-    }
-  }
+#[method(async)]
+pub async unsafe fn read_to_end(buf: &mut Vec<u8>,this: JsValue,read: Function)-> usize {
+  AsyncReader::new(this,read)
+  .read_to_end(buf).await
+  .unwrap_throw()
 }
 
 
+<<<<<<< HEAD
 #[method]
 pub unsafe fn read_to_end(buf: &mut Vec<u8>,this: JsValue,read: Function)-> Promise {
   promise(async {
@@ -131,6 +130,13 @@ pub unsafe fn read_exact(this: JsValue,read: Function,ptr: *mut u8,len: usize)->
     handle_future!(AsyncReader::new(this,read).read_exact(buf))
   })
 >>>>>>> 82fa756 (improved code (read low-level-impl))
+=======
+#[async_wasm_bindgen]
+pub async unsafe fn read_exact(this: JsValue,read: Function,buf: &mut [u8])-> usize {
+  AsyncReader::new(this,read)
+  .read_exact(buf).await
+  .unwrap_throw()
+>>>>>>> da16177 (fixed dangling pointer bug)
 }
 
 =======
@@ -151,16 +157,14 @@ pub fn read_exact_sync(this: JsValue,read: Function,buf: &mut [u8]) {
   .unwrap_throw()
 }
 
-#[wasm_bindgen]
-pub fn read_to_string(this: JsValue,read: Function)-> Promise {
-  promise(async {
-    let mut str=String::new();
-    AsyncReader::new(this,read)
-    .read_to_string(&mut str).await
-    .unwrap_throw();
-    
-    Ok(str.into())
-  })
+#[async_wasm_bindgen]
+pub async fn read_to_string(this: JsValue,read: Function)-> String {
+  let mut str=String::new();
+  AsyncReader::new(this,read)
+  .read_to_string(&mut str).await
+  .unwrap_throw();
+
+  str
 }
 
 
@@ -173,3 +177,4 @@ pub fn read_to_string_sync(this: JsValue,read: Function)-> String {
 
   str
 }
+
