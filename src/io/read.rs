@@ -1,12 +1,6 @@
 
 use macros::method;
-<<<<<<< HEAD
 use wasm_bindgen::prelude::wasm_bindgen;
-=======
-use crate::UnwrapExt;
-use wasm_bindgen::prelude::wasm_bindgen;
-use wasm_bindgen_futures::{future_to_promise, JsFuture};
->>>>>>> refs/remotes/origin/main
 
 use wasm_bindgen_futures::{
   JsFuture,
@@ -124,60 +118,13 @@ pub async unsafe fn read_to_end(buf: &mut Vec<u8>,this: JsValue,read: Function)-
 }
 
 
-<<<<<<< HEAD
-#[method]
-pub unsafe fn read_to_end(buf: &mut Vec<u8>,this: JsValue,read: Function)-> Promise {
-  promise(async {
-    handle_future!(AsyncReader::new(this,read).read_to_end(buf))
-  })
-}
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-#[wasm_bindgen]
-<<<<<<< HEAD
-pub fn read_exact_sync(reader: JsValue,read: Function,buf: &mut [u8]) {
-=======
-#[wasm_bindgen]
-pub fn read_exact_sync(reader: JsValue,read: Function,buf: &mut [u8]) {
-  Reader::new(reader,read)
-  .read_exact(buf)
-  .unwrap_throw()
-}
-
-
-
-#[method]
-pub fn read_to_end_sync(this: &mut Vec<u8>,reader: JsValue,read: Function)-> usize {
->>>>>>> refs/remotes/origin/main
-  Reader::new(reader,read)
-  .read_exact(buf)
-  .unwrap_throw()
-=======
-pub unsafe fn read_exact(this: JsValue,read: Function,ptr: *mut u8,len: usize)-> Promise {
-  promise(async move {
-    let buf=std::slice::from_raw_parts_mut(ptr,len);
-    handle_future!(AsyncReader::new(this,read).read_exact(buf))
-  })
->>>>>>> 82fa756 (improved code (read low-level-impl))
-=======
 #[async_wasm_bindgen]
 pub async unsafe fn read_exact(this: JsValue,read: Function,buf: &mut [u8])-> usize {
-<<<<<<< HEAD
-  AsyncReader::new(this,read)
-  .read_exact(buf).await
-  .unwrap_throw()
->>>>>>> da16177 (fixed dangling pointer bug)
-=======
   reflect_err! {
     AsyncReader::new(this,read)
     .read_exact(buf).await
   }
->>>>>>> e668534 (improved error handelling for Read low-level impl)
 }
-
-=======
->>>>>>> 4cc9e6b (implemented low-level read_exact_sync)
 
 
 #[method]
