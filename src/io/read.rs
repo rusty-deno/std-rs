@@ -1,6 +1,12 @@
 
 use macros::method;
+<<<<<<< HEAD
 use wasm_bindgen::prelude::wasm_bindgen;
+=======
+use crate::UnwrapExt;
+use wasm_bindgen::prelude::wasm_bindgen;
+use wasm_bindgen_futures::{future_to_promise, JsFuture};
+>>>>>>> refs/remotes/origin/main
 
 use wasm_bindgen_futures::{
   JsFuture,
@@ -127,9 +133,23 @@ pub unsafe fn read_to_end(buf: &mut Vec<u8>,this: JsValue,read: Function)-> Prom
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #[wasm_bindgen]
 <<<<<<< HEAD
 pub fn read_exact_sync(reader: JsValue,read: Function,buf: &mut [u8]) {
+=======
+#[wasm_bindgen]
+pub fn read_exact_sync(reader: JsValue,read: Function,buf: &mut [u8]) {
+  Reader::new(reader,read)
+  .read_exact(buf)
+  .unwrap_throw()
+}
+
+
+
+#[method]
+pub fn read_to_end_sync(this: &mut Vec<u8>,reader: JsValue,read: Function)-> usize {
+>>>>>>> refs/remotes/origin/main
   Reader::new(reader,read)
   .read_exact(buf)
   .unwrap_throw()
