@@ -1,5 +1,4 @@
 
-use std::fmt::Debug;
 use wasm_bindgen::JsValue;
 
 
@@ -7,7 +6,7 @@ pub trait Throwable<T> {
   fn or_throw(self,exception: impl Into<JsValue>)-> T;
 }
 
-pub trait UnwrapExt<T,E: Debug>: Throwable<T> {
+pub trait UnwrapExt<T,E>: Throwable<T> {
   fn unwrap_or_throw(self)-> T;
 }
 
@@ -32,7 +31,7 @@ impl<T> UnwrapExt<T,JsValue> for Option<T> {
 }
 
 
-impl<T,E: Into<JsValue>+Debug> UnwrapExt<T,E> for Result<T,E> {
+impl<T,E: Into<JsValue>> UnwrapExt<T,E> for Result<T,E> {
   #[inline]
   fn unwrap_or_throw(self)-> T {
     match self {
