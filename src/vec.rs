@@ -241,7 +241,7 @@ pub fn vec_remove(this: &mut Vec<JsValue>,index: isize)-> JsValue {
 
 #[method]
 pub fn vec_reserve(this: &mut Vec<JsValue>,additional: isize)-> u8 {
-  match this.try_reserve(saturation_cast(additional)) {
+  match this.try_reserve(saturating_cast(additional)) {
     Ok(_)=> OK,
     _=> CAPACITY_OVERFLOW
   }
@@ -249,7 +249,7 @@ pub fn vec_reserve(this: &mut Vec<JsValue>,additional: isize)-> u8 {
 
 #[method]
 pub fn vec_reserve_exact(this: &mut Vec<JsValue>,additional: isize)-> u8 {
-  match this.try_reserve_exact(saturation_cast(additional)) {
+  match this.try_reserve_exact(saturating_cast(additional)) {
     Ok(_)=> OK,
     _=> CAPACITY_OVERFLOW
   }
@@ -257,12 +257,12 @@ pub fn vec_reserve_exact(this: &mut Vec<JsValue>,additional: isize)-> u8 {
 
 #[method]
 pub fn vec_resize(this: &mut Vec<JsValue>,new_len: isize,val: JsValue) {
-  this.resize(saturation_cast(new_len),val)
+  this.resize(saturating_cast(new_len),val)
 }
 
 #[method]
 pub fn vec_resize_with(this: &mut Vec<JsValue>,new_len: isize,f: Function) {
-  this.resize_with(saturation_cast(new_len),|| call!(f))
+  this.resize_with(saturating_cast(new_len),|| call!(f))
 }
 
 #[method]
@@ -300,7 +300,7 @@ pub fn vec_rsplitn(this: &mut Vec<JsValue>,mut n: isize,f: Function)-> Vector {
 
   as_ptr!(
     this.rsplitn_mut(
-      saturation_cast(n),
+      saturating_cast(n),
       |element| call! { f(element) }.is_truthy()
     ).collect::<Vec<_>>()
   ) as _
@@ -327,7 +327,7 @@ pub fn vec_set(this: &mut Vec<JsValue>,index: isize,element: JsValue)-> u8 {
 #[method]
 pub fn vec_splice_arr(this: &mut Vec<JsValue>,mut start: isize,count: isize,replace_with: Vec<JsValue>)-> Vector {
   abs_index!(start;this.len());
-  let range=start as _..saturation_cast(count-1);
+  let range=start as _..saturating_cast(count-1);
 
   match this.len() {
     0=> as_ptr!(this.drain(range).collect()),

@@ -1,12 +1,31 @@
 
 use quote::ToTokens;
+use proc_macro2::Span;
 use proc_macro::TokenStream;
 
 use syn::{
+  Type,
   FnArg,
   Ident
 };
 
+
+#[inline]
+fn js_arr_name(ty: &Type)-> &'static str {
+  match ty.to_token_stream().to_string().as_str() {
+    "u8"=> "Uint8Array",
+    "u16"=> "Uint16Array",
+    "u32"=> "Uint32Array",
+    "u64"=> "BigUint64Array",
+    "i8"=> "Int8Array",
+    "i16"=> "Int16Array",
+    "i32"=> "Int32Array",
+    "i64"=> "BigInt64Array",
+    "f32"=> "Float32Array",
+    "f64"=> "Float64Array",
+    _=> unreachable!()
+  }
+}
 
 
 pub fn typed_array_impl(arg: FnArg)-> TokenStream {
@@ -16,6 +35,7 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
   };
   let ty=arg.ty;
   let name=syn::parse::<Ident>(arg.pat.into_token_stream().into()).unwrap();
+  let js_name=Ident::new(js_arr_name(&ty),Span::call_site());
 
   quote::quote! {
     type #name=*mut Vec<#ty>;
@@ -89,6 +109,12 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
       this.get(index as usize).cloned()
     }
     
+    #[macros::mangle_name(#ty)]
+    #[macros::method]
+    pub fn vec_as_ptr(this: &mut Vec<#ty>)-> *mut #ty {
+      this.as_mut_ptr()
+    }
+
     #[macros::mangle_name(#ty)]
     #[macros::method]
     pub fn vec_as_slice(this: &mut Vec<#ty>)-> crate::Slice {
@@ -289,25 +315,25 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
     #[macros::mangle_name(#ty)]
     #[macros::method]
     pub fn vec_reserve(this: &mut Vec<#ty>,additional: isize) {
-      crate::Throwable::or_throw(this.try_reserve(crate::saturation_cast(additional)),crate::errors::collection_error::CollectionError::capacity_overflow())
+      crate::Throwable::or_throw(this.try_reserve(crate::saturating_cast(additional)),crate::errors::collection_error::CollectionError::capacity_overflow())
     }
     
     #[macros::mangle_name(#ty)]
     #[macros::method]
     pub fn vec_reserve_exact(this: &mut Vec<#ty>,additional: isize) {
-      crate::Throwable::or_throw(this.try_reserve_exact(crate::saturation_cast(additional)),crate::errors::collection_error::CollectionError::capacity_overflow())
+      crate::Throwable::or_throw(this.try_reserve_exact(crate::saturating_cast(additional)),crate::errors::collection_error::CollectionError::capacity_overflow())
     }
     
     #[macros::mangle_name(#ty)]
     #[macros::method]
     pub fn vec_resize(this: &mut Vec<#ty>,new_len: isize,val: #ty) {
-      this.resize(crate::saturation_cast(new_len),val)
+      this.resize(crate::saturating_cast(new_len),val)
     }
     
     #[macros::mangle_name(#ty)]
     #[macros::method]
     pub fn vec_resize_with(this: &mut Vec<#ty>,new_len: isize,f: js_sys::Function) {
-      this.resize_with(crate::saturation_cast(new_len),|| call!(f).unchecked_into_f64() as _)
+      this.resize_with(crate::saturating_cast(new_len),|| call!(f).unchecked_into_f64() as _)
     }
     
     #[macros::mangle_name(#ty)]
@@ -351,7 +377,7 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
     
       as_ptr!(
         this.rsplitn_mut(
-          crate::saturation_cast(n),
+          crate::saturating_cast(n),
           |element| call! { f(&wasm_bindgen::JsValue::from(*element)) }.is_truthy()
         ).collect::<Vec<_>>()
       ) as _
@@ -374,7 +400,7 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
     #[macros::method]
     pub fn vec_splice_arr(this: &mut Vec<#ty>,mut start: isize,count: isize,replace_with: Vec<#ty>)-> #name {
       abs_index!(start;this.len());
-      let range=start as _..crate::saturation_cast(count-1);
+      let range=start as _..crate::saturating_cast(count-1);
     
       match this.len() {
         0=> as_ptr!(this.drain(range).collect()),
@@ -387,7 +413,7 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
     pub unsafe fn vec_splice_vec(this: &mut Vec<#ty>,mut start: isize,count: isize,replace_with: *mut Vec<#ty>)-> #name {
       let replace_with=wasm_bindgen::UnwrapThrowExt::unwrap_throw(replace_with.as_mut()).clone();
       abs_index!(start;this.len());
-      let range=start as _..crate::saturation_cast(count-1);
+      let range=start as _..crate::saturating_cast(count-1);
     
       match this.len() {
         0=> as_ptr!(this.drain(range).collect()),
@@ -417,6 +443,16 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
     #[macros::method]
     pub fn vec_shrink_to_fit(this: &mut Vec<#ty>) {
       this.shrink_to_fit()
+    }
+
+    #[macros::mangle_name(#ty)]
+    #[macros::method]
+    pub unsafe fn vec_slice(this: &Vec<#ty>,mut start: isize,mut end: isize)-> js_sys::#js_name {
+      let len=this.len();
+      abs_index!(start;len);
+      abs_index!(end;len);
+
+      js_sys::#js_name::view(&this[start as _..end as _])
     }
     
     #[macros::mangle_name(#ty)]
@@ -468,7 +504,7 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
       let len=this.len();
     
       match constraints!(a => len) || constraints!(b => len) {
-        true=> this.swap(crate::saturation_cast(a),crate::saturation_cast(b)),
+        true=> this.swap(crate::saturating_cast(a),crate::saturating_cast(b)),
         _=> throw!(capacity_overflow)
       }
     }
@@ -504,7 +540,12 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
         this.windows(size.unsigned_abs())
       }
     }
-    
+
+    #[macros::mangle_name(#ty)]
+    #[macros::method]
+    pub unsafe fn view(this: &Vec<#ty>)-> js_sys::#js_name {
+      js_sys::#js_name::view(this)
+    }
     
     #[macros::mangle_name(#ty)]
     #[wasm_bindgen::prelude::wasm_bindgen]
@@ -514,6 +555,5 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
 
   }.into()
 }
-
 
 

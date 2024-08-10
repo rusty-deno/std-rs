@@ -1,9 +1,11 @@
 
+#[macro_use]
+pub(crate) mod util_macro;
+
+mod io;
 mod vec;
 mod slice;
 mod thread;
-#[macro_use]
-pub(crate) mod util_macro;
 mod typed_array;
 
 mod throwable;
@@ -12,14 +14,15 @@ pub(crate) mod errors;
 pub(crate) use throwable::*;
 
 
-// pub use typed_array::*;
+pub use io::*;
 pub use vec::*;
 pub use slice::*;
 pub use thread::*;
+pub use typed_array::*;
 
 
 
-pub(crate) const fn saturation_cast(x: isize)-> usize {
+pub(crate) const fn saturating_cast(x: isize)-> usize {
   if x<0 {
     0usize
   } else {

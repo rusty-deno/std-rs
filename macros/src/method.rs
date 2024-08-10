@@ -8,7 +8,7 @@ use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
 
 
-pub fn method_impl(_attr: TokenStream,item: TokenStream)-> TokenStream {
+pub fn method_impl(attr: TokenStream,item: TokenStream)-> TokenStream {
   let mut f=syn::parse::<ItemFn>(item).unwrap();
 
   let name=f.sig.ident;
@@ -30,9 +30,14 @@ pub fn method_impl(_attr: TokenStream,item: TokenStream)-> TokenStream {
     );
   };
 
+  let wasm_bindgen_macro=match attr.to_string().as_str() {
+    "async"=> quote! { #[wasm_bindgen_futures::wasm_bindgen::prelude::wasm_bindgen] },
+    _=> quote! { #[wasm_bindgen::prelude::wasm_bindgen] }
+  };
+
   quote! {
-    #[wasm_bindgen::prelude::wasm_bindgen]
-    #vis #unsafety #asyncness fn #name(#params) #return_type {
+    #wasm_bindgen_macro
+    #vis #asyncness #unsafety fn #name(#params) #return_type {
       #this_def;
       #(#stmts)*
     }

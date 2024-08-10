@@ -1,6 +1,5 @@
 
 
-
 import { Vec } from "../../../mod.ts";
 import { Clone } from '../../clone.ts';
 import { PartailEq } from '../../cmp/mod.ts';
@@ -12,6 +11,7 @@ import { $resultSync } from "../../error/result/macros.ts";
 import { $todo } from "../../declarative-macros/panics.ts";
 import { CollectionError } from "../../collections/error.ts";
 import { IntoIterator,IteratorTrait } from '../../iter/iter.ts';
+
 
 
 type Equivalent=Vec<number>|number[]|Uint8Vec|Uint8Array|Uint8ClampedArray;
@@ -29,13 +29,13 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
 
   constructor(...elements: number[]) {
     super();
-    this.#ptr=elements.length>0?lib.u8_vec_from_jsarr(elements):lib.new_u8_vec();
+    this.#ptr=elements.length>0?lib.u8_vec_from_jsarr(elements):lib.u8_new_vec();
 
     return new Proxy<Uint8Vec>(this,Uint8Vec.#handler);
   }
 
   public static withCapacity(capacity: number): Uint8Vec {
-    return Uint8Vec.fromPtr(lib.new_u8_vec_with_capacity(capacity));
+    return Uint8Vec.fromPtr(lib.u8_new_vec_with_capacity(capacity));
   }
 
   public static fromUint8Array(buf: Uint8Array): Uint8Vec {
@@ -61,7 +61,7 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
   private static fromPtr(ptr: number): Uint8Vec {
     const self=new Uint8Vec();
 
-    lib.drop_u8_vec(self.#ptr);
+    lib.u8_drop_vec(self.#ptr);
     self.#ptr=ptr;
 
     return self;
@@ -74,6 +74,11 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
   public get capacity(): number {
     return lib.u8_vec_capacity(this.#ptr);
   }
+
+  public thisPtr(): number {
+    return this.#ptr;
+  }
+
 
   *[Symbol.iterator](): Iterator<number> {
     // SAFETY: This never throws an exception as the loop runs within the bounds.
@@ -109,6 +114,9 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
     }
   }
 
+  public view(): Uint8Array {
+    return lib.u8_view(this.#ptr);
+  }
 
   public iter(): IteratorTrait<number> {
     return $todo();
@@ -138,10 +146,14 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
     return new Option(lib.u8_vec_pop_front(this.#ptr));
   }
 
+  public slice(start: number,end: number=this.length): Uint8Array {
+    return lib.u8_vec_slice(this.#ptr,start,end);
+  }
+
   public splice(start: number,end: number,replaceWith: Equivalent=[]): Uint8Vec {
     return Uint8Vec.fromPtr(
       replaceWith instanceof Uint8Vec?
-        lib.u8_vec_splice_u8_vec(this.#ptr,start,end,replaceWith.#ptr)
+        lib.u8_vec_splice_vec(this.#ptr,start,end,replaceWith.#ptr)
       :
         lib.u8_vec_splice_arr(this.#ptr,start,end,new Uint8Array(replaceWith))
     );
@@ -167,8 +179,17 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
     return new Option(lib.u8_vec_remove(this.#ptr,index));
   }
 
+  public reserve(additional: number) {
+    lib.u8_vec_reserve(this.#ptr,additional);
+  }
+
   public shrinkTo(minCapacity: number) {
     lib.u8_vec_shrink_to(this.#ptr,minCapacity);
+  }
+
+  public spareCapacity(): Uint8Array {
+    const len=this.length;
+    return lib.u8_vec_slice(this.#ptr,len,this.capacity-len);
   }
 
   public swap(start: number,end: number) {
@@ -193,7 +214,7 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
   public clone(): this {
     const clone=Uint8Vec.withCapacity(this.capacity);
     // SAFETY: This never throws an exception as the loop runs within the bound.
-    for(let i=0;i<this.length;i++) this.push(structuredClone(lib.u8_vec_index(this.#ptr,i)));
+    for(let i=0;i<this.length;i++) this.push(lib.u8_vec_index(this.#ptr,i));
 
     return clone as this;
   }
