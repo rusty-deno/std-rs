@@ -14,7 +14,7 @@ import { IntoIterator,IteratorTrait } from '../../iter/iter.ts';
 
 
 
-type Equivalent=Vec<number>|number[]|Uint16Vec|Uint16Array|Uint8ClampedArray;
+type Equivalent=Vec<number>|number[]|Uint16Vec|Uint16Array;
 
 
 // TODO(kakashi): implement Drop trait using decorator
