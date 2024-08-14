@@ -1,5 +1,5 @@
 
-
+import { isNum } from "./util.ts";
 import { Vec } from "../../../mod.ts";
 import { Clone } from '../../clone.ts';
 import { PartailEq } from '../../cmp/mod.ts';
@@ -17,13 +17,8 @@ import { IntoIterator,IteratorTrait } from '../../iter/iter.ts';
 type Equivalent=Vec<number>|number[]|Uint8Vec|Uint8Array|Uint8ClampedArray;
 
 
-function isNum(p: PropertyKey): p is number {
-  return typeof p==="string" && Number(p)==p as unknown;
-}
-
-
 // TODO(kakashi): implement Drop trait using decorator
-export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Equivalent>,ArrayLite<number>,Extend<number> {
+export class Uint8Vec extends IntoIterator<number> implements Clone,Disposable,PartailEq<Equivalent>,ArrayLite<number>,Extend<number> {
   #ptr: number;
   [index: number]: number;
 
@@ -39,7 +34,7 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
   }
 
   public static fromUint8Array(buf: Uint8Array): Uint8Vec {
-    return Uint8Vec.fromPtr(lib.u8_vec_from_uint8array(buf));
+    return Uint8Vec.fromPtr(lib.u8_vec_from_js_typed_array(buf));
   }
 
   public static from(iter: Iterable<number>): Uint8Vec {
@@ -57,6 +52,10 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
       return isNum(index) && !(lib.u8_vec_set(self.#ptr,index,0) as undefined);
     },
   };
+
+  [Symbol.dispose]() {
+    lib.u8_drop_vec(this.#ptr);
+  }
 
   private static fromPtr(ptr: number): Uint8Vec {
     const self=new Uint8Vec();
@@ -79,6 +78,9 @@ export class Uint8Vec extends IntoIterator<number> implements Clone,PartailEq<Eq
     return this.#ptr;
   }
 
+  public asPtr(): Deno.PointerValue<number> {
+    return Deno.UnsafePointer.create(BigInt(this.#ptr));
+  }
 
   *[Symbol.iterator](): Iterator<number> {
     // SAFETY: This never throws an exception as the loop runs within the bounds.
