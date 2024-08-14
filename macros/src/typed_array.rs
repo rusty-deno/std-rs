@@ -21,6 +21,7 @@ fn js_arr_name(ty: &Type)-> &'static str {
     "i16"=> "Int16Array",
     "i32"=> "Int32Array",
     "i64"=> "BigInt64Array",
+    "f16"=> "Float16Array",
     "f32"=> "Float32Array",
     "f64"=> "Float64Array",
     _=> unreachable!()
