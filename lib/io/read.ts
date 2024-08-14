@@ -23,19 +23,11 @@ export abstract class Read {
   }
 
   public readToEnd(buf: Uint8Vec): IoAsyncResult<number> {
-<<<<<<< HEAD
     return $result(lib.read_to_end,buf.thisPtr(),this,this.#read);
   }
 
   public readToEndSync(buf: Uint8Vec): IoResult<number> {
     return $resultSync(lib.read_to_end_sync,buf.thisPtr(),this,this.#readSync);
-=======
-    return $result(lib.read_to_end,buf.thisPtr(),this,this.read);
-  }
-
-  public readToEndSync(buf: Uint8Vec): IoResult<number> {
-    return $resultSync(lib.read_to_end_sync,buf.thisPtr(),this,this.readSync);
->>>>>>> refs/remotes/origin/main
   }
 
   public readToString(): IoAsyncResult<string> {
