@@ -1,4 +1,5 @@
 import { CollectionError } from './snippets/std-rs-78884bcf1b36fd68/lib/collections/error.ts';
+import { IoError } from './snippets/std-rs-78884bcf1b36fd68/lib/io/error.ts';
 
 const heap = new Array(128).fill(undefined);
 
@@ -20,14 +21,9 @@ function takeObject(idx) {
     return ret;
 }
 
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
+const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
 
-    heap[idx] = obj;
-    return idx;
-}
+if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
 
 let cachedUint8Memory0 = null;
 
@@ -38,18 +34,23 @@ function getUint8Memory0() {
     return cachedUint8Memory0;
 }
 
-function getArrayU8FromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
-}
-
-const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
-
-if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
-
 function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
+}
+
+function addHeapObject(obj) {
+    if (heap_next === heap.length) heap.push(heap.length + 1);
+    const idx = heap_next;
+    heap_next = heap[idx];
+
+    heap[idx] = obj;
+    return idx;
+}
+
+function getArrayU8FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
 }
 
 const CLOSURE_DTORS = (typeof FinalizationRegistry === 'undefined')
@@ -90,34 +91,11 @@ function __wbg_adapter_36(arg0, arg1, arg2) {
 * @param {number} buf
 * @param {any} _this
 * @param {Function} read
-* @returns {Promise<any>}
+* @returns {Promise<number>}
 */
 export function read_to_end(buf, _this, read) {
     const ret = wasm.read_to_end(buf, addHeapObject(_this), addHeapObject(read));
     return takeObject(ret);
-}
-
-/**
-* @param {any} _this
-* @param {Function} read
-* @param {number} ptr
-* @param {number} len
-* @returns {Promise<any>}
-*/
-export function read_exact(_this, read, ptr, len) {
-    const ret = wasm.read_exact(addHeapObject(_this), addHeapObject(read), ptr, len);
-    return takeObject(ret);
-}
-
-/**
-* @param {number} buf
-* @param {any} _this
-* @param {Function} read
-* @returns {number}
-*/
-export function read_to_end_sync(buf, _this, read) {
-    const ret = wasm.read_to_end_sync(buf, addHeapObject(_this), addHeapObject(read));
-    return ret >>> 0;
 }
 
 let WASM_VECTOR_LEN = 0;
@@ -132,6 +110,30 @@ function passArray8ToWasm0(arg, malloc) {
 * @param {any} _this
 * @param {Function} read
 * @param {Uint8Array} buf
+* @returns {Promise<number>}
+*/
+export function read_exact(_this, read, buf) {
+    var ptr0 = passArray8ToWasm0(buf, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.read_exact(addHeapObject(_this), addHeapObject(read), ptr0, len0, addHeapObject(buf));
+    return takeObject(ret);
+}
+
+/**
+* @param {number} buf
+* @param {any} _this
+* @param {Function} read
+* @returns {number}
+*/
+export function read_to_end_sync(buf, _this, read) {
+    const ret = wasm.read_to_end_sync(buf, addHeapObject(_this), addHeapObject(read));
+    return ret >>> 0;
+}
+
+/**
+* @param {any} _this
+* @param {Function} read
+* @param {Uint8Array} buf
 */
 export function read_exact_sync(_this, read, buf) {
     var ptr0 = passArray8ToWasm0(buf, wasm.__wbindgen_malloc);
@@ -142,7 +144,7 @@ export function read_exact_sync(_this, read, buf) {
 /**
 * @param {any} _this
 * @param {Function} read
-* @returns {Promise<any>}
+* @returns {Promise<string>}
 */
 export function read_to_string(_this, read) {
     const ret = wasm.read_to_string(addHeapObject(_this), addHeapObject(read));
@@ -991,10 +993,10 @@ export function u8_vec_from_jsarr(arr) {
 * @param {Uint8Array} vec
 * @returns {number}
 */
-export function u8_vec_from_uint8array(vec) {
+export function u8_vec_from_js_typed_array(vec) {
     const ptr0 = passArray8ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.u8_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.u8_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -1014,6 +1016,15 @@ export function u8_vec_append(_this, other) {
 export function u8_vec_at(_this, index) {
     const ret = wasm.u8_vec_at(_this, index);
     return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u8_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -1576,10 +1587,10 @@ function passArray16ToWasm0(arg, malloc) {
 * @param {Uint16Array} vec
 * @returns {number}
 */
-export function u16_vec_from_uint8array(vec) {
+export function u16_vec_from_js_typed_array(vec) {
     const ptr0 = passArray16ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.i16_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.i16_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -1599,6 +1610,15 @@ export function u16_vec_append(_this, other) {
 export function u16_vec_at(_this, index) {
     const ret = wasm.u16_vec_at(_this, index);
     return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u16_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -2152,10 +2172,10 @@ function passArray32ToWasm0(arg, malloc) {
 * @param {Uint32Array} vec
 * @returns {number}
 */
-export function u32_vec_from_uint8array(vec) {
+export function u32_vec_from_js_typed_array(vec) {
     const ptr0 = passArray32ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.f32_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.f32_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -2182,6 +2202,15 @@ export function u32_vec_at(_this, index) {
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u32_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -2786,10 +2815,10 @@ function passArray64ToWasm0(arg, malloc) {
 * @param {BigUint64Array} vec
 * @returns {number}
 */
-export function u64_vec_from_uint8array(vec) {
+export function u64_vec_from_js_typed_array(vec) {
     const ptr0 = passArray64ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.f64_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.f64_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -2824,6 +2853,15 @@ export function u64_vec_at(_this, index) {
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u64_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -3413,10 +3451,10 @@ export function i8_vec_from_jsarr(arr) {
 * @param {Int8Array} vec
 * @returns {number}
 */
-export function i8_vec_from_uint8array(vec) {
+export function i8_vec_from_js_typed_array(vec) {
     const ptr0 = passArray8ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.i8_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.i8_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -3436,6 +3474,15 @@ export function i8_vec_append(_this, other) {
 export function i8_vec_at(_this, index) {
     const ret = wasm.i8_vec_at(_this, index);
     return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i8_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -3983,10 +4030,10 @@ export function i16_vec_from_jsarr(arr) {
 * @param {Int16Array} vec
 * @returns {number}
 */
-export function i16_vec_from_uint8array(vec) {
+export function i16_vec_from_js_typed_array(vec) {
     const ptr0 = passArray16ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.i16_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.i16_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -4006,6 +4053,15 @@ export function i16_vec_append(_this, other) {
 export function i16_vec_at(_this, index) {
     const ret = wasm.i16_vec_at(_this, index);
     return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i16_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -4553,10 +4609,10 @@ export function i32_vec_from_jsarr(arr) {
 * @param {Int32Array} vec
 * @returns {number}
 */
-export function i32_vec_from_uint8array(vec) {
+export function i32_vec_from_js_typed_array(vec) {
     const ptr0 = passArray32ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.f32_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.f32_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -4583,6 +4639,15 @@ export function i32_vec_at(_this, index) {
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i32_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -5172,10 +5237,10 @@ export function i64_vec_from_jsarr(arr) {
 * @param {BigInt64Array} vec
 * @returns {number}
 */
-export function i64_vec_from_uint8array(vec) {
+export function i64_vec_from_js_typed_array(vec) {
     const ptr0 = passArray64ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.f64_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.f64_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -5202,6 +5267,15 @@ export function i64_vec_at(_this, index) {
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i64_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -5806,10 +5880,10 @@ function passArrayF32ToWasm0(arg, malloc) {
 * @param {Float32Array} vec
 * @returns {number}
 */
-export function f32_vec_from_uint8array(vec) {
+export function f32_vec_from_js_typed_array(vec) {
     const ptr0 = passArrayF32ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.f32_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.f32_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -5836,6 +5910,15 @@ export function f32_vec_at(_this, index) {
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function f32_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -6440,10 +6523,10 @@ function passArrayF64ToWasm0(arg, malloc) {
 * @param {Float64Array} vec
 * @returns {number}
 */
-export function f64_vec_from_uint8array(vec) {
+export function f64_vec_from_js_typed_array(vec) {
     const ptr0 = passArrayF64ToWasm0(vec, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.f64_vec_from_uint8array(ptr0, len0);
+    const ret = wasm.f64_vec_from_js_typed_array(ptr0, len0);
     return ret >>> 0;
 }
 
@@ -6470,6 +6553,15 @@ export function f64_vec_at(_this, index) {
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }
+}
+
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function f64_vec_as_ptr(_this) {
+    const ret = wasm.f32_vec_as_ptr(_this);
+    return ret >>> 0;
 }
 
 /**
@@ -7026,7 +7118,7 @@ function handleError(f, args) {
         wasm.__wbindgen_exn_store(addHeapObject(e));
     }
 }
-function __wbg_adapter_743(arg0, arg1, arg2, arg3) {
+function __wbg_adapter_755(arg0, arg1, arg2, arg3) {
     wasm.wasm_bindgen__convert__closures__invoke2_mut__h0b2ac5c0b2d583fc(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
 
@@ -7093,7 +7185,7 @@ const imports = {
                     const a = state0.a;
                     state0.a = 0;
                     try {
-                        return __wbg_adapter_743(a, state0.b, arg0, arg1);
+                        return __wbg_adapter_755(a, state0.b, arg0, arg1);
                     } finally {
                         state0.a = a;
                     }
@@ -7111,16 +7203,29 @@ const imports = {
             const ret = getObject(arg0).then(getObject(arg1), getObject(arg2));
             return addHeapObject(ret);
         },
+        __wbindgen_error_new: function(arg0, arg1) {
+            const ret = new Error(getStringFromWasm0(arg0, arg1));
+            return addHeapObject(ret);
+        },
+        __wbg_new_6bcb0018eab8f34f: function(arg0, arg1, arg2, arg3) {
+            let v0;
+            if (arg2 !== 0) {
+                v0 = getStringFromWasm0(arg2, arg3).slice();
+                wasm.__wbindgen_free(arg2, arg3 * 1, 1);
+            }
+            const ret = new IoError(arg0, takeObject(arg1), v0);
+            return addHeapObject(ret);
+        },
         __wbindgen_number_new: function(arg0) {
             const ret = arg0;
             return addHeapObject(ret);
         },
+        __wbindgen_copy_to_typed_array: function(arg0, arg1, arg2) {
+            new Uint8Array(getObject(arg2).buffer, getObject(arg2).byteOffset, getObject(arg2).byteLength).set(getArrayU8FromWasm0(arg0, arg1));
+        },
         __wbindgen_as_number: function(arg0) {
             const ret = +getObject(arg0);
             return ret;
-        },
-        __wbindgen_copy_to_typed_array: function(arg0, arg1, arg2) {
-            new Uint8Array(getObject(arg2).buffer, getObject(arg2).byteOffset, getObject(arg2).byteLength).set(getArrayU8FromWasm0(arg0, arg1));
         },
         __wbindgen_string_new: function(arg0, arg1) {
             const ret = getStringFromWasm0(arg0, arg1);
@@ -7145,10 +7250,6 @@ const imports = {
         __wbg_length_cd7af8117672b8b8: function(arg0) {
             const ret = getObject(arg0).length;
             return ret;
-        },
-        __wbindgen_error_new: function(arg0, arg1) {
-            const ret = new Error(getStringFromWasm0(arg0, arg1));
-            return addHeapObject(ret);
         },
         __wbg_new_eefa28520849b064: function(arg0, arg1, arg2, arg3) {
             let v0;
@@ -7301,8 +7402,8 @@ const imports = {
             const ret = Promise.resolve(getObject(arg0));
             return addHeapObject(ret);
         },
-        __wbindgen_closure_wrapper127: function(arg0, arg1, arg2) {
-            const ret = makeMutClosure(arg0, arg1, 27, __wbg_adapter_36);
+        __wbindgen_closure_wrapper122: function(arg0, arg1, arg2) {
+            const ret = makeMutClosure(arg0, arg1, 29, __wbg_adapter_36);
             return addHeapObject(ret);
         },
     },
