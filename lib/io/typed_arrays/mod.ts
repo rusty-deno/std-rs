@@ -1,5 +1,10 @@
-
-
-
-
-
+export * from "./uint8vec.ts";
+export * from "./uint16vec.ts";
+export * from "./uint32vec.ts";
+export * from "./uint64vec.ts";
+export * from "./int8vec.ts";
+export * from "./int32vec.ts";
+export * from "./int64vec.ts";
+export * from "./float16vec.ts";
+export * from "./float32vec.ts";
+export * from "./float64vec.ts";

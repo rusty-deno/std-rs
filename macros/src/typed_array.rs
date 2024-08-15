@@ -21,6 +21,7 @@ fn js_arr_name(ty: &Type)-> &'static str {
     "i16"=> "Int16Array",
     "i32"=> "Int32Array",
     "i64"=> "BigInt64Array",
+    "f16"=> "Float16Array",
     "f32"=> "Float32Array",
     "f64"=> "Float64Array",
     _=> unreachable!()
@@ -84,7 +85,7 @@ pub fn typed_array_impl(arg: FnArg)-> TokenStream {
     
     #[macros::mangle_name(#ty)]
     #[wasm_bindgen::prelude::wasm_bindgen]
-    pub fn vec_from_uint8array(vec: Vec<#ty>)-> #name {
+    pub fn vec_from_js_typed_array(vec: Vec<#ty>)-> #name {
       as_ptr!(vec)
     }
     

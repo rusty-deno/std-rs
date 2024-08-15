@@ -4,17 +4,16 @@
 * @param {number} buf
 * @param {any} _this
 * @param {Function} read
-* @returns {Promise<any>}
+* @returns {Promise<number>}
 */
-export function read_to_end(buf: number, _this: any, read: Function): Promise<any>;
+export function read_to_end(buf: number, _this: any, read: Function): Promise<number>;
 /**
 * @param {any} _this
 * @param {Function} read
-* @param {number} ptr
-* @param {number} len
-* @returns {Promise<any>}
+* @param {Uint8Array} buf
+* @returns {Promise<number>}
 */
-export function read_exact(_this: any, read: Function, ptr: number, len: number): Promise<any>;
+export function read_exact(_this: any, read: Function, buf: Uint8Array): Promise<number>;
 /**
 * @param {number} buf
 * @param {any} _this
@@ -31,9 +30,9 @@ export function read_exact_sync(_this: any, read: Function, buf: Uint8Array): vo
 /**
 * @param {any} _this
 * @param {Function} read
-* @returns {Promise<any>}
+* @returns {Promise<string>}
 */
-export function read_to_string(_this: any, read: Function): Promise<any>;
+export function read_to_string(_this: any, read: Function): Promise<string>;
 /**
 * @param {any} _this
 * @param {Function} read
@@ -448,7 +447,7 @@ export function u8_vec_from_jsarr(arr: Array<any>): number;
 * @param {Uint8Array} vec
 * @returns {number}
 */
-export function u8_vec_from_uint8array(vec: Uint8Array): number;
+export function u8_vec_from_js_typed_array(vec: Uint8Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -460,6 +459,11 @@ export function u8_vec_append(_this: number, other: number): void;
 * @returns {number | undefined}
 */
 export function u8_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u8_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
@@ -779,7 +783,7 @@ export function u16_vec_from_jsarr(arr: Array<any>): number;
 * @param {Uint16Array} vec
 * @returns {number}
 */
-export function u16_vec_from_uint8array(vec: Uint16Array): number;
+export function u16_vec_from_js_typed_array(vec: Uint16Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -791,6 +795,11 @@ export function u16_vec_append(_this: number, other: number): void;
 * @returns {number | undefined}
 */
 export function u16_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u16_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
@@ -1110,7 +1119,7 @@ export function u32_vec_from_jsarr(arr: Array<any>): number;
 * @param {Uint32Array} vec
 * @returns {number}
 */
-export function u32_vec_from_uint8array(vec: Uint32Array): number;
+export function u32_vec_from_js_typed_array(vec: Uint32Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -1122,6 +1131,11 @@ export function u32_vec_append(_this: number, other: number): void;
 * @returns {number | undefined}
 */
 export function u32_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u32_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
@@ -1441,7 +1455,7 @@ export function u64_vec_from_jsarr(arr: Array<any>): number;
 * @param {BigUint64Array} vec
 * @returns {number}
 */
-export function u64_vec_from_uint8array(vec: BigUint64Array): number;
+export function u64_vec_from_js_typed_array(vec: BigUint64Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -1453,6 +1467,11 @@ export function u64_vec_append(_this: number, other: number): void;
 * @returns {bigint | undefined}
 */
 export function u64_vec_at(_this: number, index: number): bigint | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function u64_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
@@ -1772,7 +1791,7 @@ export function i8_vec_from_jsarr(arr: Array<any>): number;
 * @param {Int8Array} vec
 * @returns {number}
 */
-export function i8_vec_from_uint8array(vec: Int8Array): number;
+export function i8_vec_from_js_typed_array(vec: Int8Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -1784,6 +1803,11 @@ export function i8_vec_append(_this: number, other: number): void;
 * @returns {number | undefined}
 */
 export function i8_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i8_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
@@ -2103,7 +2127,7 @@ export function i16_vec_from_jsarr(arr: Array<any>): number;
 * @param {Int16Array} vec
 * @returns {number}
 */
-export function i16_vec_from_uint8array(vec: Int16Array): number;
+export function i16_vec_from_js_typed_array(vec: Int16Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -2115,6 +2139,11 @@ export function i16_vec_append(_this: number, other: number): void;
 * @returns {number | undefined}
 */
 export function i16_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i16_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
@@ -2434,7 +2463,7 @@ export function i32_vec_from_jsarr(arr: Array<any>): number;
 * @param {Int32Array} vec
 * @returns {number}
 */
-export function i32_vec_from_uint8array(vec: Int32Array): number;
+export function i32_vec_from_js_typed_array(vec: Int32Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -2446,6 +2475,11 @@ export function i32_vec_append(_this: number, other: number): void;
 * @returns {number | undefined}
 */
 export function i32_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i32_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
@@ -2765,7 +2799,7 @@ export function i64_vec_from_jsarr(arr: Array<any>): number;
 * @param {BigInt64Array} vec
 * @returns {number}
 */
-export function i64_vec_from_uint8array(vec: BigInt64Array): number;
+export function i64_vec_from_js_typed_array(vec: BigInt64Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -2777,6 +2811,11 @@ export function i64_vec_append(_this: number, other: number): void;
 * @returns {bigint | undefined}
 */
 export function i64_vec_at(_this: number, index: number): bigint | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function i64_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
@@ -3096,7 +3135,7 @@ export function f32_vec_from_jsarr(arr: Array<any>): number;
 * @param {Float32Array} vec
 * @returns {number}
 */
-export function f32_vec_from_uint8array(vec: Float32Array): number;
+export function f32_vec_from_js_typed_array(vec: Float32Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -3108,6 +3147,11 @@ export function f32_vec_append(_this: number, other: number): void;
 * @returns {number | undefined}
 */
 export function f32_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function f32_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
@@ -3427,7 +3471,7 @@ export function f64_vec_from_jsarr(arr: Array<any>): number;
 * @param {Float64Array} vec
 * @returns {number}
 */
-export function f64_vec_from_uint8array(vec: Float64Array): number;
+export function f64_vec_from_js_typed_array(vec: Float64Array): number;
 /**
 * @param {number} _this
 * @param {number} other
@@ -3439,6 +3483,11 @@ export function f64_vec_append(_this: number, other: number): void;
 * @returns {number | undefined}
 */
 export function f64_vec_at(_this: number, index: number): number | undefined;
+/**
+* @param {number} _this
+* @returns {number}
+*/
+export function f64_vec_as_ptr(_this: number): number;
 /**
 * @param {number} _this
 * @returns {Slice}
